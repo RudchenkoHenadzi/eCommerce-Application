@@ -6,7 +6,7 @@ Welcome to our eCommerce platform! This application replicates real-world shoppi
 
 The application features user registration and login, product search, categorization, and sorting to streamline the shopping journey. It is fully responsive, ensuring an enjoyable experience across devices. Key pages include the login/registration, main catalog, product details, user profile, basket, and about us.
 
-Powered by the leading CommerceTools commerce platform, this project is to be developed by teams of three: @RudchenkoHenadzi, @IvanKapitula and @iamarrow88.
+Powered by the leading CommerceTools commerce platform, this project is to be developed by a team of three: @RudchenkoHenadzi, @IvanKapitula and @iamarrow88.
 
 The project is based on a mainstream framework such as Vue3, TypeScript, Pinia and Vite.
 
