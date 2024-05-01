@@ -7,10 +7,11 @@
     "dev": "vite --open",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "test:unit": "jest",
+    "test": "jest",
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "fix": "eslint . --ext .vue,.js,.ts --fix",
+    "lint": "eslint . --ext .vue,.js,.ts",
     "format": "prettier --write src/"
   },
   "dependencies": {
