@@ -1,22 +1,26 @@
-# ecommerce-application
+# E-commerce application
 
-It's a comprehensive online shopping portal that provides an interactive and seamless experience to users. From product discovery to checkout, the application ensures a smooth journey for the user, enhancing their engagement and boosting their purchasing confidence.
+## Introduction
 
-This template should help get you started developing with Vue 3 in Vite.
+Welcome to our eCommerce platform! This application replicates real-world shopping experiences in a digital environment. It's a comprehensive online shopping portal that provides an interactive and seamless experience for users, from product discovery to checkout. Users can browse a vast catalog, view detailed product information, add items to their basket, and complete purchases confidently.
 
-## Recommended IDE Setup
+The application features user registration and login, product search, categorization, and sorting to streamline the shopping journey. It is fully responsive, ensuring an enjoyable experience across devices. Key pages include the login/registration, main catalog, product details, user profile, basket, and about us.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Powered by the leading CommerceTools commerce platform, this project is to be developed by a team of three: @RudchenkoHenadzi, @IvanKapitula and @iamarrow88.
 
-## Type Support for `.vue` Imports in TS
+The project is based on a mainstream framework such as Vue3, also used TypeScript, Pinia and Vite.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+## How to use
 
-## Customize configuration
+1. Install [Node.js](https://nodejs.org/en)
+2. Clone the [repo](https://github.com/RudchenkoHenadzi/eCommerce-Application.git)
+3. Install the dependencies with `npm install`
+4. Run the project with `npm run dev`
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Commands
 
-## Project Setup
+### Install dependencies
+
 
 ```sh
 npm install
@@ -34,14 +38,46 @@ npm run dev
 npm run build
 ```
 
-### Run Unit Tests with [Vitest](https://vitest.dev/)
+### Preview the project after building
 
 ```sh
-npm run test:unit
+npm run preview
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+### Only build the project
+
+```sh
+npm run build-only
+```
+
+### Check the types in the project
+
+```sh
+npm run type-check
+```
+
+### Run Unit Tests with Jest
+
+```sh
+npm run test
+```
+
+### Lint with ESLint
+
 
 ```sh
 npm run lint
 ```
+
+### Fix with ESLint
+
+```sh
+npm run fix
+```
+
+### Format with Prettier
+
+```sh
+npm run format
+```
+
