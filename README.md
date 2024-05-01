@@ -10,6 +10,13 @@ Powered by the leading CommerceTools commerce platform, this project is to be de
 
 The project is based on a mainstream framework such as Vue3, also used TypeScript, Pinia and Vite.
 
+## How to use
+
+1. Install [Node.js](https://nodejs.org/en)
+2. Clone the [repo](https://github.com/RudchenkoHenadzi/eCommerce-Application.git)
+3. Install the dependencies with `npm install`
+4. Run the project with `npm run dev`
+
 ## Commands
 
 ### Install dependencies
