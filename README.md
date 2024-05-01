@@ -8,7 +8,7 @@ The application features user registration and login, product search, categoriza
 
 Powered by the leading CommerceTools commerce platform, this project is to be developed by a team of three: @RudchenkoHenadzi, @IvanKapitula and @iamarrow88.
 
-The project is based on a mainstream framework such as Vue3, TypeScript, Pinia and Vite.
+The project is based on a mainstream framework such as Vue3, also used TypeScript, Pinia and Vite.
 
 ## Commands
 
@@ -30,6 +30,24 @@ npm run dev
 npm run build
 ```
 
+### Preview the project after building
+
+```sh
+npm run preview
+```
+
+### Only build the project
+
+```sh
+npm run build-only
+```
+
+### Check the types in the project
+
+```sh
+npm run type-check
+```
+
 ### Run Unit Tests with Jest
 
 ```sh
@@ -37,6 +55,12 @@ npm run test
 ```
 
 ### Lint with ESLint
+
+```sh
+npm run lint
+```
+
+### Fix with ESLint
 
 ```sh
 npm run fix
