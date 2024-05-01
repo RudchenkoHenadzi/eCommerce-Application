@@ -21,6 +21,7 @@ The project is based on a mainstream framework such as Vue3, also used TypeScrip
 
 ### Install dependencies
 
+
 ```sh
 npm install
 ```
@@ -63,6 +64,7 @@ npm run test
 
 ### Lint with ESLint
 
+
 ```sh
 npm run lint
 ```
@@ -78,3 +80,4 @@ npm run fix
 ```sh
 npm run format
 ```
+
