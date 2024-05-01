@@ -11,5 +11,6 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 'latest'
-  }
+  },
+  ignorePatterns: [".gitignore", "src/__ tests __", "jest.config.cjs", ".eslintrc.cjs"],
 }
