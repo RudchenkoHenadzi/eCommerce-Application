@@ -21,8 +21,11 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style lang="scss" scoped>
+@import './assets/styles/main.scss';
 nav {
   display: flex;
+  justify-content: space-around;
+  align-items: center;
   gap: 10px;
   a {
     color: black;

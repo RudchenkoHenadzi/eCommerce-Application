@@ -1,0 +1,10 @@
+@mixin button {
+  border-radius: 5px;
+  padding: 15px 25px;
+  width: 177px;
+  height: 53px;
+  background: $white;
+  font-weight: 400;
+  text-align: center;
+  color: $purple;
+}
