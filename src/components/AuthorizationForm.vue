@@ -6,7 +6,9 @@ export default defineComponent({
   data() {
     return {
       email: '',
-      password: ''
+      password: '',
+      password_confirmation: '',
+      isRegistrationPage: false
     }
   }
 })
@@ -15,7 +17,7 @@ export default defineComponent({
 <template>
   <form class="auth-form">
     <fieldset class="auth-form__wrapper">
-      <legend class="auth-form__title">Вход</legend>
+      <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
       <input
         type="text"
         id="email"
@@ -32,11 +34,26 @@ export default defineComponent({
         class="auth-form__input"
       />
 
-      <button type="submit" class="auth-form__btn btn">Войти</button>
+      <input
+        v-if="isRegistrationPage"
+        type="text"
+        id="confirm-password"
+        v-model="password_confirmation"
+        placeholder="Повторите пароль"
+        class="auth-form__input"
+      />
+
+      <button type="submit" class="auth-form__btn btn">
+        {{ isRegistrationPage ? 'Зарегистрироваться' : 'Войти' }}
+      </button>
 
       <div class="auth-form__switch-block switch-block">
-        <span class="switch-block__text">Нет аккаута?</span>
-        <button class="switch-block__btn">Зарегистрироваться</button>
+        <span class="switch-block__text">{{
+          isRegistrationPage ? 'Уже есть аккаунт?' : 'Нет аккаута?'
+        }}</span>
+        <button class="switch-block__btn">
+          {{ isRegistrationPage ? 'Войти' : 'Зарегистрироваться' }}
+        </button>
       </div>
     </fieldset>
   </form>
@@ -48,7 +65,7 @@ export default defineComponent({
   padding: 50px;
   height: fit-content;
   max-width: 50vw;
-  background-color: $purple;
+  background-color: $main-color;
   color: $white;
 
   &__wrapper {

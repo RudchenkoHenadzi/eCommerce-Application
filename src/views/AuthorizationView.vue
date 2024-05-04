@@ -1,21 +1,17 @@
 <template>
   <div class="auth-page">
-    <RegistrationForm v-if="isRegistrationPage" />
-    <AuthorizationForm v-else />
+    <AuthorizationForm />
   </div>
 </template>
 
 <script lang="ts">
 import AuthorizationForm from '@/components/AuthorizationForm.vue'
 import { defineComponent } from 'vue'
-import RegistrationForm from '@/components/RegistrationForm.vue'
 
 export default defineComponent({
-  components: { RegistrationForm, AuthorizationForm },
+  components: { AuthorizationForm },
   data() {
-    return {
-      isRegistrationPage: false
-    }
+    return {}
   }
 })
 </script>
