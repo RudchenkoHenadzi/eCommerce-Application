@@ -2,25 +2,25 @@
   <nav class="navigation">
     <ul class="navigation__list">
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/">Home</RouterLink>
+        <RouterLink class="navigation__link" to="/">Главная</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/about">About</RouterLink>
+        <RouterLink class="navigation__link" to="/about">О нас</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/authorization">Authorization</RouterLink>
+        <RouterLink class="navigation__link" to="/authorization">Авторизация</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/catalog">Catalog</RouterLink>
+        <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/product">Product</RouterLink>
+        <RouterLink class="navigation__link" to="/product">Продукт</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/cart-shopping">Cart shopping</RouterLink>
+        <RouterLink class="navigation__link" to="/cart-shopping">Корзина</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/user">User</RouterLink>
+        <RouterLink class="navigation__link" to="/user">Пользователь</RouterLink>
       </li>
     </ul>
   </nav>
