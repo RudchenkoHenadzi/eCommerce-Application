@@ -34,6 +34,7 @@
 .navigation {
   font-weight: 500;
   background: $color-bachground;
+
   &__list {
     display: flex;
     flex-wrap: wrap;
