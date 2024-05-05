@@ -41,11 +41,13 @@ export default {
 @import '@/assets/styles/fonts.scss';
 
 .navigation {
+  font-weight: 500;
   background: $color-bachground;
   &__list {
     display: flex;
     gap: 10px;
-    padding: 10px 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
     @extend %clear-ul;
     @extend %container-1100;
   }
@@ -61,5 +63,9 @@ export default {
       color: $color-purple;
     }
   }
+}
+
+.router-link-active {
+  color: $color-purple;
 }
 </style>
