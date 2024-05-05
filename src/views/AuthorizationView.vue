@@ -21,8 +21,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
-  transform: translateY(50%);
+  height: 95vh;
+  overflow: hidden;
 }
 </style>
