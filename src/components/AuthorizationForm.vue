@@ -124,12 +124,13 @@ export default defineComponent({
 @import '@/assets/styles/extends.scss';
 
 .auth-form {
-  margin: 0 auto;
-  padding: 50px;
-  height: fit-content;
-  width: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
   background-color: $color-purple;
   color: $color-white;
+  border-radius: 10px;
   & * {
     box-sizing: border-box;
   }
@@ -152,12 +153,6 @@ export default defineComponent({
   &__input {
     @extend %transparent-input;
     width: 100%;
-    border-radius: 5px;
-    padding: 15px 25px;
-    height: 53px;
-    background: rgba(255, 255, 255, 0.2);
-    color: $color-white;
-    font-size: 18px;
 
     &.invalid {
       border: 1px solid $color-orange-main;
@@ -198,9 +193,6 @@ export default defineComponent({
 
 @media (max-width: 630px) {
   .auth-form {
-    padding: 25px;
-    width: 60vw;
-
     &__title {
       margin-bottom: 15px;
     }

@@ -21,8 +21,6 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
-  width: 100%;
-  transform: translateY(50%);
+  margin-top: 200px;
 }
 </style>
