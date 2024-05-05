@@ -21,6 +21,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 200px;
+  height: 95vh;
+  overflow: hidden;
 }
 </style>

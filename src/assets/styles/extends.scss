@@ -15,34 +15,3 @@
   margin: 0 auto;
   padding: 0 20px;
 }
-
-%white-button {
-  border-radius: 5px;
-  padding: 15px 25px;
-  width: 177px;
-  height: 53px;
-  background: variables.$color-white;
-  border: none;
-  font-weight: 400;
-  text-align: center;
-  color: variables.$color-purple;
-  cursor: pointer;
-}
-
-%transparent-input {
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  padding: 15px 25px;
-  height: 53px;
-  background: rgba(255, 255, 255, 0.2);
-  color: variables.$color-white;
-  font-size: 18px;
-}
-
-%button-link {
-  border: none;
-  background-color: transparent;
-  color: variables.$color-white;
-  cursor: pointer;
-}

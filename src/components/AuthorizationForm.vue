@@ -12,14 +12,14 @@
             invalid:
               (submitted && v$.email.required.$invalid) || (submitted && v$.email.email.$invalid)
           }"
-          class="input-wrapper__input"
+          class="input-wrapper__input input-transparent"
           @blur="v$.email.$touch"
         />
 
-        <div class="input-wrapper__tooltip" v-if="submitted && v$.email.required.$invalid">
+        <div class="input-wrapper__error" v-if="submitted && v$.email.required.$invalid">
           Поле не должно быть пустым
         </div>
-        <div class="input-wrapper__tooltip" v-else-if="submitted && v$.email.email.$invalid">
+        <div class="input-wrapper__error" v-else-if="submitted && v$.email.email.$invalid">
           Введите корректный email
         </div>
       </div>
@@ -30,17 +30,17 @@
           id="login-password"
           v-model="password.password"
           placeholder="Введите пароль"
-          class="input-wrapper__input"
+          class="input-wrapper__input input-transparent"
         />
 
         <div
-          class="input-wrapper__tooltip"
+          class="input-wrapper__error"
           v-if="submitted && v$.password.password.required.$invalid"
         >
           Поле не должно быть пустым
         </div>
         <div
-          class="input-wrapper__tooltip"
+          class="input-wrapper__error"
           v-else-if="submitted && v$.password.password.minLength.$invalid"
         >
           Пароль должен быть не менее 8 символов
@@ -53,10 +53,10 @@
         id="registration-confirm-password"
         v-model="password.confirm"
         placeholder="Повторите пароль"
-        class="input-wrapper__input"
+        class="input-wrapper__input input-transparent"
       />
 
-      <button type="submit" class="auth-form__btn btn">
+      <button type="submit" class="auth-form__btn button-white">
         {{ isRegistrationPage ? 'Зарегистрироваться' : 'Войти' }}
       </button>
 
@@ -64,7 +64,7 @@
         <span class="switch-block__text">{{
           isRegistrationPage ? 'Уже есть аккаунт?' : 'Нет аккаута?'
         }}</span>
-        <button class="switch-block__btn">
+        <button class="switch-block__btn button-link">
           {{ isRegistrationPage ? 'Войти' : 'Зарегистрироваться' }}
         </button>
       </div>
@@ -148,6 +148,8 @@ export default defineComponent({
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
+    margin: 0;
+    padding: 0;
     border: none;
   }
 
@@ -159,21 +161,18 @@ export default defineComponent({
   }
 
   &__btn {
-    @extend %white-button;
+    height: 53px;
     width: 100%;
   }
 }
 
 .input-wrapper {
-  width: 100%;
+  width: 320px;
 
   &__input {
-    @extend %transparent-input;
+    margin-bottom: 5px;
+    height: 53px;
     width: 100%;
-
-    &.invalid {
-      border: 1px solid $color-orange-main;
-    }
 
     &::placeholder {
       font-weight: 400;
@@ -183,8 +182,10 @@ export default defineComponent({
     }
   }
 
-  &__tooltip {
-    font-size: 14px;
+  &__error {
+    color: #d00000;
+    text-shadow: 0 0 5px #eaebed;
+    font-size: 16px;
   }
 }
 
@@ -196,7 +197,6 @@ export default defineComponent({
   margin-top: -15px;
 
   &__btn {
-    @extend %button-link;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
@@ -231,7 +231,7 @@ export default defineComponent({
 @media (max-width: 500px) {
   .input-wrapper {
     width: 250px;
-    &__tooltip {
+    &__error {
       font-size: 12px;
     }
   }

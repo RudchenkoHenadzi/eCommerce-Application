@@ -1,4 +1,5 @@
 @use 'fonts.scss';
+@use 'variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
@@ -18,4 +19,55 @@ body {
 a,
 button {
   transition: all 0.25s;
+}
+
+.button-white {
+  padding: 15px 25px;
+  background: variables.$color-white;
+  border: none;
+  border-radius: 5px;
+  font-weight: 400;
+  text-align: center;
+  color: variables.$color-purple;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 0 5px gray;
+    border: 1px solid variables.$color-white;
+    background: #e0dede;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.input-transparent {
+  padding: 15px 25px;
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: variables.$color-white;
+  font-size: 18px;
+
+  &:focus {
+    border: 1px solid variables.$color-white;
+  }
+
+  &.invalid {
+    border: 1px solid variables.$color-orange-main;
+
+    &:focus {
+      border: 1px solid #ee9590;
+    }
+  }
+}
+
+.button-link {
+  border: none;
+  background-color: transparent;
+  color: variables.$color-white;
+  cursor: pointer;
 }
