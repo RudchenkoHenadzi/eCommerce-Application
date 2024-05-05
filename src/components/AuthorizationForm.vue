@@ -26,7 +26,7 @@
 
       <div class="auth-form__input-wrapper input-wrapper">
         <input
-          type="text"
+          type="password"
           id="login-password"
           v-model="password.password"
           placeholder="Введите пароль"
@@ -49,7 +49,7 @@
 
       <input
         v-if="isRegistrationPage"
-        type="text"
+        type="password"
         id="registration-confirm-password"
         v-model="password.confirm"
         placeholder="Повторите пароль"
