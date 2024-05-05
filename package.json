@@ -20,6 +20,7 @@
     "axios": "^1.6.8",
     "babel-jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
+    "normalize.css": "^8.0.1",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
