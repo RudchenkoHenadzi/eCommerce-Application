@@ -2,42 +2,49 @@
   <form class="auth-form" @submit.prevent="submitForm">
     <fieldset class="auth-form__wrapper">
       <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
-      <input
-        type="text"
-        id="login-email"
-        v-model="email"
-        placeholder="Введите email"
-        :class="{
-          invalid:
-            (submitted && v$.email.required.$invalid) || (submitted && v$.email.email.$invalid)
-        }"
-        class="auth-form__input"
-        @blur="v$.email.$touch"
-      />
+      <div class="auth-form__input-wrapper input-wrapper">
+        <input
+          type="text"
+          id="login-email"
+          v-model="email"
+          placeholder="Введите email"
+          :class="{
+            invalid:
+              (submitted && v$.email.required.$invalid) || (submitted && v$.email.email.$invalid)
+          }"
+          class="input-wrapper__input"
+          @blur="v$.email.$touch"
+        />
 
-      <div class="auth-form__tooltip" v-if="submitted && v$.email.required.$invalid">
-        Поле не должно быть пустым
-      </div>
-      <div class="auth-form__tooltip" v-else-if="submitted && v$.email.email.$invalid">
-        Введите корректный email
+        <div class="input-wrapper__tooltip" v-if="submitted && v$.email.required.$invalid">
+          Поле не должно быть пустым
+        </div>
+        <div class="input-wrapper__tooltip" v-else-if="submitted && v$.email.email.$invalid">
+          Введите корректный email
+        </div>
       </div>
 
-      <input
-        type="text"
-        id="login-password"
-        v-model="password.password"
-        placeholder="Введите пароль"
-        class="auth-form__input"
-      />
+      <div class="auth-form__input-wrapper input-wrapper">
+        <input
+          type="text"
+          id="login-password"
+          v-model="password.password"
+          placeholder="Введите пароль"
+          class="input-wrapper__input"
+        />
 
-      <div class="auth-form__tooltip" v-if="submitted && v$.password.password.required.$invalid">
-        Поле не должно быть пустым
-      </div>
-      <div
-        class="auth-form__tooltip"
-        v-else-if="submitted && v$.password.password.minLength.$invalid"
-      >
-        Пароль должен быть не менее 8 символов
+        <div
+          class="input-wrapper__tooltip"
+          v-if="submitted && v$.password.password.required.$invalid"
+        >
+          Поле не должно быть пустым
+        </div>
+        <div
+          class="input-wrapper__tooltip"
+          v-else-if="submitted && v$.password.password.minLength.$invalid"
+        >
+          Пароль должен быть не менее 8 символов
+        </div>
       </div>
 
       <input
@@ -46,7 +53,7 @@
         id="registration-confirm-password"
         v-model="password.confirm"
         placeholder="Повторите пароль"
-        class="auth-form__input"
+        class="input-wrapper__input"
       />
 
       <button type="submit" class="auth-form__btn btn">
@@ -140,15 +147,25 @@ export default defineComponent({
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    gap: 32px;
+    gap: 20px;
     border: none;
   }
 
   &__title {
     margin-bottom: 30px;
+    font-size: 20px;
     text-align: center;
     text-transform: uppercase;
   }
+
+  &__btn {
+    @extend %white-button;
+    width: 100%;
+  }
+}
+
+.input-wrapper {
+  width: 100%;
 
   &__input {
     @extend %transparent-input;
@@ -166,13 +183,7 @@ export default defineComponent({
     }
   }
 
-  &__btn {
-    @extend %white-button;
-    width: 100%;
-  }
-
   &__tooltip {
-    margin: -27px 0 -20px;
     font-size: 14px;
   }
 }
@@ -193,29 +204,36 @@ export default defineComponent({
 
 @media (max-width: 630px) {
   .auth-form {
-    &__title {
-      margin-bottom: 15px;
+    &__wrapper {
+      gap: 16px;
     }
 
-    &__input {
-      height: 40px;
+    &__title {
+      margin-bottom: 18px;
+      font-size: 14px;
     }
 
     &__btn {
       height: 40px;
+      padding: 10px 0;
+    }
+  }
+
+  .input-wrapper {
+    &__input {
+      padding: 10px 0 10px 15px;
+      height: 40px;
+      font-size: 14px;
     }
   }
 }
 
 @media (max-width: 500px) {
-  .auth-form {
+  .input-wrapper {
+    width: 250px;
     &__tooltip {
       font-size: 12px;
     }
-  }
-
-  .switch-block {
-    flex-direction: column;
   }
 }
 </style>
