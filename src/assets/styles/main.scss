@@ -99,3 +99,7 @@ input::placeholder,
 textarea::placeholder {
   font-family: $main-font;
 }
+
+input.invalid {
+  border-bottom: 1px solid crimson;
+}

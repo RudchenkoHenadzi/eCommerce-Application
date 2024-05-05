@@ -1,21 +1,5 @@
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'AuthorizationForm',
-  data() {
-    return {
-      email: '',
-      password: '',
-      password_confirmation: '',
-      isRegistrationPage: false
-    }
-  }
-})
-</script>
-
 <template>
-  <form class="auth-form">
+  <form class="auth-form" @submit.prevent="submitForm">
     <fieldset class="auth-form__wrapper">
       <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
       <input
@@ -23,22 +7,38 @@ export default defineComponent({
         id="email"
         v-model="email"
         placeholder="Введите email"
+        :class="{
+          invalid:
+            (submitted && v$.email.required.$invalid) || (submitted && v$.email.email.$invalid)
+        }"
         class="auth-form__input"
+        @blur="v$.email.$touch"
       />
+
+      <div v-if="submitted && v$.email.required.$invalid">Поле не должно быть пустым</div>
+      <div v-else-if="submitted && v$.email.email.$invalid">Введите корректный email</div>
 
       <input
         type="text"
         id="password"
-        v-model="password"
+        v-model="password.password"
         placeholder="Введите пароль"
         class="auth-form__input"
       />
+
+      <div v-if="submitted && v$.password.password.required.$invalid">
+        Поле не должно быть пустым
+      </div>
+      <div v-else-if="submitted && v$.password.password.minLength.$invalid">
+        Пароль должен быть не менее 8 символов
+      </div>
+      <!-- TODO латиница, цифры, !-->
 
       <input
         v-if="isRegistrationPage"
         type="text"
         id="confirm-password"
-        v-model="password_confirmation"
+        v-model="password.confirm"
         placeholder="Повторите пароль"
         class="auth-form__input"
       />
@@ -58,6 +58,74 @@ export default defineComponent({
     </fieldset>
   </form>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+import useValidate from '@vuelidate/core'
+import { required, email, minLength, sameAs } from '@vuelidate/validators'
+
+export default defineComponent({
+  name: 'AuthorizationForm',
+  data() {
+    return {
+      isRegistrationPage: false,
+      v$: useValidate(),
+      email: '',
+      password: {
+        password: '',
+        confirm: ''
+      },
+      submitted: false
+    }
+  },
+  validations() {
+    if (this.isRegistrationPage) {
+      return {
+        email: { required, email },
+        password: {
+          password: { required, minLength: minLength(8) },
+          confirm: { required, sameAs: sameAs(this.password.password) }
+        }
+      }
+    } else {
+      return {
+        email: { required, email },
+        password: {
+          password: { required, minLength: minLength(8) }
+        }
+      }
+    }
+  },
+  methods: {
+    submitForm() {
+      console.log(this.v$.email.email.$invalid)
+      console.log(this.v$.email.required.$invalid)
+      this.submitted = true
+      if (this.v$.$invalid) {
+        for (let i = 0; i < this.v$.$errors.length; i++) {
+          console.log(this.v$.$errors[i])
+          /*console.log('this.v$.email')
+          console.log(this.v$.$errors[i].$uid)
+          console.log(this.v$.$errors[i].$validator)
+          console.log(this.v$.$errors[i].$property)
+          console.log(this.v$.$errors[i].$message)*/
+        }
+
+        this.v$.$touch()
+        return false
+      }
+
+      /*this.v$.$validate();
+      if (this.v$.$error) {
+        console.log('The input values are not valid!');
+        console.log(this.v$.$error);
+      } else {
+        console.log('Submitted!');
+      }*/
+    }
+  }
+})
+</script>
 
 <style scoped lang="scss">
 .auth-form {
