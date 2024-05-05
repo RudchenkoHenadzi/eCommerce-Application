@@ -10,19 +10,4 @@ import TheHeader from '@/components/TheHeader.vue'
   </main>
 </template>
 
-<style lang="scss" scoped>
-@import './assets/styles/main.scss';
-nav {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  gap: 10px;
-  a {
-    color: black;
-    text-decoration: none;
-    &.router-link-active {
-      color: orange;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

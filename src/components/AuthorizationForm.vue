@@ -4,7 +4,7 @@
       <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
       <input
         type="text"
-        id="email"
+        id="login-email"
         v-model="email"
         placeholder="Введите email"
         :class="{
@@ -15,29 +15,35 @@
         @blur="v$.email.$touch"
       />
 
-      <div v-if="submitted && v$.email.required.$invalid">Поле не должно быть пустым</div>
-      <div v-else-if="submitted && v$.email.email.$invalid">Введите корректный email</div>
+      <div class="auth-form__tooltip" v-if="submitted && v$.email.required.$invalid">
+        Поле не должно быть пустым
+      </div>
+      <div class="auth-form__tooltip" v-else-if="submitted && v$.email.email.$invalid">
+        Введите корректный email
+      </div>
 
       <input
         type="text"
-        id="password"
+        id="login-password"
         v-model="password.password"
         placeholder="Введите пароль"
         class="auth-form__input"
       />
 
-      <div v-if="submitted && v$.password.password.required.$invalid">
+      <div class="auth-form__tooltip" v-if="submitted && v$.password.password.required.$invalid">
         Поле не должно быть пустым
       </div>
-      <div v-else-if="submitted && v$.password.password.minLength.$invalid">
+      <div
+        class="auth-form__tooltip"
+        v-else-if="submitted && v$.password.password.minLength.$invalid"
+      >
         Пароль должен быть не менее 8 символов
       </div>
-      <!-- TODO латиница, цифры, !-->
 
       <input
         v-if="isRegistrationPage"
         type="text"
-        id="confirm-password"
+        id="registration-confirm-password"
         v-model="password.confirm"
         placeholder="Повторите пароль"
         class="auth-form__input"
@@ -102,39 +108,31 @@ export default defineComponent({
       console.log(this.v$.email.required.$invalid)
       this.submitted = true
       if (this.v$.$invalid) {
-        for (let i = 0; i < this.v$.$errors.length; i++) {
-          console.log(this.v$.$errors[i])
-          /*console.log('this.v$.email')
-          console.log(this.v$.$errors[i].$uid)
-          console.log(this.v$.$errors[i].$validator)
-          console.log(this.v$.$errors[i].$property)
-          console.log(this.v$.$errors[i].$message)*/
-        }
-
+        console.log('The input values are not valid!')
         this.v$.$touch()
         return false
       }
-
-      /*this.v$.$validate();
-      if (this.v$.$error) {
-        console.log('The input values are not valid!');
-        console.log(this.v$.$error);
-      } else {
-        console.log('Submitted!');
-      }*/
+      console.log('Submitted!')
     }
   }
 })
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/variables.scss';
+@import '@/assets/styles/mixins.scss';
+@import '@/assets/styles/extends.scss';
+
 .auth-form {
   margin: 0 auto;
   padding: 50px;
   height: fit-content;
-  max-width: 50vw;
-  background-color: $main-color;
-  color: $white;
+  width: 450px;
+  background-color: $color-purple;
+  color: $color-white;
+  & * {
+    box-sizing: border-box;
+  }
 
   &__wrapper {
     display: flex;
@@ -142,7 +140,7 @@ export default defineComponent({
     justify-content: flex-start;
     align-items: center;
     gap: 32px;
-    width: 100%;
+    border: none;
   }
 
   &__title {
@@ -152,13 +150,18 @@ export default defineComponent({
   }
 
   &__input {
+    @extend %transparent-input;
     width: 100%;
     border-radius: 5px;
     padding: 15px 25px;
     height: 53px;
     background: rgba(255, 255, 255, 0.2);
-    color: $white;
+    color: $color-white;
     font-size: 18px;
+
+    &.invalid {
+      border: 1px solid $color-orange-main;
+    }
 
     &::placeholder {
       font-weight: 400;
@@ -169,8 +172,13 @@ export default defineComponent({
   }
 
   &__btn {
-    @include button;
+    @extend %white-button;
     width: 100%;
+  }
+
+  &__tooltip {
+    margin: -27px 0 -20px;
+    font-size: 14px;
   }
 }
 
@@ -182,8 +190,40 @@ export default defineComponent({
   margin-top: -15px;
 
   &__btn {
+    @extend %button-link;
     text-decoration: underline;
     text-underline-offset: 3px;
+  }
+}
+
+@media (max-width: 630px) {
+  .auth-form {
+    padding: 25px;
+    width: 60vw;
+
+    &__title {
+      margin-bottom: 15px;
+    }
+
+    &__input {
+      height: 40px;
+    }
+
+    &__btn {
+      height: 40px;
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .auth-form {
+    &__tooltip {
+      font-size: 12px;
+    }
+  }
+
+  .switch-block {
+    flex-direction: column;
   }
 }
 </style>

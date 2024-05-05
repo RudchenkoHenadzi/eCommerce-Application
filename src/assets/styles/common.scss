@@ -1,7 +1,11 @@
 @use 'fonts.scss';
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
-  font-family: 'Jost-Medium', sans-serif;
+  font-family: 'Jost', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .container-1100 {
