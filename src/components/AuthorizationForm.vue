@@ -1,26 +1,28 @@
 <template>
-  <form class="auth-form" @submit.prevent="submitForm">
+  <form class="auth-form" @submit.prevent="submitForm($event)">
     <fieldset class="auth-form__wrapper">
       <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
       <div class="auth-form__input-wrapper input-wrapper">
         <input
-          type="text"
+          type="email"
           id="login-email"
-          v-model="email"
+          v-model="loginForm.email"
           placeholder="Введите email"
           :class="{
             invalid:
-              (submitted && v$.email.required.$invalid) || (submitted && v$.email.email.$invalid)
+              (v$.loginForm.email.$dirty && !v$.loginForm.email.required.$response) ||
+              (v$.loginForm.email.$dirty && !v$.loginForm.email.email.$response)
           }"
           class="input-wrapper__input input-transparent"
-          @blur="v$.email.$touch"
+          name="email"
         />
 
-        <div class="input-wrapper__error" v-if="submitted && v$.email.required.$invalid">
-          Поле не должно быть пустым
-        </div>
-        <div class="input-wrapper__error" v-else-if="submitted && v$.email.email.$invalid">
-          Введите корректный email
+        <div
+          v-for="error of v$.loginForm.email.$errors"
+          :key="error.$uid"
+          class="input-wrapper__error"
+        >
+          {{ error.$message }}
         </div>
       </div>
 
@@ -28,22 +30,22 @@
         <input
           type="password"
           id="login-password"
-          v-model="password.password"
+          v-model="loginForm.password"
+          name="password"
           placeholder="Введите пароль"
           class="input-wrapper__input input-transparent"
+          :class="{
+            invalid:
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response)
+          }"
         />
-
         <div
+          v-for="error of v$.loginForm.password.$errors"
+          :key="error.$uid"
           class="input-wrapper__error"
-          v-if="submitted && v$.password.password.required.$invalid"
         >
-          Поле не должно быть пустым
-        </div>
-        <div
-          class="input-wrapper__error"
-          v-else-if="submitted && v$.password.password.minLength.$invalid"
-        >
-          Пароль должен быть не менее 8 символов
+          {{ error.$message }}
         </div>
       </div>
 
@@ -53,6 +55,7 @@
         id="registration-confirm-password"
         v-model="password.confirm"
         placeholder="Повторите пароль"
+        name="password"
         class="input-wrapper__input input-transparent"
       />
 
@@ -73,56 +76,74 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import axios from 'axios'
 import useValidate from '@vuelidate/core'
-import { required, email, minLength, sameAs } from '@vuelidate/validators'
+import { required, email, helpers, minLength } from '@vuelidate/validators'
 
-export default defineComponent({
+export default {
   name: 'AuthorizationForm',
+
   data() {
     return {
       isRegistrationPage: false,
-      v$: useValidate(),
+      loginForm: {
+        email: '',
+        password: ''
+      },
+      registrationForm: {
+        email: '',
+        password: '',
+        confirm: ''
+      },
       email: '',
       password: {
         password: '',
         confirm: ''
+      }
+    }
+  },
+
+  setup() {
+    return {
+      v$: useValidate()
+    }
+  },
+
+  validations: {
+    loginForm: {
+      email: {
+        required: helpers.withMessage('Введите email', required),
+        email: helpers.withMessage('Не корректный email', email)
       },
-      submitted: false
-    }
-  },
-  validations() {
-    if (this.isRegistrationPage) {
-      return {
-        email: { required, email },
-        password: {
-          password: { required, minLength: minLength(8) },
-          confirm: { required, sameAs: sameAs(this.password.password) }
-        }
-      }
-    } else {
-      return {
-        email: { required, email },
-        password: {
-          password: { required, minLength: minLength(8) }
-        }
+      password: {
+        required: helpers.withMessage('Введите пароль', required),
+        minLength: helpers.withMessage(
+          `Пароль должен быть больше ${minLength(8).$params.min} символов`,
+          minLength(8)
+        )
       }
     }
   },
+
   methods: {
-    submitForm() {
-      console.log(this.v$.email.email.$invalid)
-      console.log(this.v$.email.required.$invalid)
-      this.submitted = true
-      if (this.v$.$invalid) {
-        console.log('The input values are not valid!')
-        this.v$.$touch()
-        return false
+    async submitForm(event) {
+      const result = await this.v$.$validate()
+      if (result) {
+        axios
+          .post('https://jsonplaceholder.typicode.com/posts')
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+        console.log('В форме ошибок нет, можем отправлять')
+      } else {
+        console.log('В форме есть ошибки')
       }
-      console.log('Submitted!')
     }
   }
-})
+}
 </script>
 
 <style scoped lang="scss">
