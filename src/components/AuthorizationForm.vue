@@ -1,8 +1,8 @@
 <template>
   <form class="auth-form" @submit.prevent="submitForm($event)">
-    <fieldset class="auth-form__wrapper">
-      <legend class="auth-form__title">{{ isRegistrationPage ? 'Регистрация' : 'Вход' }}</legend>
-      <div class="auth-form__input-wrapper input-wrapper">
+    <div class="auth-form__title">Вход</div>
+    <div class="auth-form__wrapper">
+      <div class="auth-form__item">
         <input
           type="email"
           id="login-email"
@@ -13,27 +13,22 @@
               (v$.loginForm.email.$dirty && !v$.loginForm.email.required.$response) ||
               (v$.loginForm.email.$dirty && !v$.loginForm.email.email.$response)
           }"
-          class="input-wrapper__input input-transparent"
+          class="auth-form__input input"
           name="email"
         />
 
-        <div
-          v-for="error of v$.loginForm.email.$errors"
-          :key="error.$uid"
-          class="input-wrapper__error"
-        >
+        <div v-for="error of v$.loginForm.email.$errors" :key="error.$uid" class="invalid-message">
           {{ error.$message }}
         </div>
       </div>
-
-      <div class="auth-form__input-wrapper input-wrapper">
+      <div class="auth-form__item">
         <input
           type="password"
           id="login-password"
           v-model="loginForm.password"
           name="password"
           placeholder="Введите пароль"
-          class="input-wrapper__input input-transparent"
+          class="auth-form__input input"
           :class="{
             invalid:
               (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
@@ -43,35 +38,14 @@
         <div
           v-for="error of v$.loginForm.password.$errors"
           :key="error.$uid"
-          class="input-wrapper__error"
+          class="invalid-message"
         >
           {{ error.$message }}
         </div>
       </div>
+    </div>
 
-      <input
-        v-if="isRegistrationPage"
-        type="password"
-        id="registration-confirm-password"
-        v-model="password.confirm"
-        placeholder="Повторите пароль"
-        name="password"
-        class="input-wrapper__input input-transparent"
-      />
-
-      <button type="submit" class="auth-form__btn button-white">
-        {{ isRegistrationPage ? 'Зарегистрироваться' : 'Войти' }}
-      </button>
-
-      <div class="auth-form__switch-block switch-block">
-        <span class="switch-block__text">{{
-          isRegistrationPage ? 'Уже есть аккаунт?' : 'Нет аккаута?'
-        }}</span>
-        <button class="switch-block__btn button-link">
-          {{ isRegistrationPage ? 'Войти' : 'Зарегистрироваться' }}
-        </button>
-      </div>
-    </fieldset>
+    <button type="submit" class="auth-form__btn button-white">Войти</button>
   </form>
 </template>
 
@@ -92,11 +66,6 @@ export default {
       },
       registrationForm: {
         email: '',
-        password: '',
-        confirm: ''
-      },
-      email: '',
-      password: {
         password: '',
         confirm: ''
       }
@@ -121,6 +90,22 @@ export default {
           `Пароль должен быть больше ${minLength(8).$params.min} символов`,
           minLength(8)
         )
+      }
+    },
+    registrationForm: {
+      email: {
+        required: helpers.withMessage('Введите email', required),
+        email: helpers.withMessage('Не корректный email', email)
+      },
+      password: {
+        required: helpers.withMessage('Введите пароль', required),
+        minLength: helpers.withMessage(
+          `Пароль должен быть больше ${minLength(8).$params.min} символов`,
+          minLength(8)
+        )
+      },
+      confirm: {
+        required: helpers.withMessage('Повторите пароль', required)
       }
     }
   },
@@ -153,15 +138,16 @@ export default {
 
 .auth-form {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  max-width: 380px;
   padding: 30px 20px;
   background-color: $color-purple;
   color: $color-white;
   border-radius: 10px;
-  & * {
-    box-sizing: border-box;
-  }
 
   &__wrapper {
     display: flex;
@@ -175,38 +161,16 @@ export default {
   }
 
   &__title {
-    margin-bottom: 30px;
     font-size: 20px;
     text-align: center;
     text-transform: uppercase;
   }
 
-  &__btn {
-    height: 53px;
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
     width: 100%;
-  }
-}
-
-.input-wrapper {
-  width: 320px;
-
-  &__input {
-    margin-bottom: 5px;
-    height: 53px;
-    width: 100%;
-
-    &::placeholder {
-      font-weight: 400;
-      font-size: 16px;
-      text-align: left;
-      color: $transparent-white;
-    }
-  }
-
-  &__error {
-    color: #d00000;
-    text-shadow: 0 0 5px #eaebed;
-    font-size: 16px;
   }
 }
 
@@ -220,41 +184,6 @@ export default {
   &__btn {
     text-decoration: underline;
     text-underline-offset: 3px;
-  }
-}
-
-@media (max-width: 630px) {
-  .auth-form {
-    &__wrapper {
-      gap: 16px;
-    }
-
-    &__title {
-      margin-bottom: 18px;
-      font-size: 14px;
-    }
-
-    &__btn {
-      height: 40px;
-      padding: 10px 0;
-    }
-  }
-
-  .input-wrapper {
-    &__input {
-      padding: 10px 0 10px 15px;
-      height: 40px;
-      font-size: 14px;
-    }
-  }
-}
-
-@media (max-width: 500px) {
-  .input-wrapper {
-    width: 250px;
-    &__error {
-      font-size: 12px;
-    }
   }
 }
 </style>

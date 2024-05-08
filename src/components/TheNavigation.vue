@@ -45,9 +45,6 @@
     @extend %container-1100;
   }
 
-  &__item {
-  }
-
   &__link {
     font-size: 14px;
     color: $color-black;
