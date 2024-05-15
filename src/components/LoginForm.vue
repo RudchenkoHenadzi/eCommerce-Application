@@ -6,7 +6,7 @@
         <input
           type="email"
           id="login-email"
-          v-model="loginForm.email"
+          v-model.trim="loginForm.email"
           placeholder="Введите email"
           :class="{
             invalid:
@@ -25,7 +25,7 @@
         <input
           type="password"
           id="login-password"
-          v-model="loginForm.password"
+          v-model.trim="loginForm.password"
           name="password"
           placeholder="Введите пароль"
           class="login-form__input input"
