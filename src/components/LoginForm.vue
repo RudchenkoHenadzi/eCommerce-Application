@@ -32,7 +32,13 @@
           :class="{
             invalid:
               (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
-              (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response)
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response) ||
+              (v$.loginForm.password.$dirty &&
+                !v$.loginForm.password.hasUpperCaseLetters.$response) ||
+              (v$.loginForm.password.$dirty &&
+                !v$.loginForm.password.hasLowerCaseLetters.$response) ||
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.hasDigit.$response) ||
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.hasSpecialSymbol.$response)
           }"
         />
         <div
@@ -55,6 +61,12 @@
 import axios from 'axios'
 import useValidate from '@vuelidate/core'
 import { required, email, helpers, minLength } from '@vuelidate/validators'
+import {
+  hasUpperCaseLetters,
+  hasLowerCaseLetters,
+  hasDigit,
+  hasSpecialSymbol
+} from '@/helpers/validation'
 export default {
   name: 'LoginForm',
 
@@ -74,7 +86,7 @@ export default {
   },
 
   methods: {
-    async submitLoginForm(event) {
+    async submitLoginForm(event: Event) {
       const result = await this.v$.loginForm.$validate()
 
       if (result) {
@@ -104,6 +116,19 @@ export default {
         minLength: helpers.withMessage(
           `Пароль должен быть больше ${minLength(8).$params.min} символов`,
           minLength(8)
+        ),
+        hasUpperCaseLetters: helpers.withMessage(
+          'Пароль должен иметь минимум одну прописную букву',
+          hasUpperCaseLetters
+        ),
+        hasLowerCaseLetters: helpers.withMessage(
+          'Пароль должен иметь минимум одну строчную букву',
+          hasLowerCaseLetters
+        ),
+        hasDigit: helpers.withMessage('Пароль должен иметь минимум одну цифру', hasDigit),
+        hasSpecialSymbol: helpers.withMessage(
+          'Пароль должен иметь минимум один спец символ',
+          hasSpecialSymbol
         )
       }
     }
