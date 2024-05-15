@@ -1,0 +1,12 @@
+@use 'variables.scss';
+
+.button-white {
+  color: variables.$color-purple;
+  background: variables.$color-white;
+
+  @media (hover) {
+    &:hover {
+      box-shadow: 0 0 5px 0 variables.$color-white;
+    }
+  }
+}

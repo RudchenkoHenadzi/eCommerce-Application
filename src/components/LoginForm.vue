@@ -1,0 +1,163 @@
+<template>
+  <form class="login-form" @submit.prevent="submitLoginForm($event)">
+    <div class="login-form__title">Вход</div>
+    <div class="login-form__wrapper">
+      <div class="login-form__item">
+        <input
+          type="email"
+          id="login-email"
+          v-model="loginForm.email"
+          placeholder="Введите email"
+          :class="{
+            invalid:
+              (v$.loginForm.email.$dirty && !v$.loginForm.email.required.$response) ||
+              (v$.loginForm.email.$dirty && !v$.loginForm.email.email.$response)
+          }"
+          class="login-form__input input"
+          name="email"
+        />
+
+        <div v-for="error of v$.loginForm.email.$errors" :key="error.$uid" class="invalid-message">
+          {{ error.$message }}
+        </div>
+      </div>
+      <div class="login-form__item">
+        <input
+          type="password"
+          id="login-password"
+          v-model="loginForm.password"
+          name="password"
+          placeholder="Введите пароль"
+          class="login-form__input input"
+          :class="{
+            invalid:
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
+              (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response)
+          }"
+        />
+        <div
+          v-for="error of v$.loginForm.password.$errors"
+          :key="error.$uid"
+          class="invalid-message"
+        >
+          {{ error.$message }}
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="login-form__btn button-white">Войти</button>
+    <button class="login-form__switch" type="button" @click="$emit('switch-form')">
+      Зарегистрироваться
+    </button>
+  </form>
+</template>
+
+<script lang="ts">
+import axios from 'axios'
+import useValidate from '@vuelidate/core'
+import { required, email, helpers, minLength } from '@vuelidate/validators'
+export default {
+  name: 'LoginForm',
+
+  setup() {
+    return {
+      v$: useValidate()
+    }
+  },
+
+  data() {
+    return {
+      loginForm: {
+        email: '',
+        password: ''
+      }
+    }
+  },
+
+  methods: {
+    async submitLoginForm(event) {
+      const result = await this.v$.loginForm.$validate()
+
+      if (result) {
+        axios
+          .post('https://jsonplaceholder.typicode.com/posts')
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+        console.log('В форме ошибок нет, можем отправлять')
+      } else {
+        console.log('В форме есть ошибки')
+      }
+    }
+  },
+
+  validations: {
+    loginForm: {
+      email: {
+        required: helpers.withMessage('Введите email', required),
+        email: helpers.withMessage('Не корректный email', email)
+      },
+      password: {
+        required: helpers.withMessage('Введите пароль', required),
+        minLength: helpers.withMessage(
+          `Пароль должен быть больше ${minLength(8).$params.min} символов`,
+          minLength(8)
+        )
+      }
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+@import '@/assets/styles/mixins.scss';
+@import '@/assets/styles/extends.scss';
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+  padding: 30px 20px;
+  background-color: $color-purple;
+  color: $color-white;
+  border-radius: 10px;
+
+  @media (width <=380px) {
+    border-radius: 0;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  &__title {
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+
+  &__switch {
+    height: auto;
+    color: $color-white;
+  }
+}
+</style>
