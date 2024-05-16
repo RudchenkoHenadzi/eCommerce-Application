@@ -32,7 +32,7 @@ export default {
 
 .auth-form {
   width: 100%;
-  max-width: 380px;
+  max-width: 480px;
 
   &__title {
     text-align: center;
