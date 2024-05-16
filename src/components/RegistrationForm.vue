@@ -67,8 +67,6 @@
               (v$.registrationForm.date.$dirty && !v$.registrationForm.date.minValue)
           }"
         />
-        {{ v$.registrationForm.date.minValue }}
-        {{ registrationForm.date }}
         <div
           v-for="error of v$.registrationForm.date.$errors"
           :key="error.$uid"
