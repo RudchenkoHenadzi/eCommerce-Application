@@ -17,11 +17,14 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/variables.scss';
+
 .auth-page {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 95vh;
-  overflow: hidden;
+  overflow: auto;
+  background: $color-pale-purple;
 }
 </style>
