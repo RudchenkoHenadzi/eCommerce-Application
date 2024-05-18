@@ -1,5 +1,5 @@
 <template>
-  <form class="login-form" @submit.prevent="submitLoginForm($event)">
+  <form class="login-form" @submit.prevent="submitLoginForm()">
     <div class="login-form__title">Вход</div>
     <div class="login-form__wrapper">
       <div class="login-form__item">
@@ -47,9 +47,7 @@
       </div>
     </div>
     <button type="submit" class="login-form__btn button-white">Войти</button>
-    <button class="login-form__switch" type="button" @click="$emit('switch-form')">
-      Зарегистрироваться
-    </button>
+    <RouterLink class="login-form__switch" to="/registration">Зарегистрироваться</RouterLink>
   </form>
 </template>
 
@@ -75,33 +73,10 @@ export default {
     }
   },
 
-  mounted() {
-    const project_key = 'new-scooter-shop'
-    const client_id = 'nIQtKu5DbKFGJAPVlE43KvqE'
-    const secret = 'oK6UiBkjejjeYEZ25cvzF4xxzH8vC02j'
-    const scope =
-      'manage_cart_discounts:new-scooter-shop manage_types:new-scooter-shop manage_project_settings:new-scooter-shop manage_order_edits:new-scooter-shop manage_customer_groups:new-scooter-shop manage_categories:new-scooter-shop manage_products:new-scooter-shop manage_customers:new-scooter-shop manage_orders:new-scooter-shop manage_payments:new-scooter-shop manage_shipping_methods:new-scooter-shop manage_my_payments:new-scooter-shop manage_tax_categories:new-scooter-shop manage_shopping_lists:new-scooter-shop manage_my_profile:new-scooter-shop manage_extensions:new-scooter-shop manage_discount_codes:new-scooter-shop create_anonymous_token:new-scooter-shop manage_my_orders:new-scooter-shop manage_my_shopping_lists:new-scooter-shop'
-
-    const API_URL = 'https://api.europe-west1.gcp.commercetools.com'
-    const Auth_URL = 'https://auth.europe-west1.gcp.commercetools.com'
-
-    axios
-      .post(
-        'https://auth.europe-west1.gcp.commercetools.com/oauth/token',
-        'client_id=nIQtKu5DbKFGJAPVlE43KvqE&client_secret=oK6UiBkjejjeYEZ25cvzF4xxzH8vC02j&grant_type=client_credentials'
-      )
-      .then(function (response) {
-        // handle success
-        console.log(response)
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error)
-      })
-  },
+  mounted() {},
 
   methods: {
-    async submitLoginForm(event) {
+    async submitLoginForm() {
       const result = await this.v$.loginForm.$validate()
 
       if (result) {
@@ -149,6 +124,8 @@ export default {
   justify-content: center;
   align-items: stretch;
   gap: 20px;
+  width: 100%;
+  max-width: 480px;
   padding: 30px 20px;
   background-color: $color-purple;
   color: $color-white;
@@ -184,6 +161,8 @@ export default {
 
   &__switch {
     height: auto;
+    text-align: center;
+    text-decoration: none;
     color: $color-white;
   }
 }

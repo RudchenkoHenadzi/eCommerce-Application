@@ -215,6 +215,7 @@
                 v$.registrationForm.country.$dirty &&
                 !v$.registrationForm.country.required.$response
             }"
+            disabled
           />
           <div
             v-for="error of v$.registrationForm.country.$errors"
@@ -227,9 +228,7 @@
       </div>
     </div>
     <button type="submit" class="registration-form__btn button-white">Регистрация</button>
-    <button class="registration-form__switch" type="button" @click="$emit('switch-form')">
-      Войти
-    </button>
+    <RouterLink class="registration-form__switch" to="/authorization">Войти</RouterLink>
   </form>
 </template>
 
@@ -261,7 +260,7 @@ export default {
         street: '',
         city: '',
         postcode: '',
-        country: ''
+        country: 'Россия'
       }
     }
   },
@@ -328,11 +327,7 @@ export default {
         maxLength: helpers.withMessage(`Укажите ${maxLength(6).$params.max} цифр`, maxLength(6))
       },
       country: {
-        required: helpers.withMessage('Укажите страну', required),
-        minLength: helpers.withMessage(
-          `Улица должнабыть ${minLength(8).$params.min} символов`,
-          minLength(8)
-        )
+        required: helpers.withMessage('Укажите страну', required)
       }
     }
   }
@@ -350,6 +345,8 @@ export default {
   justify-content: center;
   align-items: stretch;
   gap: 20px;
+  width: 100%;
+  max-width: 480px;
   padding: 30px 20px;
   background-color: $color-purple;
   color: $color-white;
@@ -393,6 +390,8 @@ export default {
 
   &__switch {
     height: auto;
+    text-align: center;
+    text-decoration: none;
     color: $color-white;
   }
 }
