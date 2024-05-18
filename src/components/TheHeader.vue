@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts">
-import { RouterLink } from 'vue-router'
 import TheNavigation from '@/components/TheNavigation.vue'
 
 export default {
