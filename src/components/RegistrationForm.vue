@@ -103,23 +103,36 @@
         </div>
         <div class="registration-form__item">
           <div class="registration-form__label">Пароль:</div>
-          <input
-            type="password"
-            id="registration-password"
-            v-model.trim="registrationForm.password"
-            name="password"
-            placeholder="Введите пароль"
-            class="registration-form__input input"
-            :class="{
-              invalid:
-                (v$.registrationForm.password.$dirty &&
-                  !v$.registrationForm.password.required.$response) ||
-                (v$.registrationForm.password.$dirty &&
-                  !v$.registrationForm.password.minLength.$response) ||
-                (v$.registrationForm.password.$dirty &&
-                  v$.registrationForm.password.regexPassword.$response)
-            }"
-          />
+          <div class="registration-form__input-wrapper">
+            <input
+              :type="inputType"
+              id="login-password"
+              v-model.trim="registrationForm.password"
+              name="password"
+              placeholder="Введите пароль"
+              class="registration-form__input input"
+              :class="{
+                invalid:
+                  (v$.registrationForm.password.$dirty &&
+                    !v$.registrationForm.password.required.$response) ||
+                  (v$.registrationForm.password.$dirty &&
+                    !v$.registrationForm.password.minLength.$response) ||
+                  (v$.registrationForm.password.$dirty &&
+                    v$.registrationForm.password.regexPassword.$response)
+              }"
+            />
+            <EyeIconSVG
+              class="registration-form__password-icon"
+              @click="inputType = 'text'"
+              v-if="inputType === 'password'"
+            />
+            <EyeCrossedIconSVG
+              class="registration-form__password-icon"
+              @click="inputType = 'password'"
+              v-else
+            />
+          </div>
+
           <div
             v-for="error of v$.registrationForm.password.$errors"
             :key="error.$uid"
@@ -236,12 +249,19 @@
 import axios from 'axios'
 import useValidate from '@vuelidate/core'
 import { required, email, helpers, minLength, maxLength, minValue } from '@vuelidate/validators'
+import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
+import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
 
 const regexPassword = helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
 const regexSpecialSymbol = helpers.regex(/^[a-zA-Zа-яА-ЯёЁ]+$/)
 
 export default {
   name: 'RegistrationForm',
+
+  components: {
+    EyeIconSVG,
+    EyeCrossedIconSVG
+  },
 
   setup() {
     return {
@@ -261,7 +281,8 @@ export default {
         city: '',
         postcode: '',
         country: 'Россия'
-      }
+      },
+      inputType: 'password'
     }
   },
 
@@ -386,6 +407,20 @@ export default {
     flex-direction: column;
     gap: 5px;
     width: 100%;
+  }
+
+  &__input-wrapper {
+    position: relative;
+  }
+
+  &__password-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 30px;
+    fill: $color-white;
+    cursor: pointer;
   }
 
   &__switch {
