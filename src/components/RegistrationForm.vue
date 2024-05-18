@@ -8,7 +8,7 @@
           <input
             type="text"
             id="registration-name"
-            v-model="registrationForm.name"
+            v-model.trim="registrationForm.name"
             name="name"
             placeholder="Введите имя"
             class="registration-form__input input"
@@ -32,7 +32,7 @@
           <input
             type="text"
             id="registration-lastname"
-            v-model="registrationForm.lastname"
+            v-model.trim="registrationForm.lastname"
             name="lastname"
             placeholder="Введите фамилию"
             class="registration-form__input input"
@@ -81,7 +81,8 @@
           <input
             type="email"
             id="login-email"
-            v-model="registrationForm.email"
+            v-model.trim="registrationForm.email"
+            name="email"
             placeholder="Введите email"
             :class="{
               invalid:
@@ -90,7 +91,6 @@
                 (v$.registrationForm.email.$dirty && !v$.registrationForm.email.email.$response)
             }"
             class="registration-form__input input"
-            name="email"
           />
 
           <div
@@ -106,7 +106,7 @@
           <input
             type="password"
             id="registration-password"
-            v-model="registrationForm.password"
+            v-model.trim="registrationForm.password"
             name="password"
             placeholder="Введите пароль"
             class="registration-form__input input"
@@ -135,8 +135,8 @@
           <input
             type="text"
             id="registration-city"
-            v-model="registrationForm.city"
-            name="date"
+            v-model.trim="registrationForm.city"
+            name="city"
             placeholder="Ваш город"
             class="registration-form__input input"
             :class="{
@@ -159,8 +159,8 @@
           <input
             type="text"
             id="registration-street"
-            v-model="registrationForm.street"
-            name="date"
+            v-model.trim="registrationForm.street"
+            name="street"
             placeholder="Ваша улица"
             class="registration-form__input input"
             :class="{
@@ -183,7 +183,7 @@
           <input
             type="number"
             id="registration-postcode"
-            v-model="registrationForm.postcode"
+            v-model.trim="registrationForm.postcode"
             name="postcode"
             placeholder="Почтовый индекс"
             class="registration-form__input input"
@@ -206,8 +206,8 @@
           <input
             type="text"
             id="registration-country"
-            v-model="registrationForm.country"
-            name="date"
+            v-model.trim="registrationForm.country"
+            name="country"
             placeholder="Страна"
             class="registration-form__input input"
             :class="{
