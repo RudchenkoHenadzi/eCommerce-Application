@@ -7,7 +7,7 @@
         <input
           type="email"
           id="login-email"
-          v-model="loginForm.email"
+          v-model.trim="loginForm.email"
           placeholder="Введите email"
           :class="{
             invalid:
@@ -24,19 +24,33 @@
       </div>
       <div class="login-form__item">
         <div class="login-form__label">Пароль:</div>
-        <input
-          type="password"
-          id="login-password"
-          v-model="loginForm.password"
-          name="password"
-          placeholder="Введите пароль"
-          class="login-form__input input"
-          :class="{
-            invalid:
-              (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
-              (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response)
-          }"
-        />
+        <div class="login-form__input-wrapper">
+          <input
+            :type="inputType"
+            id="login-password"
+            v-model.trim="loginForm.password"
+            name="password"
+            placeholder="Введите пароль"
+            class="login-form__input input"
+            :class="{
+              invalid:
+                (v$.loginForm.password.$dirty && !v$.loginForm.password.required.$response) ||
+                (v$.loginForm.password.$dirty && !v$.loginForm.password.minLength.$response) ||
+                (v$.loginForm.password.$dirty && v$.loginForm.password.regexPassword.$response)
+            }"
+          />
+          <EyeIconSVG
+            class="login-form__password-icon"
+            @click="inputType = 'text'"
+            v-if="inputType === 'password'"
+          />
+          <EyeCrossedIconSVG
+            class="login-form__password-icon"
+            @click="inputType = 'password'"
+            v-else
+          />
+        </div>
+
         <div
           v-for="error of v$.loginForm.password.$errors"
           :key="error.$uid"
@@ -55,8 +69,18 @@
 import axios from 'axios'
 import useValidate from '@vuelidate/core'
 import { required, email, helpers, minLength } from '@vuelidate/validators'
+import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
+import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
+
+const regexPassword = helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
+
 export default {
   name: 'LoginForm',
+
+  components: {
+    EyeIconSVG,
+    EyeCrossedIconSVG
+  },
 
   setup() {
     return {
@@ -69,7 +93,8 @@ export default {
       loginForm: {
         email: '',
         password: ''
-      }
+      },
+      inputType: 'password'
     }
   },
 
@@ -106,7 +131,8 @@ export default {
         minLength: helpers.withMessage(
           `Пароль должен быть больше ${minLength(8).$params.min} символов`,
           minLength(8)
-        )
+        ),
+        regexPassword: helpers.withMessage('Слабый пароль', regexPassword)
       }
     }
   }
@@ -157,6 +183,20 @@ export default {
     flex-direction: column;
     gap: 5px;
     width: 100%;
+  }
+
+  &__input-wrapper {
+    position: relative;
+  }
+
+  &__password-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 30px;
+    fill: $color-white;
+    cursor: pointer;
   }
 
   &__switch {
