@@ -26,7 +26,7 @@ export default defineComponent({
 .auth-page {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 95vh;
   overflow: auto;
   background: $color-pale-purple;
