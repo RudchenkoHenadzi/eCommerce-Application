@@ -67,8 +67,85 @@ input {
   &[type='number']::-webkit-inner-spin-button {
     -webkit-appearance: none;
   }
+
+  &.invalid {
+    border: 1px solid variables.$color-invalid;
+    background: variables.$color-invalid-border;
+  }
 }
 
 .invalid-message {
-  color: variables.$color-yellow;
+  color: variables.$color-invalid;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  max-width: 480px;
+  padding: 30px 20px;
+  background-color: variables.$color-purple;
+  color: variables.$color-white;
+  border-radius: 10px;
+
+  @media (width <=380px) {
+    border-radius: 0;
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+
+  &__title {
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  &__row {
+    display: flex;
+    gap: 10px;
+    @media (width <= 480px) {
+      flex-direction: column;
+    }
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
+
+  &__input-wrapper {
+    position: relative;
+  }
+
+  &__password-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 30px;
+    fill: variables.$color-white;
+    cursor: pointer;
+  }
+
+  &__switch {
+    height: auto;
+    text-align: center;
+    text-decoration: none;
+    color: variables.$color-white;
+  }
 }
