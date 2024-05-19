@@ -1,6 +1,10 @@
 <template>
   <div class="auth-form">
-    <LoginForm @switch-form="activeForm = 'registration-form'" v-if="activeForm === 'login-form'" />
+    <LoginForm
+      @switch-form="activeForm = 'registration-form'"
+      v-if="activeForm === 'login-form'"
+      @loginAction="login"
+    />
     <RegistrationForm @switch-form="activeForm = 'login-form'" v-else />
   </div>
 </template>
@@ -20,6 +24,11 @@ export default {
   data() {
     return {
       activeForm: 'login-form'
+    }
+  },
+  methods: {
+    login(loginData: { email: string; password: string }) {
+      this.$emit('loginAction', loginData)
     }
   }
 }

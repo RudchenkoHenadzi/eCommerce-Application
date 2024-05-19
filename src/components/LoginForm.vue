@@ -76,16 +76,15 @@ export default {
   },
 
   mounted() {
-    const project_key = 'new-scooter-shop'
+    /*    const project_key = 'new-scooter-shop'
     const client_id = 'nIQtKu5DbKFGJAPVlE43KvqE'
     const secret = 'oK6UiBkjejjeYEZ25cvzF4xxzH8vC02j'
     const scope =
       'manage_cart_discounts:new-scooter-shop manage_types:new-scooter-shop manage_project_settings:new-scooter-shop manage_order_edits:new-scooter-shop manage_customer_groups:new-scooter-shop manage_categories:new-scooter-shop manage_products:new-scooter-shop manage_customers:new-scooter-shop manage_orders:new-scooter-shop manage_payments:new-scooter-shop manage_shipping_methods:new-scooter-shop manage_my_payments:new-scooter-shop manage_tax_categories:new-scooter-shop manage_shopping_lists:new-scooter-shop manage_my_profile:new-scooter-shop manage_extensions:new-scooter-shop manage_discount_codes:new-scooter-shop create_anonymous_token:new-scooter-shop manage_my_orders:new-scooter-shop manage_my_shopping_lists:new-scooter-shop'
 
     const API_URL = 'https://api.europe-west1.gcp.commercetools.com'
-    const Auth_URL = 'https://auth.europe-west1.gcp.commercetools.com'
-
-    axios
+    const Auth_URL = 'https://auth.europe-west1.gcp.commercetools.com'*/
+    /*axios
       .post(
         'https://auth.europe-west1.gcp.commercetools.com/oauth/token',
         'client_id=nIQtKu5DbKFGJAPVlE43KvqE&client_secret=oK6UiBkjejjeYEZ25cvzF4xxzH8vC02j&grant_type=client_credentials'
@@ -97,25 +96,35 @@ export default {
       .catch(function (error) {
         // handle error
         console.log(error)
-      })
+      })*/
   },
 
   methods: {
-    async submitLoginForm(event) {
+    async submitLoginForm(event: Event) {
       const result = await this.v$.loginForm.$validate()
 
       if (result) {
-        axios
+        this.$emit('loginAction', {
+          email: this.loginForm.email,
+          password: this.loginForm.password
+        })
+        // this.store.apiRoot.me().login().post({ body: { email: this.loginForm.email, password: this.loginForm.password } })
+        /*axios
           .post('https://jsonplaceholder.typicode.com/posts')
           .then((response) => {
             console.log(response)
           })
           .catch((error) => {
             console.log(error)
-          })
+          })*/
+
         console.log('В форме ошибок нет, можем отправлять')
       } else {
         console.log('В форме есть ошибки')
+        this.$emit('loginAction', {
+          email: this.loginForm.email,
+          password: this.loginForm.password
+        })
       }
     }
   },

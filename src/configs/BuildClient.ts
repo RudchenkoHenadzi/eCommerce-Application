@@ -22,10 +22,57 @@ const authMiddlewareOptions: AuthMiddlewareOptions = {
   fetch
 }
 
+export function createClientCredentialsFlowOptions(
+  email: string,
+  password: string,
+  token: TokenCache
+): PasswordAuthMiddlewareOptions {
+  return {
+    host: authURL,
+    projectKey: projectKey,
+    credentials: {
+      clientId: clientID,
+      clientSecret: secret,
+      user: {
+        username: email,
+        password
+      }
+    },
+    scopes: scopes,
+    tokenCache: token,
+    fetch
+  }
+}
+
+export function createRefreshTokenFlowOptions(tokenCache: TokenCache) {
+  return {
+    host: authURL,
+    projectKey: projectKey,
+    credentials: {
+      clientId: clientID,
+      clientSecret: secret
+    },
+    scopes: [scopes],
+    tokenCache,
+    fetch
+  }
+}
+
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
   host: apiURL,
   fetch
+}
+
+export function createClientForCredentialsFlow(
+  credentialsFlowOptions: PasswordAuthMiddlewareOptions
+) {
+  return new ClientBuilder()
+    .withClientCredentialsFlow(credentialsFlowOptions)
+    .withProjectKey(projectKey)
+    .withHttpMiddleware(httpMiddlewareOptions)
+    .withLoggerMiddleware()
+    .build()
 }
 
 export const anonymousClient = new ClientBuilder()
@@ -39,4 +86,8 @@ export const newClient = new ClientBuilder()
   .withHttpMiddleware(httpMiddlewareOptions)
   .withLoggerMiddleware()
   .build()
-// Export the ClientBuilder
+
+export const authApiRoot = createApiBuilderFromCtpClient(newClient).withProjectKey({ projectKey })
+export const anonymousApiRoot = createApiBuilderFromCtpClient(anonymousClient).withProjectKey({
+  projectKey
+})

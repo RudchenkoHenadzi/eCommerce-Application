@@ -1,23 +1,21 @@
+/*
 import { defineStore } from 'pinia'
-import { anonymousClient, newClient } from '@/configs/BuildClient'
+import { authApiRoot, anonymousApiRoot } from '@/configs/BuildClient'
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk'
-const host = import.meta.env.VITE_CTP_AUTH_URL || ''
-const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY || ''
-const clientId = import.meta.env.VITE_CTP_CLIENT_ID || ''
-const clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET || ''
-const scope = import.meta.env.VITE_CTP_SCOPES || ''
+import config from '../configs/project-configs';
+const { projectKey } = config;
 
 export const useApiRoot = defineStore('apiRoot', {
   state: () => ({
-    apiRoot: createApiBuilderFromCtpClient(anonymousClient).withProjectKey({ projectKey })
+    apiRoot: createApiBuilderFromCtpClient(anonymousApiRoot).withProjectKey({ projectKey })
   }),
   actions: {
     createAnonymousApiRoot() {
-      this.apiRoot = createApiBuilderFromCtpClient(anonymousClient).withProjectKey({ projectKey })
+      this.apiRoot = createApiBuilderFromCtpClient(anonymousApiRoot).withProjectKey({ projectKey })
       return this.apiRoot
     },
     createNewApiRoot() {
-      this.apiRoot = createApiBuilderFromCtpClient(newClient).withProjectKey({ projectKey })
+      this.apiRoot = createApiBuilderFromCtpClient(authApiRoot).withProjectKey({ projectKey })
       return this.apiRoot
     },
     use() {
@@ -25,3 +23,4 @@ export const useApiRoot = defineStore('apiRoot', {
     }
   }
 })
+*/
