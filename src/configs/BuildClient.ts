@@ -4,27 +4,27 @@ import {
   type HttpMiddlewareOptions,
   type TokenCache
 } from '@commercetools/sdk-client-v2'
-const host = import.meta.env.VITE_CTP_AUTH_URL || ''
-const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY || ''
-const clientId = import.meta.env.VITE_CTP_CLIENT_ID || ''
-const clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET || ''
-const scope = import.meta.env.VITE_CTP_SCOPES || ''
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk'
+import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
+import config from './project-configs'
+
+const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {
-  host: host,
+  host: authURL,
   projectKey: projectKey,
   credentials: {
-    clientId: clientId,
-    clientSecret: clientSecret
+    clientId: clientID,
+    clientSecret: secret
   },
-  scopes: [scope],
+  scopes: scopes,
   fetch
 }
 
 // Configure httpMiddlewareOptions
 const httpMiddlewareOptions: HttpMiddlewareOptions = {
-  host: host,
+  host: apiURL,
   fetch
 }
 
