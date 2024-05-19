@@ -9,8 +9,7 @@ import LoginForm from '@/components/LoginForm.vue'
 
 import { defineComponent } from 'vue'
 import apiRootStore from '@/stores/apiRootStore'
-import MyTokenStore from '@/configs/tokenStore'
-// import { anonymousApiRoot, authApiRoot } from '@/configs/BuildClient'
+
 export default defineComponent({
   components: {
     LoginForm

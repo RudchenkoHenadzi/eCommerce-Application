@@ -14,7 +14,11 @@
           invalid:
             (v$.modelValue.$dirty && !v$.modelValue.required.$response) ||
             (v$.modelValue.$dirty && !v$.modelValue.minLength.$response) ||
-            (v$.modelValue.$dirty && !v$.modelValue.regexPassword.$response)
+            (v$.modelValue.$dirty && !v$.modelValue.minLength.$response) ||
+            (v$.modelValue.$dirty && !v$.modelValue.hasUpperCaseLetters.$response) ||
+            (v$.modelValue.$dirty && !v$.modelValue.hasLowerCaseLetters.$response) ||
+            (v$.modelValue.$dirty && !v$.modelValue.hasDigit.$response) ||
+            (v$.modelValue.$dirty && !v$.modelValue.hasSpecialSymbol.$response)
         }"
       />
       <EyeIconSVG
@@ -34,13 +38,17 @@
 <script>
 import useValidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
+import {
+  hasUpperCaseLetters,
+  hasLowerCaseLetters,
+  hasDigit,
+  hasSpecialSymbol
+} from '../../helpers/passwordValidation.ts'
 import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
 import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
 
-const regexPassword = helpers.regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
-
 export default {
-  name: 'InputName',
+  name: 'InputPassword',
 
   components: {
     EyeIconSVG,
@@ -72,7 +80,19 @@ export default {
         `Пароль должен быть больше ${minLength(8).$params.min} символов`,
         minLength(8)
       ),
-      regexPassword: helpers.withMessage('Слабый пароль', regexPassword)
+      hasUpperCaseLetters: helpers.withMessage(
+        'Пароль должен иметь минимум одну прописную букву',
+        hasUpperCaseLetters
+      ),
+      hasLowerCaseLetters: helpers.withMessage(
+        'Пароль должен иметь минимум одну строчную букву',
+        hasLowerCaseLetters
+      ),
+      hasDigit: helpers.withMessage('Пароль должен иметь минимум одну цифру', hasDigit),
+      hasSpecialSymbol: helpers.withMessage(
+        'Пароль должен иметь минимум один спец символ',
+        hasSpecialSymbol
+      )
     }
   }
 }
