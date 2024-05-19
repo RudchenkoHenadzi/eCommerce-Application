@@ -46,23 +46,52 @@ class ApiRootStore {
     return this.apiRoot.get().execute()
   }
 
-  loginUser(email: string, password: string) {
-    this.apiRoot
-      .me()
-      .login()
-      .post({ body: { email, password } })
-      .execute()
-      .then((res) => {
-        if (res.statusCode === 200) {
-          this.createClientForCredentialsFlow(email, password)
-          this.createApiRoot()
-          this.getProjectInfo()
-            .then((res) => console.log(res, this.anonymousToken, this.authToken))
-            .catch(console.error)
-        } else {
-          console.log(`error. The statusCode is ${res.statusCode}`)
+  checkUserExist(email: string) {
+    return this.apiRoot
+      .customers()
+      .get({
+        queryArgs: {
+          where: `email="${email}"`
         }
       })
+      .execute()
+      .then((res) => res.body.results.length > 0)
+  }
+
+  loginUser(email: string, password: string, userNotExistHandler: (text: string) => void) {
+    this.checkUserExist(email)
+      .then((isUserExist) => {
+        if (isUserExist) {
+          this.apiRoot
+            .me()
+            .login()
+            .post({ body: { email, password } })
+            .execute()
+            .then((res) => {
+              if (res.statusCode === 200) {
+                this.createClientForCredentialsFlow(email, password)
+                this.createApiRoot()
+                this.getProjectInfo()
+                  .then((res) => console.log(res, this.anonymousToken, this.authToken))
+                  .catch(console.error)
+              } else {
+                console.log(`error. The statusCode is ${res.statusCode}`)
+              }
+            })
+            .catch((err) => {
+              if (err.statusCode === 400) {
+                userNotExistHandler(
+                  'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.'
+                )
+              }
+            })
+        } else {
+          userNotExistHandler(
+            'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.'
+          )
+        }
+      })
+      .catch(console.error)
   }
 
   createApiRoot() {
