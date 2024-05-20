@@ -1,28 +1,27 @@
 <template>
   <div class="auth-page">
-    <LoginForm />
+    <RegistrationForm />
   </div>
 </template>
-
 <script lang="ts">
-import LoginForm from '@/components/LoginForm.vue'
-
+import RegistrationForm from '@/components/RegistrationForm.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   components: {
-    LoginForm
+    RegistrationForm
   },
 
   data() {
-    return {}
+    return {
+      activeForm: 'login-form'
+    }
   }
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
-
 .auth-page {
   display: flex;
   justify-content: center;
