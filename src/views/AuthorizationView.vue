@@ -34,7 +34,7 @@ export default defineComponent({
   methods: {
     login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
-      apiRootStore.loginUser(email, password, this.showAlert)
+      apiRootStore.loginUser(email, password, this.showAlert, this.redirectTo)
     },
     showAlert(text: string) {
       this.alertText = text
@@ -45,6 +45,9 @@ export default defineComponent({
     },
     closeAlert() {
       this.isAlertShow = false
+    },
+    redirectTo(path: string) {
+      this.$router.push(path)
     }
   }
 })
