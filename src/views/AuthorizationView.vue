@@ -46,9 +46,10 @@ export default {
     closeAlert() {
       this.isAlertShow = false
     },
-    successHandler() {
+    successHandler(email: string) {
       const appUser = useUserStore()
       appUser.login()
+      appUser.setUserMail(email)
       this.redirectTo('/')
     },
     redirectTo(path: string) {
