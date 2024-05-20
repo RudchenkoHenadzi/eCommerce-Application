@@ -53,7 +53,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   const appUser = useUserStore()
   if (appUser.isUserLoggedIn && to.name == 'authorization') {
-    return false
+    return '/'
   }
 })
 
