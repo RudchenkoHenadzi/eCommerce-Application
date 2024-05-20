@@ -5,9 +5,8 @@
 </template>
 <script lang="ts">
 import RegistrationForm from '@/components/RegistrationForm.vue'
-import { defineComponent } from 'vue'
 
-export default defineComponent({
+export default {
   components: {
     RegistrationForm
   },
@@ -17,7 +16,7 @@ export default defineComponent({
       activeForm: 'login-form'
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>

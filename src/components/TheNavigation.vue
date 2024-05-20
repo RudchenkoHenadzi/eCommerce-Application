@@ -26,6 +26,12 @@
   </nav>
 </template>
 
+<script>
+export default {
+  name: 'TheNavigation'
+}
+</script>
+
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
 @import '@/assets/styles/extends.scss';
@@ -59,3 +65,4 @@
   color: $color-purple;
 }
 </style>
+<script setup lang="ts"></script>
