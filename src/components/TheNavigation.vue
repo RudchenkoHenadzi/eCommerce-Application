@@ -11,6 +11,9 @@
         <RouterLink class="navigation__link" to="/authorization">Авторизация</RouterLink>
       </li>
       <li class="navigation__item">
+        <button class="navigation__link" @click="logout">Выход</button>
+      </li>
+      <li class="navigation__item">
         <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
       </li>
       <li class="navigation__item">
@@ -25,6 +28,21 @@
     </ul>
   </nav>
 </template>
+
+<script>
+import { useUserStore } from '@/stores/User'
+
+export default {
+  name: 'TheNavigation',
+  methods: {
+    logout() {
+      const userApp = useUserStore()
+      userApp.logout()
+      this.$router.push('/')
+    }
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
@@ -59,3 +77,4 @@
   color: $color-purple;
 }
 </style>
+<script setup lang="ts"></script>

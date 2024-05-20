@@ -18,6 +18,7 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { defineComponent } from 'vue'
 import apiRootStore from '@/stores/apiRootStore'
+import { useUserStore } from '@/stores/User'
 
 export default defineComponent({
   components: {
@@ -34,7 +35,7 @@ export default defineComponent({
   methods: {
     login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
-      apiRootStore.loginUser(email, password, this.showAlert, this.redirectTo)
+      apiRootStore.loginUser(email, password, this.showAlert, this.successHandler)
     },
     showAlert(text: string) {
       this.alertText = text
@@ -45,6 +46,12 @@ export default defineComponent({
     },
     closeAlert() {
       this.isAlertShow = false
+    },
+    successHandler() {
+      console.log('successHandler')
+      const appUser = useUserStore()
+      appUser.login()
+      this.redirectTo('/')
     },
     redirectTo(path: string) {
       this.$router.push(path)

@@ -62,7 +62,7 @@ class ApiRootStore {
     email: string,
     password: string,
     userNotExistHandler: (text: string) => void,
-    successHandler: (path: string) => void
+    successHandler: () => void
   ) {
     this.checkUserExist(email)
       .then((isUserExist) => {
@@ -79,7 +79,7 @@ class ApiRootStore {
                 this.getProjectInfo()
                   .then((res) => console.log(res, this.anonymousToken, this.authToken))
                   .catch(console.error)
-                successHandler('/')
+                successHandler()
               } else {
                 console.log(`error. The statusCode is ${res.statusCode}`)
               }

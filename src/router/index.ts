@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import AboutView from '@/views/AboutView.vue'
 import CartShoppingView from '../views/CartShoppingView.vue'
+import { useUserStore } from '@/stores/User'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,13 @@ const router = createRouter({
       component: () => import('../views/RegistrationView.vue')
     }
   ]
+})
+
+router.beforeEach((to, from) => {
+  const appUser = useUserStore()
+  if (appUser.isUserLoggedIn && to.name == 'authorization') {
+    return false
+  }
 })
 
 export default router
