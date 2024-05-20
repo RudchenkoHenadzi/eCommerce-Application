@@ -16,11 +16,10 @@
 import LoginForm from '@/components/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
-import { defineComponent } from 'vue'
-import apiRootStore from '@/stores/apiRootStore'
+import apiRootStore from '@/stores/ApiRootStore'
 import { useUserStore } from '@/stores/User'
 
-export default defineComponent({
+export default {
   components: {
     LoginForm,
     AlertMessage
@@ -48,7 +47,6 @@ export default defineComponent({
       this.isAlertShow = false
     },
     successHandler() {
-      console.log('successHandler')
       const appUser = useUserStore()
       appUser.login()
       this.redirectTo('/')
@@ -57,7 +55,7 @@ export default defineComponent({
       this.$router.push(path)
     }
   }
-})
+}
 </script>
 
 <style scoped lang="scss">
