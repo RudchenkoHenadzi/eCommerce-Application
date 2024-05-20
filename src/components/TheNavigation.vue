@@ -72,6 +72,9 @@ export default {
     }
   }
 }
+button {
+  height: auto;
+}
 
 .router-link-active {
   color: $color-purple;
