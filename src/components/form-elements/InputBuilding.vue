@@ -5,7 +5,7 @@
       type="number"
       id="registration-building"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="updateModelValue"
       name="building"
       placeholder="Номер дома"
       class="form__input input"
@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
 
@@ -44,6 +44,14 @@ export default {
     modelValue: {
       required: helpers.withMessage('Укажите номер дома', required),
       minLength: helpers.withMessage(`Укажите ${minLength(1).$params.min} цифр`, minLength(1))
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }
