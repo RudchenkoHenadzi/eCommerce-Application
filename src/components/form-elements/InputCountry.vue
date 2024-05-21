@@ -5,7 +5,7 @@
       type="text"
       id="registration-country"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="updateModelValue"
       name="country"
       placeholder="Страна"
       class="form__input input"
@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
@@ -42,6 +42,14 @@ export default {
   validations: {
     modelValue: {
       required: helpers.withMessage('Укажите страну', required)
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }

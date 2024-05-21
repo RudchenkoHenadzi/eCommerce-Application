@@ -5,7 +5,7 @@
       type="text"
       id="registration-street"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="updateModelValue"
       name="street"
       placeholder="Ваша улица"
       class="form__input input"
@@ -18,7 +18,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
@@ -40,6 +40,14 @@ export default {
   validations: {
     modelValue: {
       required: helpers.withMessage('Укажите улицу', required)
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }

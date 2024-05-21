@@ -6,7 +6,7 @@
         :type="inputType"
         id="login-password"
         :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="updateModelValue"
         name="password"
         placeholder="Введите пароль"
         class="form__input input"
@@ -31,7 +31,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers, minLength } from '@vuelidate/validators'
 import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
@@ -73,6 +73,14 @@ export default {
         minLength(8)
       ),
       regexPassword: helpers.withMessage('Слабый пароль', regexPassword)
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }
