@@ -6,6 +6,8 @@ import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-
 import config from '../configs/project-configs'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import MyTokenStore from '@/configs/tokenStore'
+import type { ICustomerDraft } from '@/types/customer-types'
+import axios from 'axios'
 const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
 
 class ApiRootStore {
@@ -37,13 +39,17 @@ class ApiRootStore {
     this.authToken = new MyTokenStore()
     this.client = this.createClientForAnonymousFlow()
     this.apiRoot = this.createApiRoot()
-    this.getProjectInfo()
+    /*this.getUserInfo()
       .then((res) => console.log(res, this.anonymousToken, this.authToken))
-      .catch(console.error)
+      .catch(console.error)*/
   }
 
-  getProjectInfo() {
-    return this.apiRoot.get().execute()
+  getToken() {
+    this.apiRoot
+      .get()
+      .execute()
+      .then(() => console.log(this.anonymousToken.get().token))
+      .catch((err) => console.log(err))
   }
 
   checkUserExist(email: string) {
@@ -76,9 +82,9 @@ class ApiRootStore {
               if (res.statusCode === 200) {
                 this.createClientForCredentialsFlow(email, password)
                 this.createApiRoot()
-                this.getProjectInfo()
-                  .then((res) => console.log(res, this.anonymousToken, this.authToken))
-                  .catch(console.error)
+                this.getToken()
+                /*.then((res) => console.log(res, this.anonymousToken, this.authToken))
+                  .catch(console.error)*/
                 successHandler(email)
               } else {
                 console.log(`error. The statusCode is ${res.statusCode}`)
@@ -97,6 +103,15 @@ class ApiRootStore {
           )
         }
       })
+      .catch(console.error)
+  }
+
+  registerUser(customerDraft: ICustomerDraft) {
+    this.apiRoot
+      .customers()
+      .post({ body: customerDraft })
+      .execute()
+      .then((res) => console.log(res))
       .catch(console.error)
   }
 

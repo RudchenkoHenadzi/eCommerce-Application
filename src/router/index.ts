@@ -52,7 +52,10 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const appUser = useUserStore()
-  if (appUser.isUserLoggedIn && to.name == 'authorization') {
+  if (
+    (appUser.isUserLoggedIn && to.name == 'authorization') ||
+    (appUser.isUserLoggedIn && to.name == 'registration')
+  ) {
     return '/'
   }
 })

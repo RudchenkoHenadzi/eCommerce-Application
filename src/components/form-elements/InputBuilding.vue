@@ -12,8 +12,7 @@
       :class="{
         invalid:
           (v$.modelValue.$dirty && !v$.modelValue.required.$response) ||
-          (v$.modelValue.$dirty && !v$.modelValue.minLength.$response) ||
-          (v$.modelValue.$dirty && !v$.modelValue.maxLength.$response)
+          (v$.modelValue.$dirty && !v$.modelValue.minLength.$response)
       }"
     />
     <div v-for="error of v$.modelValue.$errors" :key="error.$uid" class="invalid-message">
@@ -44,8 +43,7 @@ export default {
   validations: {
     modelValue: {
       required: helpers.withMessage('Укажите номер дома', required),
-      minLength: helpers.withMessage(`Укажите ${minLength(1).$params.min} цифр`, minLength(6)),
-      maxLength: helpers.withMessage(`Укажите ${maxLength(6).$params.max} цифр`, maxLength(6))
+      minLength: helpers.withMessage(`Укажите ${minLength(1).$params.min} цифр`, minLength(1))
     }
   }
 }

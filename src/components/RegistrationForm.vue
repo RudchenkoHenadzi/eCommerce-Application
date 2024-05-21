@@ -43,6 +43,8 @@ import InputPotscode from '@/components/form-elements/InputPotscode.vue'
 import InputCountry from '@/components/form-elements/InputCountry.vue'
 import InputBuilding from '@/components/form-elements/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/InputApartment.vue'
+import apiRootStore from '@/stores/ApiRootStore'
+import { createCustomerDraft } from '@/helpers/createDataSamples'
 
 export default {
   name: 'RegistrationForm',
@@ -90,7 +92,7 @@ export default {
 
   methods: {
     async submitRegistrationForm() {
-      const result = await this.v$.registrationForm.$validate()
+      const result = await this.v$.$validate()
       if (result) {
         console.log('result')
         const { email, password, firstName, lastName, dateOfBirth, shippingAddress } =
@@ -109,34 +111,24 @@ export default {
           building,
           apartment
         )
-        const shippingAddressDraft = {
-          country,
-          firstName,
-          lastName,
-          streetName,
-          postalCode,
-          city,
-          building,
-          apartment,
-          email
-        }
-        const customerDraft = {
-          email,
-          firstname: firstName,
-          lastname: lastName,
-          password,
-          dateOfBirth,
-          addresses: [shippingAddressDraft],
-          defaultShippingAddress: 0, // index of the default shipping address in the addresses array
-          shippingAddresses: [0], // Indices of the shipping addresses in the addresses array
-          defaultBillingAddress: 0, // Index of the address in the addresses array to use as the default billing address
-          billingAddresses: [0] // Indices of the billing addresses in the addresses array
-        }
-
         /* TODO if anonymousCart exist -> add
         *   anonymousCart: {
             id: {{ID}},
           },*/
+        const customerDraft = createCustomerDraft(
+          email,
+          password,
+          firstName,
+          lastName,
+          dateOfBirth,
+          country,
+          postalCode,
+          city,
+          streetName,
+          building,
+          apartment
+        )
+        apiRootStore.registerUser(customerDraft)
         console.log('В форме ошибок нет, можем отправлять')
       } else {
         console.log('В форме есть ошибки')
