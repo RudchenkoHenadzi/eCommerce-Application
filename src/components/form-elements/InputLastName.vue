@@ -5,7 +5,7 @@
       type="text"
       id="registration-lastname"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="updateModelValue"
       name="lastname"
       placeholder="Введите фамилию"
       class="form__input input"
@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
@@ -46,6 +46,14 @@ export default {
     modelValue: {
       required: helpers.withMessage('Введите фамилию', required),
       regexSpecialSymbol: helpers.withMessage('Недопустимые символы', regexSpecialSymbol)
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }
