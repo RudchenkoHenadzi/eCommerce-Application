@@ -5,7 +5,7 @@
       type="email"
       id="login-email"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="updateModelValue"
       name="email"
       placeholder="Введите email"
       :class="{
@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers, email } from '@vuelidate/validators'
 
@@ -45,6 +45,14 @@ export default {
     modelValue: {
       required: helpers.withMessage('Введите email', required),
       email: helpers.withMessage('Не корректный email', email)
+    }
+  },
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.value
+        this.$emit('update:modelValue', value)
+      }
     }
   }
 }

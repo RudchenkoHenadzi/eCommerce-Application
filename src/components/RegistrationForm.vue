@@ -74,7 +74,6 @@ import InputBuilding from '@/components/form-elements/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/InputApartment.vue'
 import apiRootStore from '@/stores/ApiRootStore'
 import { createCustomerDraft } from '@/helpers/createDataSamples'
-import MyRadio from '@/components/form-elements/radio/MyCheckbox.vue'
 import MyCheckbox from '@/components/form-elements/radio/MyCheckbox.vue'
 
 export default {
