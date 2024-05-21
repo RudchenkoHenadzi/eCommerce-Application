@@ -7,7 +7,6 @@ import config from '../configs/project-configs'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import MyTokenStore from '@/configs/tokenStore'
 import type { ICustomerDraft } from '@/types/customer-types'
-import axios from 'axios'
 const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
 
 class ApiRootStore {

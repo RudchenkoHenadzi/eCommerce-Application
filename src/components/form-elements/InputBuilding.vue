@@ -23,7 +23,7 @@
 
 <script>
 import useValidate from '@vuelidate/core'
-import { required, helpers, minLength, maxLength } from '@vuelidate/validators'
+import { required, helpers, minLength } from '@vuelidate/validators'
 
 export default {
   name: 'InputBuilding',
