@@ -16,8 +16,8 @@
 import LoginForm from '@/components/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
-import apiRootStore from '@/stores/ApiRootStore'
 import { useUserStore } from '@/stores/User'
+import { useApiRootStore } from '@/stores/CTClient'
 
 export default {
   components: {
@@ -34,7 +34,9 @@ export default {
   methods: {
     login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
-      apiRootStore.loginUser(email, password, this.showAlert, this.successHandler)
+      const apiRoot = useApiRootStore()
+      apiRoot.loginUser(email, password, this.showAlert, this.successHandler)
+      //apiRootStore.loginUser(email, password, this.showAlert, this.successHandler)
     },
     showAlert(text: string) {
       this.alertText = text

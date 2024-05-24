@@ -1,13 +1,14 @@
 <script lang="ts">
 import { RouterView } from 'vue-router'
 import TheHeader from '@/components/TheHeader.vue'
-import apiRootStore from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/CTClient'
 
 export default {
-  name: 'App',
   components: { TheHeader, RouterView },
+  name: 'App',
   mounted() {
-    apiRootStore.getToken()
+    const apiRoot = useApiRootStore()
+    apiRoot.start()
   }
 }
 </script>
@@ -15,7 +16,7 @@ export default {
 <template>
   <TheHeader />
   <main>
-    <RouterView />
+    <RouterView apiRoot="apiRoot" />
   </main>
 </template>
 
