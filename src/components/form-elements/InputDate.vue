@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="date"
+      autocomplete="bday"
       class="form__input input"
       :class="{
         invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response

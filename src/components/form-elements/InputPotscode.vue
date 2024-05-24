@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="postcode"
+      autocomplete="postal-code"
       placeholder="Почтовый индекс"
       class="form__input input"
       :class="{

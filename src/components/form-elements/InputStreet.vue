@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="street"
+      autocomplete="address-line1"
       placeholder="Ваша улица"
       class="form__input input"
       :class="{

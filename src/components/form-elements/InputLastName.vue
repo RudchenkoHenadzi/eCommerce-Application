@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="lastname"
+      autocomplete="family-name"
       placeholder="Введите фамилию"
       class="form__input input"
       :class="{

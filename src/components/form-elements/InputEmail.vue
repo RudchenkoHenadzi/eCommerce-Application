@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="email"
+      autocomplete="email"
       placeholder="Введите email"
       :class="{
         invalid:

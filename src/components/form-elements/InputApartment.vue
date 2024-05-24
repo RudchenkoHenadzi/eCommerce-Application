@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="apartment"
+      autocomplete="shipping address-line1"
       placeholder="Номер квартиры"
       class="form__input input"
       :class="{

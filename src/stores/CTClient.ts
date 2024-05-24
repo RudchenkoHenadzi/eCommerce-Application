@@ -1,14 +1,10 @@
 import { defineStore } from 'pinia'
 import {
   type ByProjectKeyRequestBuilder,
-  createApiBuilderFromCtpClient,
+  createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
 import config from '@/configs/project-configs'
-import {
-  type Client,
-  ClientBuilder,
-  type TokenCache
-} from '@commercetools/sdk-client-v2'
+import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
 import MyTokenStore from '@/configs/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import { useUserStore } from '@/stores/User'
@@ -55,17 +51,16 @@ export const useApiRootStore = defineStore('apiRoot', {
       try {
         const result = await client.execute({
           uri: `${this.apiURL}/oauth/${this.projectKey}/customers/token`,
-          /*uri: `${this.apiURL}/oauth/${this.projectKey}/me`,*/
-          method: 'POST' ,
+          method: 'POST',
           body: JSON.stringify({
             grant_type: 'password',
             email,
             password,
-            scope: this.scopes,
+            scope: this.scopes
           }),
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
+            'Content-Type': 'application/x-www-form-urlencoded'
+          }
         })
         console.log('Token:', result)
       } catch (error) {

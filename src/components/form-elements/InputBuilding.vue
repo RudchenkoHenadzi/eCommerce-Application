@@ -8,6 +8,7 @@
       @input="updateModelValue"
       name="building"
       placeholder="Номер дома"
+      autocomplete="shipping street-line2"
       class="form__input input"
       :class="{
         invalid:

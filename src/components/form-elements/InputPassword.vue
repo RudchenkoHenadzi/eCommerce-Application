@@ -8,6 +8,7 @@
         :value="modelValue"
         @input="updateModelValue"
         name="password"
+        autocomplete="password"
         placeholder="Введите пароль"
         class="form__input input"
         :class="{

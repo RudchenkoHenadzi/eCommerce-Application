@@ -8,6 +8,7 @@
       @input="updateModelValue"
       name="city"
       placeholder="Ваш город"
+      autocomplete="shipping address-line3"
       class="form__input input"
       :class="{
         invalid:

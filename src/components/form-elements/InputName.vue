@@ -7,6 +7,7 @@
       :value="modelValue"
       @input="updateModelValue"
       name="name"
+      autocomplete="given-name"
       placeholder="Введите имя"
       class="form__input input"
       :class="{

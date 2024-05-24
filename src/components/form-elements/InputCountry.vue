@@ -8,6 +8,7 @@
       @input="updateModelValue"
       name="country"
       placeholder="Страна"
+      autocomplete="country-name"
       class="form__input input"
       :class="{
         invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response
