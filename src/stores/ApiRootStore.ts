@@ -7,15 +7,16 @@ import config from '../configs/project-configs'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import MyTokenStore from '@/configs/tokenStore'
 import type { ICustomerDraft } from '@/types/customer-types'
+import { useUserStore } from '@/stores/User'
 const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
 
-class ApiRootStore {
-  private readonly projectKey: string
-  private readonly authURL: string
-  private readonly apiURL: string
-  private readonly clientID: string
-  private readonly secret: string
-  private readonly scopes: string[]
+export class ApiRootStore {
+  readonly projectKey: string
+  readonly authURL: string
+  readonly apiURL: string
+  readonly clientID: string
+  readonly secret: string
+  readonly scopes: string[]
   anonymousToken: TokenCache
   authToken: TokenCache
   client: Client
@@ -37,17 +38,44 @@ class ApiRootStore {
     this.anonymousToken = new MyTokenStore()
     this.authToken = new MyTokenStore()
     this.client = this.createClientForAnonymousFlow()
+    /* this.start()*/
     this.apiRoot = this.createApiRoot()
-    /*this.getUserInfo()
-      .then((res) => console.log(res, this.anonymousToken, this.authToken))
-      .catch(console.error)*/
+    this.apiRoot.me().get().execute().then(console.log).catch(console.error)
   }
 
-  getToken() {
+  start() {
+    const user = useUserStore()
+    if (user.getUserRefreshToken) {
+      this.client = this.createClientForRefreshTokenFlow()
+    } else {
+      this.client = this.createClientForAnonymousFlow()
+    }
+  }
+
+  /*getToken() {
     this.apiRoot
       .get()
       .execute()
-      .then(() => console.log(this.anonymousToken.get().token))
+      .then(() => {
+
+        const user = useUserStore();
+        user.setUserToken(this.anonymousToken.get().token);
+        const refreshToken = this.anonymousToken.get().refreshToken;
+        if (refreshToken) user.setUserRefreshToken(refreshToken);
+      })
+      .catch((err) => console.log(err))
+  }*/
+
+  getAuthToken() {
+    this.apiRoot
+      .get()
+      .execute()
+      .then(() => {
+        const user = useUserStore()
+        user.setUserToken(this.authToken.get().token)
+        const refreshToken = this.authToken.get().refreshToken
+        if (refreshToken) user.setUserRefreshToken(refreshToken)
+      })
       .catch((err) => console.log(err))
   }
 
@@ -79,9 +107,23 @@ class ApiRootStore {
             .execute()
             .then((res) => {
               if (res.statusCode === 200) {
-                this.createClientForCredentialsFlow(email, password)
+                this.createClientForPasswordFlow(email, password)
                 this.createApiRoot()
-                this.getToken()
+                this.getAuthToken()
+                /*const config = {
+                  headers: { Authorization: `Bearer ${token}` }
+                };
+
+                const bodyParameters = {
+                  key: "value"
+                };
+
+                Axios.post(
+                  'http://localhost:8000/api/v1/get_token_payloads',
+                  bodyParameters,
+                  config
+                ).then(console.log).catch(console.log);
+                this.getToken()*/
                 /*.then((res) => console.log(res, this.anonymousToken, this.authToken))
                   .catch(console.error)*/
                 successHandler(email)
@@ -106,7 +148,7 @@ class ApiRootStore {
   }
 
   registerUser(customerDraft: ICustomerDraft) {
-    this.apiRoot
+    return this.apiRoot
       .customers()
       .post({ body: customerDraft })
       .execute()
@@ -115,26 +157,9 @@ class ApiRootStore {
   }
 
   createApiRoot() {
-    this.apiRoot = createApiBuilderFromCtpClient(this.client).withProjectKey({
+    return createApiBuilderFromCtpClient(this.client).withProjectKey({
       projectKey: this.projectKey
     })
-    return this.apiRoot
-  }
-
-  createClientForAnonymousFlow() {
-    return new ClientBuilder()
-      .withAnonymousSessionFlow(this.createAuthMiddlewareOptions(this.anonymousToken))
-      .withHttpMiddleware(this.createHttpMiddlewareOptions())
-      .withLoggerMiddleware()
-      .build()
-  }
-
-  createAuthClient() {
-    return new ClientBuilder()
-      .withClientCredentialsFlow(this.createAuthMiddlewareOptions(this.authToken))
-      .withHttpMiddleware(this.createHttpMiddlewareOptions())
-      .withLoggerMiddleware()
-      .build()
   }
 
   createAuthMiddlewareOptions(tokenCache?: TokenCache) {
@@ -158,10 +183,46 @@ class ApiRootStore {
     }
   }
 
-  createClientForCredentialsFlow(email: string, password: string) {
+  createClientForAnonymousFlow() {
+    return new ClientBuilder()
+      .withAnonymousSessionFlow(this.createAuthMiddlewareOptions(this.anonymousToken))
+      .withHttpMiddleware(this.createHttpMiddlewareOptions())
+      .withLoggerMiddleware()
+      .build()
+  }
+
+  createClientForRefreshTokenFlow() {
+    return new ClientBuilder()
+      .withRefreshTokenFlow(this.createRefreshTokenFlowOptions())
+      .withHttpMiddleware(this.createHttpMiddlewareOptions())
+      .withLoggerMiddleware()
+      .build()
+  }
+
+  createRefreshTokenFlowOptions() {
+    const user = useUserStore()
+    return {
+      host: this.authURL,
+      projectKey: this.projectKey,
+      credentials: {
+        clientId: this.clientID,
+        clientSecret: this.secret
+      },
+      refreshToken: user.userRefreshToken
+    }
+  }
+
+  createClientForPasswordFlow(email: string, password: string) {
     return new ClientBuilder()
       .withPasswordFlow(this.createClientCredentialsFlowOptions(email, password, this.authToken))
-      .withProjectKey(projectKey)
+      .withHttpMiddleware(this.createHttpMiddlewareOptions())
+      .withLoggerMiddleware()
+      .build()
+  }
+
+  createAuthClient() {
+    return new ClientBuilder()
+      .withClientCredentialsFlow(this.createAuthMiddlewareOptions(this.authToken))
       .withHttpMiddleware(this.createHttpMiddlewareOptions())
       .withLoggerMiddleware()
       .build()
@@ -189,7 +250,7 @@ class ApiRootStore {
     }
   }
 
-  createRefreshTokenFlowOptions(tokenCache: TokenCache) {
+  /*createRefreshTokenFlowOptions(tokenCache: TokenCache) {
     return {
       host: authURL,
       projectKey: projectKey,
@@ -201,7 +262,7 @@ class ApiRootStore {
       tokenCache,
       fetch
     }
-  }
+  }*/
 }
 
 const apiRootStore = new ApiRootStore(projectKey, authURL, apiURL, clientID, secret, scopes)
