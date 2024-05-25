@@ -94,7 +94,7 @@ import InputBuilding from '@/components/form-elements/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/InputApartment.vue'
 import { createCustomerDraft } from '@/helpers/createDataSamples'
 import MyCheckbox from '@/components/form-elements/radio/MyCheckbox.vue'
-import { useApiRootStore } from '@/stores/CTClient'
+import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
   name: 'RegistrationForm',
@@ -159,19 +159,6 @@ export default {
         const { email, password, firstName, lastName, dateOfBirth, shippingAddress } =
           this.registrationForm
         const { country, postalCode, city, streetName, building, apartment } = shippingAddress
-        console.log(
-          email,
-          password,
-          firstName,
-          lastName,
-          dateOfBirth,
-          country,
-          postalCode,
-          city,
-          streetName,
-          building,
-          apartment
-        )
         /* TODO if anonymousCart exist -> add
         *   anonymousCart: {
             id: {{ID}},
@@ -189,30 +176,20 @@ export default {
           building,
           apartment
         )
-        //apiRootStore.registerUser(customerDraft)
         const apiRoot = useApiRootStore()
-        await apiRoot.registerUser(customerDraft)
+        await apiRoot
+          .registerUser(customerDraft)
+          .then((res) => {
+            if (res && 'statusCode' in res && res.statusCode === 201) {
+              this.$emit('successRegistrationEvent', { email: email })
+            }
+          })
+          .catch((err) => console.log(err))
         console.log('В форме ошибок нет, можем отправлять')
       } else {
         console.log('В форме есть ошибки')
       }
     }
-    /*async submitRegistrationForm() {
-      const result = await this.v$.$validate()
-      if (result) {
-        axios
-          .post('https://jsonplaceholder.typicode.com/posts')
-          .then((response) => {
-            console.log(response)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-        console.log('В форме ошибок нет, можем отправлять')
-      } else {
-        console.log('В форме есть ошибки')
-      }
-    }*/
   },
   computed: {
     billingAddressStreetName: {

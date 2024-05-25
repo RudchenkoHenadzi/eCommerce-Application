@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useApiRootStore } from '@/stores/CTClient'
+import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
   name: 'HomeView',
@@ -15,6 +15,17 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+    showUsersData() {
+      const apiRoot = useApiRootStore()
+      apiRoot.apiRoot
+        .customers()
+        .get()
+        .execute()
+        .then((res) => console.table(res.body.results))
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 }
@@ -23,4 +34,5 @@ export default {
 <template>
   <h1>Главная страница</h1>
   <button @click="showProjectData">Показать данные проекта</button>
+  <button @click="showUsersData">Показать данные юзеров</button>
 </template>

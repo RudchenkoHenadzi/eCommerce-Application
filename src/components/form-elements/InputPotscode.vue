@@ -34,7 +34,7 @@ export default {
     modelValue: {
       type: String
     },
-    blockName: String,
+    blockName: String
   },
 
   setup() {

@@ -1,4 +1,4 @@
-import type { IAddressDraft } from '@/types/customer-types'
+import type { IAddressDraft, ICustomerDraft } from '@/types/customer-types'
 
 export function createCustomerDraft(
   email: string,
@@ -12,9 +12,10 @@ export function createCustomerDraft(
   streetName: string,
   building: string,
   apartment: string
-) {
+): ICustomerDraft {
+  const countrySign = country === 'Россия' ? 'RU' : 'RU'
   const shippingAddressDraft: IAddressDraft = createShippingAddressDraft(
-    country,
+    countrySign,
     firstName,
     lastName,
     streetName,
@@ -25,11 +26,11 @@ export function createCustomerDraft(
     email
   )
   return {
-    email,
-    firstName,
-    lastName,
-    password,
-    dateOfBirth,
+    dateOfBirth: dateOfBirth,
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    password: password,
     addresses: [shippingAddressDraft],
     defaultShippingAddress: 0, // index of the default shipping address in the addresses array
     shippingAddresses: [0], // Indices of the shipping addresses in the addresses array
@@ -50,14 +51,14 @@ export function createShippingAddressDraft(
   email: string
 ) {
   return {
-    country,
-    firstName,
-    lastName,
-    streetName,
-    postalCode,
-    city,
-    building,
-    apartment,
-    email
+    country: country,
+    streetName: streetName,
+    postalCode: postalCode,
+    city: city,
+    firstName: firstName,
+    lastName: lastName,
+    building: building,
+    apartment: apartment,
+    email: email
   }
 }

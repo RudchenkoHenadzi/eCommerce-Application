@@ -1,10 +1,15 @@
 <script lang="ts">
 import { RouterView } from 'vue-router'
 import TheHeader from '@/components/TheHeader.vue'
+import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
   components: { TheHeader, RouterView },
   name: 'App',
+  mounted() {
+    const apiRoot = useApiRootStore()
+    apiRoot.start()
+  }
 }
 </script>
 

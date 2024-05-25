@@ -10,8 +10,9 @@
       autocomplete="bday"
       class="form__input input"
       :class="{
-        invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response ||
-         v$.modelValue.$dirty && !v$.modelValue.greaterThanCurrentAge.$response,
+        invalid:
+          (v$.modelValue.$dirty && !v$.modelValue.required.$response) ||
+          (v$.modelValue.$dirty && !v$.modelValue.greaterThanCurrentAge.$response)
       }"
     />
     <div v-for="error of v$.modelValue.$errors" :key="error.$uid" class="invalid-message">
@@ -55,7 +56,7 @@ export default {
         const value = event.target.value
         this.$emit('update:modelValue', value)
       }
-    },
-  },
+    }
+  }
 }
 </script>

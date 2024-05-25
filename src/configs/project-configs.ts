@@ -9,7 +9,7 @@ const config = {
   ]
 }
 
-const ageForValigation = 13;
+const ageForValigation = 13
 
 export default config
 export { ageForValigation }
