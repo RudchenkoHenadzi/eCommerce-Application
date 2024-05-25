@@ -140,7 +140,9 @@ export const useApiRootStore = defineStore('apiRoot', {
           console.log(res)
           return res
         })
-        .catch(console.error)
+        .catch((error) => {
+          throw error
+        })
     },
     async checkUserExist(email: string) {
       return this.apiRoot

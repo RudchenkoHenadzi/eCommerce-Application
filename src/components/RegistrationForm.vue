@@ -154,8 +154,9 @@ export default {
   methods: {
     async submitRegistrationForm() {
       const result = await this.v$.$validate()
+      console.log('В форме ошибок нет, можем отправлять')
+
       if (result) {
-        console.log('result')
         const { email, password, firstName, lastName, dateOfBirth, shippingAddress } =
           this.registrationForm
         const { country, postalCode, city, streetName, building, apartment } = shippingAddress
@@ -177,15 +178,36 @@ export default {
           apartment
         )
         const apiRoot = useApiRootStore()
-        await apiRoot
-          .registerUser(customerDraft)
-          .then((res) => {
-            if (res && 'statusCode' in res && res.statusCode === 201) {
+        try {
+          const response = await apiRoot.registerUser(customerDraft)
+
+          console.log('response')
+          console.log(response)
+          if (response && 'statusCode' in response) {
+            if (response.statusCode === 201) {
               this.$emit('successRegistrationEvent', { email: email })
+            } else if (response.statusCode === 400) {
+              this.$emit('userExists')
+            } else {
+              console.log('else')
             }
-          })
-          .catch((err) => console.log(err))
-        console.log('В форме ошибок нет, можем отправлять')
+          } else {
+            console.log('then')
+            this.$emit('failedRequest')
+          }
+        } catch (error) {
+          console.log('catch')
+          this.$emit('failedRequest', error)
+          /*if (
+            typeof error === 'object' &&
+            error !== null &&
+            'statusCode' in error &&
+            error.statusCode === 400) {
+            this.$emit('userExists')
+          }
+          this.$emit('failedRequest')*/
+          console.log(error)
+        }
       } else {
         console.log('В форме есть ошибки')
       }
