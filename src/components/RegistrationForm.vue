@@ -22,28 +22,34 @@
           text="Установить адресом доставки по-умолчанию"
         />
         <div class="form__row">
-          <InputCity v-model="registrationForm.shippingAddress.city" block-name="shipping" />
+          <InputCity
+            v-model="registrationForm.shippingAddress.shippingCity"
+            block-name="shipping"
+          />
           <InputStreet
-            v-model="registrationForm.shippingAddress.streetName"
+            v-model="registrationForm.shippingAddress.shippingStreetName"
             block-name="shipping"
           />
         </div>
         <div class="form__row">
           <InputBuilding
-            v-model="registrationForm.shippingAddress.building"
+            v-model="registrationForm.shippingAddress.shippingBuilding"
             block-name="shipping"
           />
           <InputApartment
-            v-model="registrationForm.shippingAddress.apartment"
+            v-model="registrationForm.shippingAddress.shippingApartment"
             block-name="shipping"
           />
         </div>
         <div class="form__row">
           <InputPotscode
-            v-model="registrationForm.shippingAddress.postalCode"
+            v-model="registrationForm.shippingAddress.shippingPostalCode"
             block-name="shipping"
           />
-          <InputCountry v-model="registrationForm.shippingAddress.country" block-name="shipping" />
+          <InputCountry
+            v-model="registrationForm.shippingAddress.shippingCountry"
+            block-name="shipping"
+          />
         </div>
       </div>
       <MyCheckbox
@@ -92,8 +98,9 @@ import InputPotscode from '@/components/form-elements/InputPotscode.vue'
 import InputCountry from '@/components/form-elements/InputCountry.vue'
 import InputBuilding from '@/components/form-elements/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/InputApartment.vue'
-import { createCustomerDraft } from '@/helpers/createDataSamples'
+import { createCustomerDraft, createShippingAddressDraft } from '@/helpers/createDataSamples'
 import MyCheckbox from '@/components/form-elements/radio/MyCheckbox.vue'
+import type { IAddressDraft } from '@/types/customer-types'
 import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
@@ -129,21 +136,21 @@ export default {
         lastName: '',
         dateOfBirth: '',
         shippingAddress: {
-          streetName: '',
-          building: '',
-          apartment: '',
-          city: '',
-          postalCode: '',
-          country: 'Россия'
+          shippingStreetName: '',
+          shippingBuilding: '',
+          shippingApartment: '',
+          shippingCity: '',
+          shippingPostalCode: '',
+          shippingCountry: 'Россия'
           // mobile: ''
         },
         billingAddress: {
-          streetName: '',
-          building: '',
-          apartment: '',
-          city: '',
-          postalCode: '',
-          country: 'Россия'
+          billingStreetName: '',
+          billingBuilding: '',
+          billingApartment: '',
+          billingCity: '',
+          billingPostalCode: '',
+          billingCountry: 'Россия'
         },
         isBillingAddressDefault: false,
         isShippingAddressDefault: false,
@@ -157,32 +164,86 @@ export default {
       console.log('В форме ошибок нет, можем отправлять')
 
       if (result) {
-        const { email, password, firstName, lastName, dateOfBirth, shippingAddress } =
-          this.registrationForm
-        const { country, postalCode, city, streetName, building, apartment } = shippingAddress
+        const {
+          email,
+          password,
+          firstName,
+          lastName,
+          dateOfBirth,
+          shippingAddress,
+          billingAddress
+        } = this.registrationForm
+        const {
+          shippingCountry,
+          shippingPostalCode,
+          shippingCity,
+          shippingStreetName,
+          shippingBuilding,
+          shippingApartment
+        } = shippingAddress
         /* TODO if anonymousCart exist -> add
         *   anonymousCart: {
             id: {{ID}},
           },*/
+        const addresses: IAddressDraft[] = [
+          createShippingAddressDraft(
+            firstName,
+            lastName,
+            email,
+            shippingCountry,
+            shippingPostalCode,
+            shippingCity,
+            shippingStreetName,
+            shippingBuilding,
+            shippingApartment
+          )
+        ]
+
+        if (!this.registrationForm.areBothAddressesSame) {
+          const {
+            billingCountry,
+            billingPostalCode,
+            billingCity,
+            billingStreetName,
+            billingBuilding,
+            billingApartment
+          } = billingAddress
+
+          addresses.push(
+            createShippingAddressDraft(
+              firstName,
+              lastName,
+              email,
+              billingCountry,
+              billingPostalCode,
+              billingCity,
+              billingStreetName,
+              billingBuilding,
+              billingApartment
+            )
+          )
+        }
+        const { baseIndex, defaultIndex } = this.checkBillingIndexes()
+        const addressesConfiguration = this.createAddressesConfiguration(
+          this.registrationForm.isShippingAddressDefault,
+          baseIndex,
+          defaultIndex
+        )
+
         const customerDraft = createCustomerDraft(
           email,
           password,
           firstName,
           lastName,
           dateOfBirth,
-          country,
-          postalCode,
-          city,
-          streetName,
-          building,
-          apartment
+          addresses,
+          addressesConfiguration
         )
-        const apiRoot = useApiRootStore()
+        console.log(customerDraft)
+        /*const apiRoot = useApiRootStore()
         try {
           const response = await apiRoot.registerUser(customerDraft)
 
-          console.log('response')
-          console.log(response)
           if (response && 'statusCode' in response) {
             if (response.statusCode === 201) {
               this.$emit('successRegistrationEvent', { email: email })
@@ -198,108 +259,144 @@ export default {
         } catch (error) {
           console.log('catch')
           this.$emit('failedRequest', error)
-          /*if (
-            typeof error === 'object' &&
-            error !== null &&
-            'statusCode' in error &&
-            error.statusCode === 400) {
-            this.$emit('userExists')
-          }
-          this.$emit('failedRequest')*/
           console.log(error)
-        }
+        }*/
       } else {
         console.log('В форме есть ошибки')
       }
+    },
+    checkBillingIndexes() {
+      let baseIndex = -1
+      let defaultIndex = -1
+      if (this.registrationForm.areBothAddressesSame) {
+        baseIndex = 0
+        if (this.registrationForm.isBillingAddressDefault) {
+          defaultIndex = 0
+        }
+      } else {
+        if (this.registrationForm.isBillingAddressDefault) {
+          defaultIndex = 1
+        }
+      }
+      return { baseIndex, defaultIndex }
+    },
+    createAddressesConfiguration(
+      isShippingAddressDefault: boolean,
+      billingBaseIndex: number,
+      billingDefaultIndex: number
+    ) {
+      const addressesConfiguration: {
+        shippingAddresses: number[]
+        defaultShippingAddress?: number
+        billingAddresses?: number[]
+        defaultBillingAddress?: number
+      } = {
+        shippingAddresses: [0]
+      }
+
+      if (isShippingAddressDefault) {
+        addressesConfiguration.defaultShippingAddress = 0
+      }
+
+      if (billingBaseIndex >= 0) {
+        addressesConfiguration.billingAddresses = [billingBaseIndex]
+      }
+
+      if (billingDefaultIndex >= 0) {
+        addressesConfiguration.defaultBillingAddress = billingDefaultIndex
+      }
+
+      return addressesConfiguration
     }
   },
   computed: {
     billingAddressStreetName: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.streetName
-          : this.registrationForm.billingAddress.streetName
+          ? this.registrationForm.shippingAddress.shippingStreetName
+          : this.registrationForm.billingAddress.billingStreetName
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.streetName =
-            this.registrationForm.shippingAddress.streetName
+          this.registrationForm.billingAddress.billingStreetName =
+            this.registrationForm.shippingAddress.shippingStreetName
         } else {
-          this.registrationForm.billingAddress.streetName = newValue
+          this.registrationForm.billingAddress.billingStreetName = newValue
         }
       }
     },
     billingAddressBuilding: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.building
-          : this.registrationForm.billingAddress.building
+          ? this.registrationForm.shippingAddress.shippingBuilding
+          : this.registrationForm.billingAddress.billingBuilding
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.building =
-            this.registrationForm.shippingAddress.building
+          this.registrationForm.billingAddress.billingBuilding =
+            this.registrationForm.shippingAddress.shippingBuilding
         } else {
-          this.registrationForm.billingAddress.building = newValue
+          this.registrationForm.billingAddress.billingBuilding = newValue
         }
       }
     },
     billingAddressApartment: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.apartment
-          : this.registrationForm.billingAddress.apartment
+          ? this.registrationForm.shippingAddress.shippingApartment
+          : this.registrationForm.billingAddress.billingApartment
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.apartment =
-            this.registrationForm.shippingAddress.apartment
+          this.registrationForm.billingAddress.billingApartment =
+            this.registrationForm.shippingAddress.shippingApartment
         } else {
-          this.registrationForm.billingAddress.apartment = newValue
+          this.registrationForm.billingAddress.billingApartment = newValue
         }
       }
     },
     billingAddressCity: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.city
-          : this.registrationForm.billingAddress.city
+          ? this.registrationForm.shippingAddress.shippingCity
+          : this.registrationForm.billingAddress.billingCity
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.city = this.registrationForm.shippingAddress.city
+          this.registrationForm.billingAddress.billingCity =
+            this.registrationForm.shippingAddress.shippingCity
         } else {
-          this.registrationForm.billingAddress.city = newValue
+          this.registrationForm.billingAddress.billingCity = newValue
         }
       }
     },
     billingAddressPostalCode: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.postalCode
-          : this.registrationForm.billingAddress.postalCode
+          ? this.registrationForm.shippingAddress.shippingPostalCode
+          : this.registrationForm.billingAddress.billingPostalCode
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.postalCode =
-            this.registrationForm.shippingAddress.postalCode
+          this.registrationForm.billingAddress.billingPostalCode =
+            this.registrationForm.shippingAddress.shippingPostalCode
         } else {
-          this.registrationForm.billingAddress.postalCode = newValue
+          this.registrationForm.billingAddress.billingPostalCode = newValue
         }
       }
     },
     billingAddressCountry: {
       get(): string {
         return this.registrationForm.areBothAddressesSame
-          ? this.registrationForm.shippingAddress.country
-          : this.registrationForm.billingAddress.country
+          ? this.registrationForm.shippingAddress.shippingCountry
+          : this.registrationForm.billingAddress.billingCountry
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
-          this.registrationForm.billingAddress.country =
-            this.registrationForm.shippingAddress.country
+          this.registrationForm.billingAddress.billingCountry =
+            this.registrationForm.shippingAddress.shippingCountry
         } else {
-          this.registrationForm.billingAddress.country = newValue
+          this.registrationForm.billingAddress.billingCountry = newValue
         }
       }
     }

@@ -1,20 +1,17 @@
 <template>
   <div class="form__item">
     <div class="form__label">Страна:</div>
-    <input
-      type="text"
-      :id="idName"
+    <select
       :value="modelValue"
       @input="updateModelValue"
       name="country"
-      placeholder="Страна"
-      autocomplete="country-name"
       class="form__input input"
       :class="{
         invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response
       }"
-      disabled
-    />
+    >
+      <option value="RU" selected>Россия</option>
+    </select>
     <div v-for="error of v$.modelValue.$errors" :key="error.$uid" class="invalid-message">
       {{ error.$message }}
     </div>
@@ -23,11 +20,10 @@
 
 <script lang="ts">
 import useValidate from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import { helpers, required } from '@vuelidate/validators'
 
 export default {
-  name: 'InputCountry',
-
+  name: 'SelectCountry',
   props: {
     modelValue: {
       type: String
@@ -61,3 +57,5 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss"></style>

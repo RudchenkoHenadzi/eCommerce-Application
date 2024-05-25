@@ -6,49 +6,55 @@ export function createCustomerDraft(
   firstName: string,
   lastName: string,
   dateOfBirth: string,
+  addresses: IAddressDraft[],
+  addressesConfiguration?: {
+    defaultShippingAddress?: number
+    defaultBillingAddress?: number
+    shippingAddresses?: number[]
+    billingAddresses?: number[]
+  }
+): ICustomerDraft {
+  const customerDraft = {
+    dateOfBirth: dateOfBirth,
+    email: email,
+    firstName: firstName,
+    lastName: lastName,
+    password: password,
+    addresses: addresses,
+    defaultShippingAddress: 0, // index of the default shipping address in the addresses array
+    shippingAddresses: [0], // Indices of the shipping addresses in the addresses array
+    defaultBillingAddress: 0, // Index of the address in the addresses array to use as the default billing address
+    billingAddresses: [0]
+  }
+  if (addressesConfiguration) {
+    const { defaultShippingAddress, defaultBillingAddress, shippingAddresses, billingAddresses } =
+      addressesConfiguration
+    if (defaultShippingAddress) {
+      customerDraft.defaultShippingAddress = defaultShippingAddress
+    }
+    if (shippingAddresses) {
+      customerDraft.shippingAddresses = shippingAddresses
+    }
+    if (defaultBillingAddress) {
+      customerDraft.defaultBillingAddress = defaultBillingAddress
+    }
+    if (billingAddresses) {
+      customerDraft.billingAddresses = billingAddresses
+    }
+  }
+  return customerDraft
+}
+
+export function createShippingAddressDraft(
+  firstName: string,
+  lastName: string,
+  email: string,
   country: string,
   postalCode: string,
   city: string,
   streetName: string,
   building: string,
   apartment: string
-): ICustomerDraft {
-  const countrySign = country === 'Россия' ? 'RU' : 'RU'
-  const shippingAddressDraft: IAddressDraft = createShippingAddressDraft(
-    countrySign,
-    firstName,
-    lastName,
-    streetName,
-    postalCode,
-    city,
-    building,
-    apartment,
-    email
-  )
-  return {
-    dateOfBirth: dateOfBirth,
-    email: email,
-    firstName: firstName,
-    lastName: lastName,
-    password: password,
-    addresses: [shippingAddressDraft],
-    defaultShippingAddress: 0, // index of the default shipping address in the addresses array
-    shippingAddresses: [0], // Indices of the shipping addresses in the addresses array
-    defaultBillingAddress: 0, // Index of the address in the addresses array to use as the default billing address
-    billingAddresses: [0]
-  }
-}
-
-export function createShippingAddressDraft(
-  country: string,
-  firstName: string,
-  lastName: string,
-  streetName: string,
-  postalCode: string,
-  city: string,
-  building: string,
-  apartment: string,
-  email: string
 ) {
   return {
     country: country,
