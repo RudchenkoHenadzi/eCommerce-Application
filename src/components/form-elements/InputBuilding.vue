@@ -3,7 +3,7 @@
     <div class="form__label">Дом:</div>
     <input
       type="number"
-      id="registration-building"
+      :id="idName"
       :value="modelValue"
       @input="updateModelValue"
       name="building"
@@ -32,7 +32,8 @@ export default {
   props: {
     modelValue: {
       type: String
-    }
+    },
+    blockName: String
   },
 
   setup() {
@@ -53,6 +54,11 @@ export default {
         const value = event.target.value
         this.$emit('update:modelValue', value)
       }
+    }
+  },
+  computed: {
+    idName() {
+      return `${this.blockName}-building`
     }
   }
 }

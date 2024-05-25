@@ -3,7 +3,7 @@
     <div class="form__label">Почтовый индекс:</div>
     <input
       type="number"
-      id="registration-postcode"
+      :id="idName"
       :value="modelValue"
       @input="updateModelValue"
       name="postcode"

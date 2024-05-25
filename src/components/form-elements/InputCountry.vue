@@ -3,7 +3,6 @@
     <div class="form__label">Страна:</div>
     <input
       type="text"
-      id="registration-country"
       :value="modelValue"
       @input="updateModelValue"
       name="country"
@@ -23,7 +22,7 @@
 
 <script lang="ts">
 import useValidate from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import { required, helpers, minLength } from '@vuelidate/validators'
 
 export default {
   name: 'InputCountry',
@@ -31,7 +30,8 @@ export default {
   props: {
     modelValue: {
       type: String
-    }
+    },
+    blockName: String
   },
 
   setup() {
@@ -51,6 +51,11 @@ export default {
         const value = event.target.value
         this.$emit('update:modelValue', value)
       }
+    }
+  },
+  computed: {
+    idName() {
+      return `${this.blockName}-country`
     }
   }
 }

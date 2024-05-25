@@ -3,7 +3,7 @@
     <div class="form__label">Квартира</div>
     <input
       type="number"
-      id="registration-apartment"
+      :id="idName"
       :value="modelValue"
       @input="updateModelValue"
       name="apartment"
@@ -29,13 +29,12 @@ import { required, helpers, minLength, maxLength } from '@vuelidate/validators'
 
 export default {
   name: 'InputApartment',
-
   props: {
     modelValue: {
       type: String
-    }
+    },
+    blockName: String
   },
-
   setup() {
     return {
       v$: useValidate()
@@ -55,6 +54,11 @@ export default {
         const value = event.target.value
         this.$emit('update:modelValue', value)
       }
+    }
+  },
+  computed: {
+    idName() {
+      return `${this.blockName}-apartment`
     }
   }
 }
