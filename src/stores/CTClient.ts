@@ -120,7 +120,10 @@ export const useApiRootStore = defineStore('apiRoot', {
                   const client = this.createClientForPasswordFlow(email, password)
                   this.getToken(client, email, password)
                   this.createApiRoot()
-                  successHandler(email)
+                  userNotExistHandler('Вы успешно вошли в учетную запись.')
+                  setTimeout(() => {
+                    successHandler(email)
+                  }, 2300)
                 } else {
                   console.log(`error. The statusCode is ${res.statusCode}`)
                 }
