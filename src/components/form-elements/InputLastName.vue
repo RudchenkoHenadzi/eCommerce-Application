@@ -26,7 +26,7 @@
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 
-const regexSpecialSymbol = helpers.regex(/^[a-zA-Zа-яА-ЯёЁ]+$/)
+const regexSpecialSymbol = helpers.regex(/^[a-zA-Zа-яА-ЯёЁ-]+$/)
 
 export default {
   name: 'InputLastName',

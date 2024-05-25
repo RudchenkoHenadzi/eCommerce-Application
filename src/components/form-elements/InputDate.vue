@@ -10,7 +10,8 @@
       autocomplete="bday"
       class="form__input input"
       :class="{
-        invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response
+        invalid: v$.modelValue.$dirty && !v$.modelValue.required.$response ||
+         v$.modelValue.$dirty && !v$.modelValue.greaterThanCurrentAge.$response,
       }"
     />
     <div v-for="error of v$.modelValue.$errors" :key="error.$uid" class="invalid-message">
@@ -22,6 +23,8 @@
 <script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
+import greaterThanCurrentAge from '@/helpers/bdayValidation'
+import { ageForValigation } from '@/configs/project-configs'
 
 export default {
   name: 'InputDate',
@@ -31,7 +34,6 @@ export default {
       type: String
     }
   },
-
   setup() {
     return {
       v$: useValidate()
@@ -40,7 +42,11 @@ export default {
 
   validations: {
     modelValue: {
-      required: helpers.withMessage('Укажите вашу дату рождения', required)
+      required: helpers.withMessage('Укажите вашу дату рождения', required),
+      greaterThanCurrentAge: helpers.withMessage(
+        `Пользователь должен быть старше ${ageForValigation} лет`,
+        greaterThanCurrentAge
+      )
     }
   },
   methods: {
@@ -49,7 +55,7 @@ export default {
         const value = event.target.value
         this.$emit('update:modelValue', value)
       }
-    }
-  }
+    },
+  },
 }
 </script>

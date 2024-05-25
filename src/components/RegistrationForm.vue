@@ -22,16 +22,28 @@
           text="Установить адресом доставки по-умолчанию"
         />
         <div class="form__row">
-          <InputCity v-model="registrationForm.shippingAddress.city" />
-          <InputStreet v-model="registrationForm.shippingAddress.streetName" />
+          <InputCity v-model="registrationForm.shippingAddress.city" block-name="shipping" />
+          <InputStreet
+            v-model="registrationForm.shippingAddress.streetName"
+            block-name="shipping"
+          />
         </div>
         <div class="form__row">
-          <InputBuilding v-model="registrationForm.shippingAddress.building" />
-          <InputApartment v-model="registrationForm.shippingAddress.apartment" />
+          <InputBuilding
+            v-model="registrationForm.shippingAddress.building"
+            block-name="shipping"
+          />
+          <InputApartment
+            v-model="registrationForm.shippingAddress.apartment"
+            block-name="shipping"
+          />
         </div>
         <div class="form__row">
-          <InputPotscode v-model="registrationForm.shippingAddress.postalCode" />
-          <InputCountry v-model="registrationForm.shippingAddress.country" />
+          <InputPotscode
+            v-model="registrationForm.shippingAddress.postalCode"
+            block-name="shipping"
+          />
+          <InputCountry v-model="registrationForm.shippingAddress.country" block-name="shipping" />
         </div>
       </div>
       <MyCheckbox
@@ -49,16 +61,16 @@
           text="Установить платежным адресом по-умолчанию"
         />
         <div class="form__row">
-          <InputCity v-model="billingAddressCity" />
-          <InputStreet v-model="billingAddressStreetName" />
+          <InputCity v-model="billingAddressCity" block-name="billing" />
+          <InputStreet v-model="billingAddressStreetName" block-name="billing" />
         </div>
         <div class="form__row">
-          <InputBuilding v-model="billingAddressBuilding" />
-          <InputApartment v-model="billingAddressApartment" />
+          <InputBuilding v-model="billingAddressBuilding" block-name="billing" />
+          <InputApartment v-model="billingAddressApartment" block-name="billing" />
         </div>
         <div class="form__row">
-          <InputPotscode v-model="billingAddressPostalCode" />
-          <InputCountry v-model="billingAddressCountry" />
+          <InputPotscode v-model="billingAddressPostalCode" block-name="billing" />
+          <InputCountry v-model="billingAddressCountry" block-name="billing" />
         </div>
       </div>
     </div>
