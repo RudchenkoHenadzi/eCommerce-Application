@@ -26,6 +26,12 @@ export default {
         .catch((error) => {
           console.log(error)
         })
+    },
+    goToRegistrationPage() {
+      this.$router.push('/registration')
+    },
+    goToLoginPage() {
+      this.$router.push('/authorization')
     }
   }
 }
@@ -33,6 +39,21 @@ export default {
 
 <template>
   <h1>Главная страница</h1>
-  <button @click="showProjectData">Показать данные проекта</button>
-  <button @click="showUsersData">Показать данные юзеров</button>
+  <button @click="goToRegistrationPage" class="main-page__btn">Регистрация</button>
+  <button @click="goToLoginPage" class="main-page__btn">Вход</button>
+  <button @click="showProjectData" class="main-page__btn">Показать данные проекта</button>
+  <button @click="showUsersData" class="main-page__btn">Показать данные юзеров</button>
 </template>
+
+<style lang="scss">
+@import '@/assets/styles/variables.scss';
+
+.main-page {
+  &__btn {
+    display: block;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+    border: 1px solid $color-darkpurple;
+  }
+}
+</style>
