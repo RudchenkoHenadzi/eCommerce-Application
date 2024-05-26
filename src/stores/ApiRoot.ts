@@ -114,6 +114,12 @@ export const useApiRootStore = defineStore('apiRoot', {
           throw error
         })
     },
+
+    logoutUser() {
+      this.createClientForAnonymousFlow()
+      this.createApiRoot()
+      this.getProjectData()
+    },
     async checkUserExist(email: string) {
       return this.apiRoot
         .customers()

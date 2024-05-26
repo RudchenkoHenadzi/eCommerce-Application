@@ -12,6 +12,7 @@
 <script lang="ts">
 import TheNavigation from '@/components/menu/TheNavigation.vue'
 import { useUserStore } from '@/stores/User'
+import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
   name: 'TheHeader',
@@ -28,9 +29,12 @@ export default {
   },
   methods: {
     logout() {
+      const apiRoot = useApiRootStore()
+      apiRoot.logoutUser()
       const userApp = useUserStore()
       userApp.logout()
       userApp.removeUserMail()
+
       this.$router.push('/')
     }
   }
