@@ -18,7 +18,7 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
-import { timeoutForMessages } from '@/configs/projectConfigs'
+import { timeoutForShortMessages } from '@/configs/projectConfigs'
 
 export default {
   components: {
@@ -36,14 +36,14 @@ export default {
     login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
       const apiRoot = useApiRootStore()
-      apiRoot.loginUser(email, password, this.showAlert, this.successHandler)
+      apiRoot.loginUser(email, password, this.showAlert)
     },
-    showAlert(text: string) {
+    showAlert(text: string, delay: number) {
       this.alertText = text
       this.isAlertShow = true
       setTimeout(() => {
         this.isAlertShow = false
-      }, timeoutForMessages)
+      }, delay)
     },
     closeAlert() {
       this.isAlertShow = false

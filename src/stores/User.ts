@@ -6,14 +6,16 @@ export const useUserStore = defineStore('user', {
     email: localStorage.getItem('userMail') || '',
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
-    tokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
+    tokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0
   }),
   getters: {
     isUserLoggedIn: (state) => state.isLoggedIn,
     getUserMail: (state) => state.email,
     getUserRefreshToken: (state) => state.userRefreshToken,
     getUserToken: (state) => state.userToken,
-    getTokenExpirationTime: state => { state.tokenExpirationTime },
+    getTokenExpirationTime: (state) => {
+      state.tokenExpirationTime
+    }
   },
   actions: {
     login() {

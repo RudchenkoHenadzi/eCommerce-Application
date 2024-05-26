@@ -21,7 +21,11 @@ import RegistrationForm from '@/components/forms/RegistrationForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
-import { timeoutForMessages, timeoutForRedirect } from '@/configs/projectConfigs'
+import {
+  timeoutForShortMessages,
+  timeoutForRedirect,
+  timeoutForErrorMessages
+} from '@/configs/projectConfigs'
 
 export default {
   components: {
@@ -41,17 +45,17 @@ export default {
       const appUser = useUserStore()
       appUser.login()
       appUser.setUserMail(userData.email)
-      this.showAlert('Пользователь успешно создан')
+      this.showAlert('Пользователь успешно создан', timeoutForShortMessages)
       setTimeout(() => {
         this.redirectTo('/')
       }, timeoutForRedirect)
     },
-    showAlert(text: string) {
+    showAlert(text: string, delay: number) {
       this.alertText = text
       this.isAlertShow = true
       setTimeout(() => {
         this.isAlertShow = false
-      }, timeoutForMessages)
+      }, delay)
     },
     closeAlert() {
       this.isAlertShow = false
@@ -60,28 +64,23 @@ export default {
       this.$router.push(path)
     },
     commonErrorsHandler(errorData: ClientResponse<CustomerSignInResult>) {
-      let text = ''
       if (errorData.statusCode && errorData.statusCode === 400) {
-        text = 'Пользователь с таким email уже зарегистрирован.'
+        this.userExistsErrorHandler()
       } else {
-        text = 'Что-то пошло не так. Попробуйте зарегистрироваться позже.'
+        this.errorInvalidInputHandler()
       }
-      this.showAlert(text)
-      setTimeout(() => {
-        this.closeAlert()
-      }, timeoutForMessages)
     },
     userExistsErrorHandler() {
-      this.showAlert('Пользователь с таким email уже зарегистрирован.')
-      setTimeout(() => {
-        this.closeAlert()
-      }, timeoutForMessages)
+      this.showAlert(
+        'Пользователь с таким email уже зарегистрирован. Войдите в учетную запись или используйте другой email для регистрации.',
+        timeoutForErrorMessages
+      )
     },
     errorInvalidInputHandler() {
-      this.showAlert('Введены некорректные данные. Исправьте данные и попробуйте снова.')
-      setTimeout(() => {
-        this.closeAlert()
-      }, timeoutForMessages)
+      this.showAlert(
+        'Введены некорректные данные. Исправьте данные и попробуйте снова.',
+        timeoutForErrorMessages
+      )
     }
   }
 }

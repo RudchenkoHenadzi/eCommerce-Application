@@ -18,12 +18,16 @@ class MyTokenStore implements TokenCache {
     console.log(newTokenCache.token)
     console.log(newTokenCache.expirationTime)
     console.log(newTokenCache.refreshToken)
-    this.saveTokenToStore(newTokenCache.token, newTokenCache.expirationTime, newTokenCache.refreshToken)
+    this.saveTokenToStore(
+      newTokenCache.token,
+      newTokenCache.expirationTime,
+      newTokenCache.refreshToken
+    )
   }
 
   saveTokenToStore(token: string, expirationTime: number, refreshToken?: string) {
-    const user = useUserStore();
-    user.setUserToken(token);
+    const user = useUserStore()
+    user.setUserToken(token)
     user.setExpirationTime(expirationTime)
     if (refreshToken) user.setUserRefreshToken(refreshToken)
   }

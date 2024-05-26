@@ -11,8 +11,9 @@ const projectConfig = {
 
 const ageForValigation = 13
 
-const timeoutForMessages = 1800
-const timeoutForRedirect = 1900
+const timeoutForShortMessages = 2000
+const timeoutForErrorMessages = 2000
+const timeoutForRedirect = 2000
 
 export default projectConfig
-export { ageForValigation, timeoutForMessages, timeoutForRedirect }
+export { ageForValigation, timeoutForShortMessages, timeoutForErrorMessages, timeoutForRedirect }

@@ -3,7 +3,10 @@ import {
   type ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
-import projectConfig, { timeoutForMessages } from '@/configs/projectConfigs'
+import projectConfig, {
+  timeoutForErrorMessages,
+  timeoutForShortMessages
+} from '@/configs/projectConfigs'
 import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
 import MyTokenStore from '@/configs/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
@@ -86,12 +89,7 @@ export const useApiRootStore = defineStore('apiRoot', {
       }
     },
 
-    loginUser(
-      email: string,
-      password: string,
-      userNotExistHandler: (text: string) => void,
-      successHandler: (email: string) => void
-    ) {
+    loginUser(email: string, password: string, showAlert: (text: string, delay: number) => void) {
       this.checkUserExist(email)
         .then((isUserExist) => {
           if (isUserExist && this.apiRoot) {
@@ -105,30 +103,34 @@ export const useApiRootStore = defineStore('apiRoot', {
                   const client = this.createClientForPasswordFlow(email, password)
                   this.saveAuthTokenTS(client, email, password)
                   this.createApiRoot()
-                  userNotExistHandler('Вы успешно вошли в учетную запись.')
-                  setTimeout(() => {
-                    successHandler(email)
-                  }, timeoutForMessages)
+                  showAlert('Вы успешно вошли в учетную запись.', timeoutForShortMessages)
                 } else {
-                  console.log(`error. The statusCode is ${res.statusCode}`)
+                  showAlert(
+                    'Что-то пошло не так. Повторите попытку позже.',
+                    timeoutForErrorMessages
+                  )
                 }
               })
               .catch((err) => {
                 if (err.statusCode === 400) {
-                  userNotExistHandler(
-                    'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.'
+                  showAlert(
+                    'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
+                    timeoutForErrorMessages
                   )
                 }
               })
           } else if (isUserExist === undefined) {
-            userNotExistHandler('Что-то пошло не так. Повторите попытку позже.')
+            showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
           } else {
-            userNotExistHandler(
-              'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.'
+            showAlert(
+              'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.',
+              timeoutForErrorMessages
             )
           }
         })
-        .catch(console.error)
+        .catch(() => {
+          showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
+        })
     },
 
     async registerUser(customerDraft: ICustomerDraft) {
