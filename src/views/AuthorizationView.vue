@@ -18,6 +18,7 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
+import { timeoutForMessages } from '@/configs/project-configs'
 
 export default {
   components: {
@@ -42,7 +43,7 @@ export default {
       this.isAlertShow = true
       setTimeout(() => {
         this.isAlertShow = false
-      }, 3000)
+      }, timeoutForMessages)
     },
     closeAlert() {
       this.isAlertShow = false

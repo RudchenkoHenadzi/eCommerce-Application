@@ -98,9 +98,9 @@ import InputPotscode from '@/components/form-elements/InputPotscode.vue'
 import InputCountry from '@/components/form-elements/InputCountry.vue'
 import InputBuilding from '@/components/form-elements/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/InputApartment.vue'
-import { createCustomerDraft, createShippingAddressDraft } from '@/helpers/createDataSamples'
 import MyCheckbox from '@/components/form-elements/radio/MyCheckbox.vue'
-import type { IAddressDraft } from '@/types/customer-types'
+import { createCustomerDraft, createAddressDraft } from '@/helpers/createDataSamples'
+import type { IAddressConfiguration, IAddressDraft } from '@/types/customer-types'
 import { useApiRootStore } from '@/stores/ApiRoot'
 
 export default {
@@ -142,7 +142,6 @@ export default {
           shippingCity: '',
           shippingPostalCode: '',
           shippingCountry: 'Россия'
-          // mobile: ''
         },
         billingAddress: {
           billingStreetName: '',
@@ -161,7 +160,6 @@ export default {
   methods: {
     async submitRegistrationForm() {
       const result = await this.v$.$validate()
-      console.log('В форме ошибок нет, можем отправлять')
 
       if (result) {
         const {
@@ -185,19 +183,18 @@ export default {
         *   anonymousCart: {
             id: {{ID}},
           },*/
-        const addresses: IAddressDraft[] = [
-          createShippingAddressDraft(
-            firstName,
-            lastName,
-            email,
-            shippingCountry,
-            shippingPostalCode,
-            shippingCity,
-            shippingStreetName,
-            shippingBuilding,
-            shippingApartment
-          )
-        ]
+        const shippingAddressDraft = createAddressDraft(
+          firstName,
+          lastName,
+          email,
+          shippingCountry,
+          shippingPostalCode,
+          shippingCity,
+          shippingStreetName,
+          shippingBuilding,
+          shippingApartment
+        )
+        const addresses: IAddressDraft[] = [shippingAddressDraft]
 
         if (!this.registrationForm.areBothAddressesSame) {
           const {
@@ -208,26 +205,24 @@ export default {
             billingBuilding,
             billingApartment
           } = billingAddress
-
-          addresses.push(
-            createShippingAddressDraft(
-              firstName,
-              lastName,
-              email,
-              billingCountry,
-              billingPostalCode,
-              billingCity,
-              billingStreetName,
-              billingBuilding,
-              billingApartment
-            )
+          const billingAddressDraft = createAddressDraft(
+            firstName,
+            lastName,
+            email,
+            billingCountry,
+            billingPostalCode,
+            billingCity,
+            billingStreetName,
+            billingBuilding,
+            billingApartment
           )
+          addresses.push(billingAddressDraft)
         }
-        const { baseIndex, defaultIndex } = this.checkBillingIndexes()
+        const { billingAddressIndex, defaultBillingAddressIndex } = this.checkBillingIndexes()
         const addressesConfiguration = this.createAddressesConfiguration(
           this.registrationForm.isShippingAddressDefault,
-          baseIndex,
-          defaultIndex
+          billingAddressIndex,
+          defaultBillingAddressIndex
         )
 
         const customerDraft = createCustomerDraft(
@@ -239,8 +234,8 @@ export default {
           addresses,
           addressesConfiguration
         )
-        console.log(customerDraft)
-        /*const apiRoot = useApiRootStore()
+
+        const apiRoot = useApiRootStore()
         try {
           const response = await apiRoot.registerUser(customerDraft)
 
@@ -248,60 +243,50 @@ export default {
             if (response.statusCode === 201) {
               this.$emit('successRegistrationEvent', { email: email })
             } else if (response.statusCode === 400) {
-              this.$emit('userExists')
+              this.$emit('errorUserExists')
             } else {
-              console.log('else')
+              this.$emit('errorFailedRequest')
             }
           } else {
-            console.log('then')
-            this.$emit('failedRequest')
+            this.$emit('errorFailedRequest')
           }
         } catch (error) {
-          console.log('catch')
-          this.$emit('failedRequest', error)
-          console.log(error)
-        }*/
+          this.$emit('errorFailedRequest', error)
+        }
       } else {
-        console.log('В форме есть ошибки')
+        this.$emit('errorInvalidInput')
       }
     },
     checkBillingIndexes() {
-      let baseIndex = -1
-      let defaultIndex = -1
+      let billingAddressIndex = -1
+      let defaultBillingAddressIndex = -1
       if (this.registrationForm.areBothAddressesSame) {
-        baseIndex = 0
+        billingAddressIndex = 0
         if (this.registrationForm.isBillingAddressDefault) {
-          defaultIndex = 0
+          defaultBillingAddressIndex = 0
         }
       } else {
+        billingAddressIndex = 1
         if (this.registrationForm.isBillingAddressDefault) {
-          defaultIndex = 1
+          defaultBillingAddressIndex = 1
         }
       }
-      return { baseIndex, defaultIndex }
+      return { billingAddressIndex, defaultBillingAddressIndex }
     },
     createAddressesConfiguration(
       isShippingAddressDefault: boolean,
       billingBaseIndex: number,
       billingDefaultIndex: number
     ) {
-      const addressesConfiguration: {
-        shippingAddresses: number[]
-        defaultShippingAddress?: number
-        billingAddresses?: number[]
-        defaultBillingAddress?: number
-      } = {
+      const addressesConfiguration: IAddressConfiguration = {
         shippingAddresses: [0]
       }
-
       if (isShippingAddressDefault) {
         addressesConfiguration.defaultShippingAddress = 0
       }
-
       if (billingBaseIndex >= 0) {
         addressesConfiguration.billingAddresses = [billingBaseIndex]
       }
-
       if (billingDefaultIndex >= 0) {
         addressesConfiguration.defaultBillingAddress = billingDefaultIndex
       }

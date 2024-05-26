@@ -14,28 +14,28 @@ export function createCustomerDraft(
     billingAddresses?: number[]
   }
 ): ICustomerDraft {
-  const customerDraft = {
+  const customerDraft: ICustomerDraft = {
     dateOfBirth: dateOfBirth,
     email: email,
     firstName: firstName,
     lastName: lastName,
     password: password,
     addresses: addresses,
-    defaultShippingAddress: 0, // index of the default shipping address in the addresses array
-    shippingAddresses: [0], // Indices of the shipping addresses in the addresses array
-    defaultBillingAddress: 0, // Index of the address in the addresses array to use as the default billing address
+    shippingAddresses: [0],
     billingAddresses: [0]
   }
+
   if (addressesConfiguration) {
     const { defaultShippingAddress, defaultBillingAddress, shippingAddresses, billingAddresses } =
       addressesConfiguration
-    if (defaultShippingAddress) {
+
+    if (defaultShippingAddress || defaultShippingAddress === 0) {
       customerDraft.defaultShippingAddress = defaultShippingAddress
     }
     if (shippingAddresses) {
       customerDraft.shippingAddresses = shippingAddresses
     }
-    if (defaultBillingAddress) {
+    if (defaultBillingAddress || defaultBillingAddress === 0) {
       customerDraft.defaultBillingAddress = defaultBillingAddress
     }
     if (billingAddresses) {
@@ -45,7 +45,7 @@ export function createCustomerDraft(
   return customerDraft
 }
 
-export function createShippingAddressDraft(
+export function createAddressDraft(
   firstName: string,
   lastName: string,
   email: string,

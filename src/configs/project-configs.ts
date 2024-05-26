@@ -1,4 +1,4 @@
-const config = {
+const projectConfig = {
   projectKey: 'scooters-online-shop',
   authURL: 'https://auth.europe-west1.gcp.commercetools.com',
   apiURL: 'https://api.europe-west1.gcp.commercetools.com',
@@ -11,5 +11,8 @@ const config = {
 
 const ageForValigation = 13
 
-export default config
-export { ageForValigation }
+const timeoutForMessages = 1800
+const timeoutForRedirect = 1900
+
+export default projectConfig
+export { ageForValigation, timeoutForMessages, timeoutForRedirect }

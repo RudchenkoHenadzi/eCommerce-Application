@@ -6,9 +6,9 @@ import {
 } from '@commercetools/sdk-client-v2'
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
-import config from './project-configs'
+import projectConfig from './project-configs'
 
-const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
+const { projectKey, authURL, apiURL, clientID, secret, scopes } = projectConfig
 
 // Configure authMiddlewareOptions
 const authMiddlewareOptions: AuthMiddlewareOptions = {

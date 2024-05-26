@@ -1,9 +1,10 @@
 <template>
   <div class="auth-page">
     <RegistrationForm
-      @successRegistrationEvent="successRegistrationAction"
-      @failedRequest="commonErrorsHandler"
-      @userExists="userExistsErrorHandler"
+      @successRegistrationEvent="successRegistrationHandler"
+      @errorFailedRequest="commonErrorsHandler"
+      @errorUserExists="userExistsErrorHandler"
+      @errorInvalidInput="errorInvalidInputHandler"
     />
     <Transition>
       <AlertMessage
@@ -20,6 +21,7 @@ import RegistrationForm from '@/components/RegistrationForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
+import { timeoutForMessages, timeoutForRedirect } from '@/configs/project-configs'
 
 export default {
   components: {
@@ -35,21 +37,21 @@ export default {
     }
   },
   methods: {
-    successRegistrationAction(userData: { email: string }) {
+    successRegistrationHandler(userData: { email: string }) {
       const appUser = useUserStore()
       appUser.login()
       appUser.setUserMail(userData.email)
       this.showAlert('Пользователь успешно создан')
       setTimeout(() => {
         this.redirectTo('/')
-      }, 2300)
+      }, timeoutForRedirect)
     },
     showAlert(text: string) {
       this.alertText = text
       this.isAlertShow = true
       setTimeout(() => {
         this.isAlertShow = false
-      }, 3000)
+      }, timeoutForMessages)
     },
     closeAlert() {
       this.isAlertShow = false
@@ -67,13 +69,19 @@ export default {
       this.showAlert(text)
       setTimeout(() => {
         this.closeAlert()
-      }, 2300)
+      }, timeoutForMessages)
     },
     userExistsErrorHandler() {
       this.showAlert('Пользователь с таким email уже зарегистрирован.')
       setTimeout(() => {
         this.closeAlert()
-      }, 2300)
+      }, timeoutForMessages)
+    },
+    errorInvalidInputHandler() {
+      this.showAlert('Введены некорректные данные. Исправьте данные и попробуйте снова.')
+      setTimeout(() => {
+        this.closeAlert()
+      }, timeoutForMessages)
     }
   }
 }

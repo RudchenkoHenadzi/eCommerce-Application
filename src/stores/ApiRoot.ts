@@ -3,13 +3,13 @@ import {
   type ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
-import config from '@/configs/project-configs'
+import projectConfig, { timeoutForMessages } from '@/configs/project-configs'
 import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
 import MyTokenStore from '@/configs/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import { useUserStore } from '@/stores/User'
 import type { ICustomerDraft } from '@/types/customer-types'
-const { projectKey, authURL, apiURL, clientID, secret, scopes } = config
+const { projectKey, authURL, apiURL, clientID, secret, scopes } = projectConfig
 
 const anonymousClient = new ClientBuilder()
   .withProjectKey(projectKey)
@@ -108,7 +108,7 @@ export const useApiRootStore = defineStore('apiRoot', {
                   userNotExistHandler('Вы успешно вошли в учетную запись.')
                   setTimeout(() => {
                     successHandler(email)
-                  }, 2300)
+                  }, timeoutForMessages)
                 } else {
                   console.log(`error. The statusCode is ${res.statusCode}`)
                 }

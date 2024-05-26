@@ -11,15 +11,22 @@ export interface IAddressDraft {
   email: string
 }
 
+export interface IAddressConfiguration {
+  shippingAddresses: number[]
+  defaultShippingAddress?: number
+  billingAddresses?: number[]
+  defaultBillingAddress?: number
+}
+
 export interface ICustomerDraft {
   email: string
+  password: string
   firstName: string
   lastName: string
-  password: string
   dateOfBirth: string
   addresses: IAddressDraft[]
-  defaultShippingAddress: number // index of the default shipping address in the addresses array
-  shippingAddresses: number[] // Indices of the shipping addresses in the addresses array
-  defaultBillingAddress: number // Index of the address in the addresses array to use as the default billing address
-  billingAddresses: number[]
+  defaultShippingAddress?: number // index of the default shipping address in the addresses array
+  shippingAddresses?: number[] // Indices of the shipping addresses in the addresses array
+  defaultBillingAddress?: number // Index of the address in the addresses array to use as the default billing address
+  billingAddresses?: number[]
 }
