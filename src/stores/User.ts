@@ -5,13 +5,15 @@ export const useUserStore = defineStore('user', {
     isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
     email: localStorage.getItem('userMail') || '',
     userToken: localStorage.getItem('userToken') || '',
-    userRefreshToken: localStorage.getItem('userRefreshToken') || ''
+    userRefreshToken: localStorage.getItem('userRefreshToken') || '',
+    tokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
   }),
   getters: {
     isUserLoggedIn: (state) => state.isLoggedIn,
     getUserMail: (state) => state.email,
     getUserRefreshToken: (state) => state.userRefreshToken,
-    getUserToken: (state) => state.userToken
+    getUserToken: (state) => state.userToken,
+    getTokenExpirationTime: state => { state.tokenExpirationTime },
   },
   actions: {
     login() {
@@ -37,6 +39,10 @@ export const useUserStore = defineStore('user', {
     setUserRefreshToken(token: string) {
       this.userRefreshToken = token
       localStorage.setItem('userRefreshToken', token)
+    },
+    setExpirationTime(newTime: number) {
+      this.tokenExpirationTime = newTime
+      localStorage.setItem('tokenExpirationTime', String(newTime))
     }
   }
 })
