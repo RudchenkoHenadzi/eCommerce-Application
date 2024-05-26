@@ -25,7 +25,7 @@
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import greaterThanCurrentAge from '@/helpers/bdayValidation'
-import { ageForValigation } from '@/configs/project-configs'
+import { ageForValigation } from '@/configs/projectConfigs'
 
 export default {
   name: 'InputDate',

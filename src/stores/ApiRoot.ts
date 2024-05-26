@@ -3,7 +3,7 @@ import {
   type ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
-import projectConfig, { timeoutForMessages } from '@/configs/project-configs'
+import projectConfig, { timeoutForMessages } from '@/configs/projectConfigs'
 import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
 import MyTokenStore from '@/configs/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'

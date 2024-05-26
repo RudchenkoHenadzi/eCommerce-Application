@@ -1,4 +1,4 @@
-import { ageForValigation } from '@/configs/project-configs'
+import { ageForValigation } from '@/configs/projectConfigs'
 const DAYS_PER_YEAR = 365
 const HOURS_PER_DAY = 24
 const MINUTES_PER_HOUR = 60

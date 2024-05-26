@@ -12,8 +12,8 @@
 
 <script lang="ts">
 import useValidate from '@vuelidate/core'
-import InputEmail from '@/components/form-elements/InputEmail.vue'
-import InputPassword from '@/components/form-elements/InputPassword.vue'
+import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
+import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
 
 export default {
   name: 'LoginForm',
@@ -50,9 +50,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/variables.scss';
-@import '@/assets/styles/mixins.scss';
-@import '@/assets/styles/extends.scss';
+@import '@/assets/styles/variables';
+@import '@/assets/styles/mixins';
+@import '@/assets/styles/extends';
 
 .login-form {
   margin-top: 50px;

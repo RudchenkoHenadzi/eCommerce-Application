@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import LoginForm from '@/components/LoginForm.vue'
-import RegistrationForm from '@/components/RegistrationForm.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
+import RegistrationForm from '@/components/forms/RegistrationForm.vue'
 
 export default {
   name: 'AuthorizationForm',
@@ -35,9 +35,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@import '@/assets/styles/variables.scss';
-@import '@/assets/styles/mixins.scss';
-@import '@/assets/styles/extends.scss';
+@import '@/assets/styles/variables';
+@import '@/assets/styles/mixins';
+@import '@/assets/styles/extends';
 
 .auth-form {
   width: 100%;

@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import TheNavigation from '@/components/TheNavigation.vue'
+import TheNavigation from '@/components/menu/TheNavigation.vue'
 import { useUserStore } from '@/stores/User'
 
 export default {

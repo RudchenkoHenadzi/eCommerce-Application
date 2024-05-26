@@ -33,9 +33,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/variables.scss';
-@import '@/assets/styles/extends.scss';
-@import '@/assets/styles/fonts.scss';
+@import '@/assets/styles/variables';
+@import '@/assets/styles/extends';
+@import '@/assets/styles/fonts';
 
 .navigation {
   font-weight: 500;

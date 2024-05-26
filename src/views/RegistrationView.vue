@@ -17,11 +17,11 @@
   </div>
 </template>
 <script lang="ts">
-import RegistrationForm from '@/components/RegistrationForm.vue'
+import RegistrationForm from '@/components/forms/RegistrationForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
-import { timeoutForMessages, timeoutForRedirect } from '@/configs/project-configs'
+import { timeoutForMessages, timeoutForRedirect } from '@/configs/projectConfigs'
 
 export default {
   components: {

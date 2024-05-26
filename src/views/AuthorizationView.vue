@@ -13,12 +13,12 @@
 </template>
 
 <script lang="ts">
-import LoginForm from '@/components/LoginForm.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
-import { timeoutForMessages } from '@/configs/project-configs'
+import { timeoutForMessages } from '@/configs/projectConfigs'
 
 export default {
   components: {
