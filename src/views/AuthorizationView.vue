@@ -18,7 +18,11 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
-import { timeoutForErrorMessages, timeoutForShortMessages } from '@/configs/projectConfigs'
+import {
+  timeoutForErrorMessages,
+  timeoutForRedirect,
+  timeoutForShortMessages
+} from '@/configs/projectConfigs'
 
 export default {
   components: {
@@ -45,6 +49,12 @@ export default {
               .then((response) => {
                 if (response.statusCode === 200) {
                   this.showAlert('Вы успешно вошли в учетную запись.', timeoutForShortMessages)
+                  const user = useUserStore()
+                  user.login()
+                  user.setUserMail(email)
+                  setTimeout(() => {
+                    this.$router.push('/')
+                  }, timeoutForRedirect)
                 } else {
                   this.showAlert(
                     'Что-то пошло не так. Повторите попытку позже.',
