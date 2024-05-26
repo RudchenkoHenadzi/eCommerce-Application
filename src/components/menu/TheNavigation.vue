@@ -8,9 +8,6 @@
         <RouterLink class="navigation__link" to="/about">О нас</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/authorization">Авторизация</RouterLink>
-      </li>
-      <li class="navigation__item">
         <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
       </li>
       <li class="navigation__item">
@@ -22,13 +19,27 @@
       <li class="navigation__item">
         <RouterLink class="navigation__link" to="/user">Пользователь</RouterLink>
       </li>
+      <li class="navigation__item" v-if="!isLoggedIn">
+        <RouterLink class="navigation__link" to="/authorization">Вход</RouterLink>
+      </li>
+      <li class="navigation__item" v-if="!isLoggedIn">
+        <RouterLink class="navigation__link" to="/registration">Регистрация</RouterLink>
+      </li>
     </ul>
   </nav>
 </template>
 
 <script>
+import { useUserStore } from '../../stores/User'
+
 export default {
-  name: 'TheNavigation'
+  name: 'TheNavigation',
+  computed: {
+    isLoggedIn: () => {
+      const user = useUserStore()
+      return user.isUserLoggedIn
+    }
+  }
 }
 </script>
 
