@@ -3,10 +3,7 @@ import {
   type ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
-import projectConfig, {
-  timeoutForErrorMessages,
-  timeoutForShortMessages
-} from '@/configs/projectConfigs'
+import projectConfig from '@/configs/projectConfigs'
 import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
 import MyTokenStore from '@/configs/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
@@ -68,12 +65,11 @@ export const useApiRootStore = defineStore('apiRoot', {
       const user = useUserStore()
       const refreshToken = user.getUserRefreshToken
       if (refreshToken) {
-        console.log('here')
         this.authToken.set({ token: '', refreshToken: refreshToken, expirationTime: 0 })
         this.createClientForRefreshTokenFlow()
         this.refreshTokenFn()
       } else {
-        this.saveAnonymousToken()
+        /*this.saveAnonymousToken()*/
       }
     },
     createApiRoot() {
@@ -89,47 +85,22 @@ export const useApiRootStore = defineStore('apiRoot', {
       }
     },
 
-    loginUser(email: string, password: string, showAlert: (text: string, delay: number) => void) {
-      this.checkUserExist(email)
-        .then((isUserExist) => {
-          if (isUserExist && this.apiRoot) {
-            this.apiRoot
-              .me()
-              .login()
-              .post({ body: { email, password } })
-              .execute()
-              .then((res) => {
-                if (res.statusCode === 200) {
-                  const client = this.createClientForPasswordFlow(email, password)
-                  this.saveAuthTokenTS(client, email, password)
-                  this.createApiRoot()
-                  showAlert('Вы успешно вошли в учетную запись.', timeoutForShortMessages)
-                } else {
-                  showAlert(
-                    'Что-то пошло не так. Повторите попытку позже.',
-                    timeoutForErrorMessages
-                  )
-                }
-              })
-              .catch((err) => {
-                if (err.statusCode === 400) {
-                  showAlert(
-                    'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
-                    timeoutForErrorMessages
-                  )
-                }
-              })
-          } else if (isUserExist === undefined) {
-            showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
-          } else {
-            showAlert(
-              'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.',
-              timeoutForErrorMessages
-            )
+    async loginUser(email: string, password: string) {
+      return this.apiRoot
+        .me()
+        .login()
+        .post({ body: { email, password } })
+        .execute()
+        .then((res) => {
+          if (res.statusCode === 200) {
+            const client = this.createClientForPasswordFlow(email, password)
+            this.saveAuthTokenTS(client, email, password)
+            this.createApiRoot()
           }
+          return res
         })
-        .catch(() => {
-          showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
+        .catch((err) => {
+          return err
         })
     },
 
@@ -138,10 +109,7 @@ export const useApiRootStore = defineStore('apiRoot', {
         .customers()
         .post({ body: customerDraft })
         .execute()
-        .then((res) => {
-          console.log(res)
-          return res
-        })
+        .then((res) => res)
         .catch((error) => {
           throw error
         })
@@ -167,9 +135,6 @@ export const useApiRootStore = defineStore('apiRoot', {
           user.setUserToken(this.anonymousToken.get().token)
           const refreshToken = this.anonymousToken.get().refreshToken
           if (refreshToken) user.setUserRefreshToken(refreshToken)
-          console.log('res anon tokens')
-          console.log(user.userToken)
-          console.log(user.userRefreshToken)
         })
         .catch((err) => console.log(err))
       return

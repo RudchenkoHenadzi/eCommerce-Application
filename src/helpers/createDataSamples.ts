@@ -49,7 +49,6 @@ export function createAddressDraft(
   firstName: string,
   lastName: string,
   email: string,
-  country: string,
   postalCode: string,
   city: string,
   streetName: string,
@@ -57,7 +56,7 @@ export function createAddressDraft(
   apartment: string
 ) {
   return {
-    country: country,
+    country: 'RU',
     streetName: streetName,
     postalCode: postalCode,
     city: city,

@@ -172,7 +172,6 @@ export default {
           billingAddress
         } = this.registrationForm
         const {
-          shippingCountry,
           shippingPostalCode,
           shippingCity,
           shippingStreetName,
@@ -187,7 +186,6 @@ export default {
           firstName,
           lastName,
           email,
-          shippingCountry,
           shippingPostalCode,
           shippingCity,
           shippingStreetName,
@@ -198,7 +196,6 @@ export default {
 
         if (!this.registrationForm.areBothAddressesSame) {
           const {
-            billingCountry,
             billingPostalCode,
             billingCity,
             billingStreetName,
@@ -209,7 +206,6 @@ export default {
             firstName,
             lastName,
             email,
-            billingCountry,
             billingPostalCode,
             billingCity,
             billingStreetName,
@@ -234,7 +230,6 @@ export default {
           addresses,
           addressesConfiguration
         )
-
         const apiRoot = useApiRootStore()
         try {
           const response = await apiRoot.registerUser(customerDraft)

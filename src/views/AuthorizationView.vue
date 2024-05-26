@@ -18,7 +18,7 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
-import { timeoutForShortMessages } from '@/configs/projectConfigs'
+import { timeoutForErrorMessages, timeoutForShortMessages } from '@/configs/projectConfigs'
 
 export default {
   components: {
@@ -36,7 +36,40 @@ export default {
     login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
       const apiRoot = useApiRootStore()
-      apiRoot.loginUser(email, password, this.showAlert)
+      apiRoot
+        .checkUserExist(email)
+        .then((isUserExist) => {
+          if (isUserExist) {
+            apiRoot
+              .loginUser(email, password)
+              .then((response) => {
+                if (response.statusCode === 200) {
+                  this.showAlert('Вы успешно вошли в учетную запись.', timeoutForShortMessages)
+                } else {
+                  this.showAlert(
+                    'Что-то пошло не так. Повторите попытку позже.',
+                    timeoutForErrorMessages
+                  )
+                }
+              })
+              .catch((error) => {
+                if (error.statusCode === 400) {
+                  this.showAlert(
+                    'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
+                    timeoutForErrorMessages
+                  )
+                }
+              })
+          } else {
+            this.showAlert(
+              'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.',
+              timeoutForErrorMessages
+            )
+          }
+        })
+        .catch(() => {
+          this.showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
+        })
     },
     showAlert(text: string, delay: number) {
       this.alertText = text
