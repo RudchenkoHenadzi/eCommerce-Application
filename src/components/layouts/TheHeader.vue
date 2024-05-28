@@ -2,8 +2,8 @@
   <header class="header">
     <TheNavigation />
 
-    <div v-if="store.isUserLoggedIn" class="header__user-name">
-      {{ 'Hello, ' + store.getUserMail }}
+    <div v-if="store.isLoggedIn" class="header__user-name">
+      {{ 'Hello, ' + store.userMail }}
       <button class="header__logout" @click="logout">Выход</button>
     </div>
   </header>
@@ -12,7 +12,7 @@
 <script lang="ts">
 import TheNavigation from '@/components/menu/TheNavigation.vue'
 import { useUserStore } from '@/stores/User'
-import { useApiRootStore } from '@/stores/ApiRoot'
+import userLogout from '@/services/apiMethods/userLogout'
 
 export default {
   name: 'TheHeader',
@@ -29,8 +29,7 @@ export default {
   },
   methods: {
     logout() {
-      const apiRoot = useApiRootStore()
-      apiRoot.logoutUser()
+      userLogout()
       const userApp = useUserStore()
       userApp.logout()
       userApp.removeUserMail()

@@ -99,9 +99,10 @@ import InputCountry from '@/components/form-elements/text-inputs/InputCountry.vu
 import InputBuilding from '@/components/form-elements/text-inputs/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/text-inputs/InputApartment.vue'
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
-import { createCustomerDraft, createAddressDraft } from '@/helpers/createDataSamples'
+import { createCustomerDraft, createAddressDraft } from '@/helpers/registrationHelpers'
 import type { IAddressConfiguration, IAddressDraft } from '@/types/customer-types'
-import { useApiRootStore } from '@/stores/ApiRoot'
+import { useApiRootStore } from '@/stores/ApiRootStore'
+import userRegistration from '@/services/apiMethods/userRegistration'
 
 export default {
   name: 'RegistrationForm',
@@ -230,9 +231,8 @@ export default {
           addresses,
           addressesConfiguration
         )
-        const apiRoot = useApiRootStore()
         try {
-          const response = await apiRoot.registerUser(customerDraft)
+          const response = await userRegistration(customerDraft)
 
           if (response && 'statusCode' in response) {
             if (response.statusCode === 201) {

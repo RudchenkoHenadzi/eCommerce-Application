@@ -1,5 +1,5 @@
 <script lang="ts">
-import { useApiRootStore } from '@/stores/ApiRoot'
+import { useApiRootStore } from '@/stores/ApiRootStore'
 
 export default {
   name: 'HomeView',

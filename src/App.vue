@@ -1,7 +1,7 @@
 <script lang="ts">
 import { RouterView } from 'vue-router'
 import TheHeader from '@/components/layouts/TheHeader.vue'
-import { useApiRootStore } from '@/stores/ApiRoot'
+import { useApiRootStore } from '@/stores/ApiRootStore'
 
 export default {
   components: { TheHeader, RouterView },

@@ -17,12 +17,13 @@ import LoginForm from '@/components/forms/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 import { useUserStore } from '@/stores/User'
-import { useApiRootStore } from '@/stores/ApiRoot'
 import {
   TIMEOUT_ERROR_MESSAGE,
   TIMEOUT_REDIRECT,
   TIMEOUT_SHORT_MESSAGE
 } from '@/constants/projectConfigs'
+import checkUserExist from '@/services/apiMethods/checkUserExist'
+import userLogin from '@/services/apiMethods/userLogin'
 
 export default {
   components: {
@@ -37,12 +38,34 @@ export default {
     }
   },
   methods: {
-    login(loginData: { email: string; password: string }) {
+    async login(loginData: { email: string; password: string }) {
       const { email, password } = loginData
-      const apiRoot = useApiRootStore()
-      apiRoot
-        .checkUserExist(email)
-        .then((isUserExist) => {
+      try {
+        const doesUserExist = await checkUserExist(email)
+        if (doesUserExist) {
+          const loginResult = await userLogin(email, password)
+          if (loginResult.statusCode === 200) {
+            this.showAlert('Вы успешно вошли в учетную запись.', TIMEOUT_SHORT_MESSAGE)
+            const user = useUserStore()
+            user.login()
+            user.setUserMail(email)
+            setTimeout(() => {
+              this.$router.push('/')
+            }, TIMEOUT_REDIRECT)
+          } else if (loginResult.statusCode === 400) {
+            this.showAlert(
+              'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
+              TIMEOUT_ERROR_MESSAGE
+            )
+          } else {
+            this.showAlert('Что-то пошло не так. Повторите попытку позже.', TIMEOUT_ERROR_MESSAGE)
+          }
+        }
+      } catch (error: unknown) {
+        this.showAlert('Что-то пошло не так. Повторите попытку позже.', TIMEOUT_ERROR_MESSAGE)
+      }
+
+      /*.then((isUserExist) => {
           if (isUserExist) {
             apiRoot
               .loginUser(email, password)
@@ -89,7 +112,7 @@ export default {
         })
         .catch(() => {
           this.showAlert('Что-то пошло не так. Повторите попытку позже.', TIMEOUT_ERROR_MESSAGE)
-        })
+        })*/
     },
     showAlert(text: string, delay: number) {
       this.alertText = text
@@ -101,12 +124,12 @@ export default {
     closeAlert() {
       this.isAlertShow = false
     },
-    successHandler(email: string) {
+    /*successHandler(email: string) {
       const appUser = useUserStore()
       appUser.login()
       appUser.setUserMail(email)
       this.redirectTo('/')
-    },
+    },*/
     redirectTo(path: string) {
       this.$router.push(path)
     }

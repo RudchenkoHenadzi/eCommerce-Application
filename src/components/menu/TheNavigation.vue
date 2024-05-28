@@ -37,7 +37,7 @@ export default {
   computed: {
     isLoggedIn: () => {
       const user = useUserStore()
-      return user.isUserLoggedIn
+      return user.isLoggedIn
     }
   }
 }

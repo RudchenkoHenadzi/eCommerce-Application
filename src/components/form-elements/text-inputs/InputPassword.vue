@@ -44,7 +44,7 @@ import {
   hasLowerCaseLetters,
   hasDigit,
   hasSpecialSymbol
-} from '@/helpers/passwordValidation'
+} from '@/helpers/validation/passwordValidation'
 import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
 import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
 

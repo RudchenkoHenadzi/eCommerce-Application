@@ -24,7 +24,7 @@
 <script lang="ts">
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
-import greaterThanCurrentAge from '@/helpers/bdayValidation'
+import greaterThanCurrentAge from '@/helpers/validation/bdayValidation'
 import { AGE_RESTRICTION } from '@/constants/projectConfigs'
 
 export default {

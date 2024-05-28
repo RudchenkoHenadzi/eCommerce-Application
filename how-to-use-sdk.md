@@ -129,6 +129,20 @@ apiRoot
           console.log(response.body);
         })
         .catch(e => console.log(e))
+
+// создание корзины (получится ли с анонимом?
+apiRoot.me().carts().post({
+  body: {
+    currency: 'EUR', // Используйте нужную вам валюту
+  }
+}).execute().then(response => {
+  // Получение ID корзины
+  const cartId = response.body.id;
+  console.log(`Cart ID: ${cartId}`);
+}).catch(error => {
+  console.error(error);
+});
+
 ```
 Примеры в документации: [https://docs.commercetools.com/sdk/sdk-example-code](https://docs.commercetools.com/sdk/sdk-example-code)
 
