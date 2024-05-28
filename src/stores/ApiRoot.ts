@@ -54,11 +54,16 @@ export const useApiRootStore = defineStore('apiRoot', {
     getProjectData() {
       return this.apiRoot.get().execute()
     },
+
     async loginUser(email: string, password: string) {
       this.createClientForPasswordFlow(email, password)
       this.createApiRoot()
       try {
-        const result = await this.apiRoot.me().login().post({ body: { email, password } }).execute()
+        const result = await this.apiRoot
+          .me()
+          .login()
+          .post({ body: { email, password } })
+          .execute()
 
         if (result.statusCode !== 200) {
           this.createClientForAnonymousFlow()
@@ -76,21 +81,21 @@ export const useApiRootStore = defineStore('apiRoot', {
       }
     },
     async registerUser(customerDraft: ICustomerDraft) {
-      return this.apiRoot
-        .customers()
-        .post({ body: customerDraft })
-        .execute()
-        .then((res) => {
-          if (res.statusCode === 200) {
-            const { email, password } = customerDraft
-            this.createClientForPasswordFlow(email, password)
-            this.createApiRoot()
-          }
-          return res
-        })
-        .catch((error) => {
-          throw error
-        })
+      try {
+        const res = await this.apiRoot
+          .customers()
+          .post({ body: customerDraft })
+          .execute()
+
+        if (res.statusCode === 201) {
+          const { email, password } = customerDraft
+          this.createClientForPasswordFlow(email, password)
+          this.createApiRoot()
+        }
+        return res
+      } catch (e) {
+        throw new Error('commonError')
+      }
     },
     logoutUser() {
       const user = useUserStore()

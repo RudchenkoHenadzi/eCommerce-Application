@@ -62,20 +62,20 @@ export default {
                   )
                 } else {
                   this.showAlert(
-                    'Что-то пошло не так. Повторите попытку позже4.',
+                    'Что-то пошло не так. Повторите попытку позже.',
                     TIMEOUT_ERROR_MESSAGE
                   )
                 }
               })
               .catch((error) => {
-                if (error.statusCode === 400) {
+                if (error.message === 'userNotExist') {
                   this.showAlert(
                     'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
                     TIMEOUT_ERROR_MESSAGE
                   )
                 } else {
                   this.showAlert(
-                    'Что-то пошло не так. Повторите попытку позже2.',
+                    'Что-то пошло не так. Повторите попытку позже.',
                     TIMEOUT_ERROR_MESSAGE
                   )
                 }

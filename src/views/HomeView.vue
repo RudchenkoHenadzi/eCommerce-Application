@@ -18,14 +18,31 @@ export default {
     },
     showUsersData() {
       const apiRoot = useApiRootStore()
-      apiRoot.apiRoot
-        .customers()
+      apiRoot
+        .apiRoot
+        .me()
         .get()
+        /*.productProjections()
+        .search()
+        .get({
+          queryArgs: {
+            filter: 'variants.prices.discounted:exists',
+            limit: 20, // The number of products to return
+           /!* priceCurrency: 'EUR',*!/
+          },
+        })*/
+        /*.search()
+        .get({
+          queryArgs: {
+            filter: `productType.key:"furniture-and-decor"`,
+            limit: 20,
+          },
+        })*/
         .execute()
-        .then((res) => console.table(res.body.results))
-        .catch((error) => {
-          console.log(error)
+        .then(response => {
+          console.log(response.body);
         })
+        .catch(e => console.log(e))
     },
     goToRegistrationPage() {
       this.$router.push('/registration')
