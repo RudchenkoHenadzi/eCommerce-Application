@@ -285,7 +285,6 @@ export default {
       if (billingDefaultIndex >= 0) {
         addressesConfiguration.defaultBillingAddress = billingDefaultIndex
       }
-
       return addressesConfiguration
     }
   },

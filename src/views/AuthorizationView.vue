@@ -55,9 +55,14 @@ export default {
                   setTimeout(() => {
                     this.$router.push('/')
                   }, TIMEOUT_REDIRECT)
+                } else if (response.statusCode === 400) {
+                  this.showAlert(
+                    'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
+                    TIMEOUT_ERROR_MESSAGE
+                  )
                 } else {
                   this.showAlert(
-                    'Что-то пошло не так. Повторите попытку позже.',
+                    'Что-то пошло не так. Повторите попытку позже4.',
                     TIMEOUT_ERROR_MESSAGE
                   )
                 }
@@ -66,6 +71,11 @@ export default {
                 if (error.statusCode === 400) {
                   this.showAlert(
                     'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
+                    TIMEOUT_ERROR_MESSAGE
+                  )
+                } else {
+                  this.showAlert(
+                    'Что-то пошло не так. Повторите попытку позже2.',
                     TIMEOUT_ERROR_MESSAGE
                   )
                 }

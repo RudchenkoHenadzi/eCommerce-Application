@@ -38,15 +38,12 @@ export const useApiRootStore = defineStore('apiRoot', {
   }),
   getters: {},
   actions: {
-    start() {
+    async start() {
       const user = useUserStore()
       const refreshToken = user.getUserRefreshToken
-      if (refreshToken) {
+      if (user.isUserLoggedIn && refreshToken) {
         this.authToken.set({ token: '', refreshToken: refreshToken, expirationTime: 0 })
-        this.createClientForRefreshTokenFlow()
-        this.refreshTokenFn()
-      } else {
-        /*this.saveAnonymousToken()*/
+        this.createClientForRefreshTokenFlow(this.authToken)
       }
     },
     createApiRoot() {
@@ -55,44 +52,49 @@ export const useApiRootStore = defineStore('apiRoot', {
       })
     },
     getProjectData() {
-      if (this.apiRoot) {
-        return this.apiRoot.get().execute()
-      } else {
-        return new Promise((res) => res(undefined))
+      return this.apiRoot.get().execute()
+    },
+    async loginUser(email: string, password: string) {
+      this.createClientForPasswordFlow(email, password)
+      this.createApiRoot()
+      try {
+        const result = await this.apiRoot.me().login().post({ body: { email, password } }).execute()
+
+        if (result.statusCode !== 200) {
+          this.createClientForAnonymousFlow()
+          this.createApiRoot()
+        }
+        return result
+      } catch (e: unknown) {
+        this.createClientForAnonymousFlow()
+        this.createApiRoot()
+        if (e instanceof Error && e.message.includes('not found')) {
+          throw new Error('userNotExist')
+        } else {
+          throw new Error('commonError')
+        }
       }
     },
-
-    async loginUser(email: string, password: string) {
-      return this.apiRoot
-        .me()
-        .login()
-        .post({ body: { email, password } })
-        .execute()
-        .then((res) => {
-          if (res.statusCode === 200) {
-            const client = this.createClientForPasswordFlow(email, password)
-            this.saveAuthTokenTS(client, email, password)
-            this.createApiRoot()
-          }
-          return res
-        })
-        .catch((err) => {
-          return err
-        })
-    },
-
     async registerUser(customerDraft: ICustomerDraft) {
       return this.apiRoot
         .customers()
         .post({ body: customerDraft })
         .execute()
-        .then((res) => res)
+        .then((res) => {
+          if (res.statusCode === 200) {
+            const { email, password } = customerDraft
+            this.createClientForPasswordFlow(email, password)
+            this.createApiRoot()
+          }
+          return res
+        })
         .catch((error) => {
           throw error
         })
     },
-
     logoutUser() {
+      const user = useUserStore()
+      user.logout()
       this.createClientForAnonymousFlow()
       this.createApiRoot()
       this.getProjectData()
@@ -107,56 +109,6 @@ export const useApiRootStore = defineStore('apiRoot', {
         })
         .execute()
         .then((res) => res.body.results.length > 0)
-    },
-
-    saveAnonymousToken() {
-      this.apiRoot
-        .get()
-        .execute()
-        .then(() => {
-          const user = useUserStore()
-          user.setUserToken(this.anonymousToken.get().token)
-          const refreshToken = this.anonymousToken.get().refreshToken
-          if (refreshToken) user.setUserRefreshToken(refreshToken)
-        })
-        .catch((err) => console.log(err))
-      return
-    },
-    async saveAuthTokenTS(client: Client, email: string, password: string) {
-      try {
-        const result = await client.execute({
-          uri: `${this.apiURL}/oauth/${this.projectKey}/customers/token`,
-          method: 'POST',
-          body: JSON.stringify({
-            grant_type: 'password',
-            email,
-            password,
-            scope: this.scopes
-          }),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-          }
-        })
-        console.log('Token:', result)
-      } catch (error) {
-        console.error('Error getting token:', error)
-      }
-    },
-    getAuthTokenBySDK() {
-      this.apiRoot
-        .get()
-        .execute()
-        .then(() => {
-          const user = useUserStore()
-          user.setUserToken(this.authToken.get().token)
-          const refreshToken = this.authToken.get().refreshToken
-          if (refreshToken) user.setUserRefreshToken(refreshToken)
-          console.log('res auth tokens')
-          console.log(user.userToken)
-          console.log(user.userRefreshToken)
-        })
-        .catch((err) => console.log(err))
-      return
     },
     createClientCredentialsFlowOptions(
       email: string,
@@ -184,45 +136,18 @@ export const useApiRootStore = defineStore('apiRoot', {
         .withProjectKey(projectKey)
         .withAnonymousSessionFlow(this.createAuthMiddlewareOptions(this.anonymousToken))
         .withHttpMiddleware(this.createHttpMiddlewareOptions())
-        .withLoggerMiddleware()
         .build()
     },
-    createClientForRefreshTokenFlow() {
+    createClientForRefreshTokenFlow(token: MyTokenStore) {
       this.client = new ClientBuilder()
-        .withRefreshTokenFlow(this.createAuthMiddlewareOptions())
+        .withRefreshTokenFlow(this.createAuthMiddlewareOptions(token))
         .withHttpMiddleware(this.createHttpMiddlewareOptions())
-        .withLoggerMiddleware()
         .build()
-    },
-    async refreshTokenFn() {
-      this.getProjectData()
-        .then((projectData) => {
-          console.log(projectData)
-        })
-        .catch((err) => console.log(err))
-      /*const refreshToken = this.authToken.get().refreshToken || this.anonymousToken.get().refreshToken || '';
-      try {
-        const result = await client.execute({
-          uri: `${this.authURL}/oauth/token`,
-          method: 'POST',
-          body: JSON.stringify({
-            grant_type: 'refresh_token',
-            refresh_token: refreshToken,
-          }),
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        });
-        console.log('New token:', result);
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-      }*/
     },
     createClientForPasswordFlow(email: string, password: string) {
-      return new ClientBuilder()
+      this.client = new ClientBuilder()
         .withPasswordFlow(this.createClientCredentialsFlowOptions(email, password))
         .withHttpMiddleware(this.createHttpMiddlewareOptions())
-        .withLoggerMiddleware()
         .build()
     },
     createAuthMiddlewareOptions(tokenCache?: TokenCache) {

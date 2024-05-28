@@ -13,9 +13,7 @@ export const useUserStore = defineStore('user', {
     getUserMail: (state) => state.email,
     getUserRefreshToken: (state) => state.userRefreshToken,
     getUserToken: (state) => state.userToken,
-    getTokenExpirationTime: (state) => {
-      state.tokenExpirationTime
-    }
+    getTokenExpirationTime: (state) => state.tokenExpirationTime
   },
   actions: {
     login() {
@@ -25,6 +23,10 @@ export const useUserStore = defineStore('user', {
     logout() {
       this.isLoggedIn = false
       localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('userMail')
+      localStorage.removeItem('tokenExpirationTime')
+      localStorage.removeItem('userToken')
+      localStorage.removeItem('userRefreshToken')
     },
     setUserMail(email: string) {
       this.email = email
