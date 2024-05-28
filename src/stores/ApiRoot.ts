@@ -9,31 +9,8 @@ import MyTokenStore from '@/constants/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import { useUserStore } from '@/stores/User'
 import type { ICustomerDraft } from '@/types/customer-types'
+import { anonymousClient, apiRoot } from '@/stores/createFirstAnonymousFlow'
 const { projectKey, authURL, apiURL, clientID, secret, scopes } = PROJECT_CONFIG
-
-const anonymousClient = new ClientBuilder()
-  .withProjectKey(projectKey)
-  .withAnonymousSessionFlow({
-    host: authURL,
-    projectKey: projectKey,
-    credentials: {
-      clientId: clientID,
-      clientSecret: secret
-    },
-    scopes: scopes,
-    tokenCache: new MyTokenStore(),
-    fetch
-  })
-  .withHttpMiddleware({
-    host: apiURL,
-    fetch
-  })
-  .withLoggerMiddleware()
-  .build()
-
-const apiRoot = createApiBuilderFromCtpClient(anonymousClient).withProjectKey({
-  projectKey: projectKey
-})
 
 export const useApiRootStore = defineStore('apiRoot', {
   state: (): {
