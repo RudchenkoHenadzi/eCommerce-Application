@@ -19,10 +19,10 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
 import { useApiRootStore } from '@/stores/ApiRoot'
 import {
-  timeoutForErrorMessages,
-  timeoutForRedirect,
-  timeoutForShortMessages
-} from '@/configs/projectConfigs'
+  TIMEOUT_ERROR_MESSAGE,
+  TIMEOUT_REDIRECT,
+  TIMEOUT_SHORT_MESSAGE
+} from '@/constants/projectConfigs'
 
 export default {
   components: {
@@ -48,17 +48,17 @@ export default {
               .loginUser(email, password)
               .then((response) => {
                 if (response.statusCode === 200) {
-                  this.showAlert('Вы успешно вошли в учетную запись.', timeoutForShortMessages)
+                  this.showAlert('Вы успешно вошли в учетную запись.', TIMEOUT_SHORT_MESSAGE)
                   const user = useUserStore()
                   user.login()
                   user.setUserMail(email)
                   setTimeout(() => {
                     this.$router.push('/')
-                  }, timeoutForRedirect)
+                  }, TIMEOUT_REDIRECT)
                 } else {
                   this.showAlert(
                     'Что-то пошло не так. Повторите попытку позже.',
-                    timeoutForErrorMessages
+                    TIMEOUT_ERROR_MESSAGE
                   )
                 }
               })
@@ -66,19 +66,19 @@ export default {
                 if (error.statusCode === 400) {
                   this.showAlert(
                     'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.',
-                    timeoutForErrorMessages
+                    TIMEOUT_ERROR_MESSAGE
                   )
                 }
               })
           } else {
             this.showAlert(
               'Такого пользователя не существует. Пожалуйста, исправьте введенный адрес электронной почты и попробуйте еще раз.',
-              timeoutForErrorMessages
+              TIMEOUT_ERROR_MESSAGE
             )
           }
         })
         .catch(() => {
-          this.showAlert('Что-то пошло не так. Повторите попытку позже.', timeoutForErrorMessages)
+          this.showAlert('Что-то пошло не так. Повторите попытку позже.', TIMEOUT_ERROR_MESSAGE)
         })
     },
     showAlert(text: string, delay: number) {

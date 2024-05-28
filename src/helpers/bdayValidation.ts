@@ -1,4 +1,4 @@
-import { ageForValigation } from '@/configs/projectConfigs'
+import { AGE_RESTRICTION } from '@/constants/projectConfigs'
 const DAYS_PER_YEAR = 365
 const HOURS_PER_DAY = 24
 const MINUTES_PER_HOUR = 60
@@ -9,7 +9,7 @@ const MS_PER_YEAR =
 
 function checkValidationDate() {
   const today = new Date().getTime()
-  const delta = ageForValigation * MS_PER_YEAR
+  const delta = AGE_RESTRICTION * MS_PER_YEAR
   const newDate = new Date(today - delta)
   return newDate.getFullYear() + '-' + (newDate.getMonth() + 1) + '-' + newDate.getDate()
 }

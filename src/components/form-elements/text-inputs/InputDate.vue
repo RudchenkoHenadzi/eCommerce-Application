@@ -25,7 +25,7 @@
 import useValidate from '@vuelidate/core'
 import { required, helpers } from '@vuelidate/validators'
 import greaterThanCurrentAge from '@/helpers/bdayValidation'
-import { ageForValigation } from '@/configs/projectConfigs'
+import { AGE_RESTRICTION } from '@/constants/projectConfigs'
 
 export default {
   name: 'InputDate',
@@ -45,7 +45,7 @@ export default {
     modelValue: {
       required: helpers.withMessage('Укажите вашу дату рождения', required),
       greaterThanCurrentAge: helpers.withMessage(
-        `Пользователь должен быть старше ${ageForValigation} лет`,
+        `Пользователь должен быть старше ${AGE_RESTRICTION} лет`,
         greaterThanCurrentAge
       )
     }

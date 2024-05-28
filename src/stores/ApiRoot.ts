@@ -3,13 +3,13 @@ import {
   type ByProjectKeyRequestBuilder,
   createApiBuilderFromCtpClient
 } from '@commercetools/platform-sdk'
-import projectConfig from '@/configs/projectConfigs'
+import PROJECT_CONFIG from '@/constants/projectConfigs'
 import { type Client, ClientBuilder, type TokenCache } from '@commercetools/sdk-client-v2'
-import MyTokenStore from '@/configs/tokenStore'
+import MyTokenStore from '@/constants/tokenStore'
 import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
 import { useUserStore } from '@/stores/User'
 import type { ICustomerDraft } from '@/types/customer-types'
-const { projectKey, authURL, apiURL, clientID, secret, scopes } = projectConfig
+const { projectKey, authURL, apiURL, clientID, secret, scopes } = PROJECT_CONFIG
 
 const anonymousClient = new ClientBuilder()
   .withProjectKey(projectKey)

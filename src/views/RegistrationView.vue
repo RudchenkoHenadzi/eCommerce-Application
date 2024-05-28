@@ -22,10 +22,10 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
 import {
-  timeoutForShortMessages,
-  timeoutForRedirect,
-  timeoutForErrorMessages
-} from '@/configs/projectConfigs'
+  TIMEOUT_SHORT_MESSAGE,
+  TIMEOUT_REDIRECT,
+  TIMEOUT_ERROR_MESSAGE
+} from '@/constants/projectConfigs'
 
 export default {
   components: {
@@ -45,10 +45,10 @@ export default {
       const appUser = useUserStore()
       appUser.login()
       appUser.setUserMail(userData.email)
-      this.showAlert('Пользователь успешно создан', timeoutForShortMessages)
+      this.showAlert('Пользователь успешно создан', TIMEOUT_SHORT_MESSAGE)
       setTimeout(() => {
         this.redirectTo('/')
-      }, timeoutForRedirect)
+      }, TIMEOUT_REDIRECT)
     },
     showAlert(text: string, delay: number) {
       this.alertText = text
@@ -73,13 +73,13 @@ export default {
     userExistsErrorHandler() {
       this.showAlert(
         'Пользователь с таким email уже зарегистрирован. Войдите в учетную запись или используйте другой email для регистрации.',
-        timeoutForErrorMessages
+        TIMEOUT_ERROR_MESSAGE
       )
     },
     errorInvalidInputHandler() {
       this.showAlert(
         'Введены некорректные данные. Исправьте данные и попробуйте снова.',
-        timeoutForErrorMessages
+        TIMEOUT_ERROR_MESSAGE
       )
     }
   }

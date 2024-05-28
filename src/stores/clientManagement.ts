@@ -1,8 +1,8 @@
 /*
 import { defineStore } from 'pinia'
-import { authApiRoot, anonymousApiRoot } from '@/configs/BuildClient'
+import { authApiRoot, anonymousApiRoot } from '@/constants/BuildClient'
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk'
-import config from '../configs/project-configs';
+import config from '../constants/project-constants';
 const { projectKey } = config;
 
 export const useApiRoot = defineStore('apiRoot', {
