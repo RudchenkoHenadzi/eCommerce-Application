@@ -59,11 +59,7 @@ export const useApiRootStore = defineStore('apiRoot', {
       this.createClientForPasswordFlow(email, password)
       this.createApiRoot()
       try {
-        const result = await this.apiRoot
-          .me()
-          .login()
-          .post({ body: { email, password } })
-          .execute()
+        const result = await this.apiRoot.me().login().post({ body: { email, password } }).execute()
 
         if (result.statusCode !== 200) {
           this.createClientForAnonymousFlow()
@@ -82,10 +78,7 @@ export const useApiRootStore = defineStore('apiRoot', {
     },
     async registerUser(customerDraft: ICustomerDraft) {
       try {
-        const res = await this.apiRoot
-          .customers()
-          .post({ body: customerDraft })
-          .execute()
+        const res = await this.apiRoot.customers().post({ body: customerDraft }).execute()
 
         if (res.statusCode === 201) {
           const { email, password } = customerDraft

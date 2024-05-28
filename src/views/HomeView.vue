@@ -18,8 +18,7 @@ export default {
     },
     showUsersData() {
       const apiRoot = useApiRootStore()
-      apiRoot
-        .apiRoot
+      apiRoot.apiRoot
         .me()
         .get()
         /*.productProjections()
@@ -39,10 +38,10 @@ export default {
           },
         })*/
         .execute()
-        .then(response => {
-          console.log(response.body);
+        .then((response) => {
+          console.log(response.body)
         })
-        .catch(e => console.log(e))
+        .catch((e) => console.log(e))
     },
     goToRegistrationPage() {
       this.$router.push('/registration')

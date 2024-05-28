@@ -16,7 +16,7 @@ User/flow - пользователь нашего приложения
     ```js
       const anonymousClient = new ClientBuilder()
       .withProjectKey(projectKey) //обязательный middleware
-      .withAnonymousSessionFlow({ // тут мы выбираем разные middleware в зависимости от типа нашего юзера (аноним или зарегестрированный)
+      .withAnonymousSessionFlow({ // тут мы выбираем разные middleware в зависимости от типа нашего юзера: аноним или зарегестрированный (*)
         host: authURL,
         projectKey: projectKey,
         credentials: {
@@ -39,6 +39,7 @@ User/flow - пользователь нашего приложения
       projectKey: projectKey
     })
     ```
+(*) Больше про различные варианты flow тут: [https://docs.commercetools.com/api/authorization](https://docs.commercetools.com/api/authorization)
   
 ### Примеры работы с SDK:
 ```js
@@ -129,27 +130,36 @@ apiRoot
         })
         .catch(e => console.log(e))
 ```
+Примеры в документации: [https://docs.commercetools.com/sdk/sdk-example-code](https://docs.commercetools.com/sdk/sdk-example-code)
 
 ### Авторизация в приложении
 
 #### Регистрация:
 
-+ собрать данные необходимые для регистрации
++ собрать данные необходимые для регистрации (минимум - email, что еще можно собрать - можно посмотреть [здесь](https://docs.commercetools.com/api/projects/customers#customerdraft))
 + отправить данные с помощью apiRoot анонимного флоу
+  ```js
+    apiRoot.customers().post({ body: customerDraft }).execute()
+  ```
 + если успешно - создать новый apiRoot с password flow, используя данные нового зарегистрированного пользователя
++ про регистрацию в документации - [тут](https://docs.commercetools.com/api/projects/customers#create-sign-up-customer)
 
 #### Логин
 
 + получить логин и пароль пользователя
-+ создать новый apiRoot с этими данными 
++ создать нового клиента с passwordFlow и далее из него - новый apiRoot
 + отправить данные в commerce tools с помощью нового apiRoot
+  ```js
+    apiRoot.me().login().post({ body: { email, password } }).execute()
+  ```
 + если успешно - ок
-+ если нет - создать новый флоу анонимного пользователя
++ если нет - создать нового клиента с anonymousFlow и далее из него - новый apiRoot
++ про логин в документации - [здесь](https://docs.commercetools.com/api/projects/customers#authenticate-sign-in-customer)
 
 
 ### Варианты 
 
-1. первый вход в приложение - анонимный пользователь
+1. первый вход в приложение - анонимный пользователь (мы не знаем, есть ли он у нас в базе коммерс тулз, но он уже имеет доступ к товарам, может собирать корзину и тп)
   + создаем анонимный флоу
   + сохраняем id корзины анонимного пользователя
   + используем этот apiRoot для всех запросов к api
