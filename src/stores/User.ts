@@ -6,14 +6,16 @@ export const useUserStore = defineStore('user', {
     userMail: localStorage.getItem('userMail') || '',
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
-    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0
+    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
+    userCartId: localStorage.getItem('userCartId') || '',
   }),
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
     email: (state) => state.userMail,
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
-    tokenExpirationTime: (state) => state.userTokenExpirationTime
+    tokenExpirationTime: (state) => state.userTokenExpirationTime,
+    cartId: (state) => state.userCartId,
   },
   actions: {
     login() {
@@ -24,14 +26,6 @@ export const useUserStore = defineStore('user', {
       this.isUserLoggedIn = false
       localStorage.removeItem('isLoggedIn')
       localStorage.removeItem('userMail')
-      localStorage.removeItem('tokenExpirationTime')
-      localStorage.removeItem('userToken')
-      localStorage.removeItem('userRefreshToken')
-    },
-    clearTokenData() {
-      this.userToken = ''
-      this.userRefreshToken = ''
-      this.userTokenExpirationTime = 0
       localStorage.removeItem('tokenExpirationTime')
       localStorage.removeItem('userToken')
       localStorage.removeItem('userRefreshToken')
@@ -55,6 +49,22 @@ export const useUserStore = defineStore('user', {
     setExpirationTime(newTime: number) {
       this.userTokenExpirationTime = newTime
       localStorage.setItem('tokenExpirationTime', String(newTime))
+    },
+    clearTokenData() {
+      this.userToken = ''
+      this.userRefreshToken = ''
+      this.userTokenExpirationTime = 0
+      localStorage.removeItem('tokenExpirationTime')
+      localStorage.removeItem('userToken')
+      localStorage.removeItem('userRefreshToken')
+    },
+    setCardId(id: string) {
+      this.userCartId = id
+      localStorage.setItem('userCartId', id)
+    },
+    removeCartId() {
+      this.userCartId = ''
+      localStorage.removeItem('userCartId')
     }
   }
 })

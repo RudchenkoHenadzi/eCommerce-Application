@@ -1,14 +1,13 @@
 import { defineStore } from 'pinia'
 import { type ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk'
 import { useUserStore } from '@/stores/User'
-import { apiRoot } from '@/stores/createFirstAnonymousFlow'
 import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 
 export const useApiRootStore = defineStore('apiRoot', {
   state: (): {
     apiRoot: ByProjectKeyRequestBuilder
   } => ({
-    apiRoot: apiRoot
+    apiRoot: apiRootManagement.createAnonymousSessionFlow()
   }),
   getters: {},
   actions: {
