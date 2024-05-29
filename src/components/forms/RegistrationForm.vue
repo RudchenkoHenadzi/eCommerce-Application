@@ -101,6 +101,7 @@ import InputApartment from '@/components/form-elements/text-inputs/InputApartmen
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
 import userRegistration from '@/services/apiMethods/userRegistration'
 import { useUserStore } from '@/stores/User'
+import { isUserExist } from '@/helpers/dataCheck/registrationCheck'
 
 export default {
   name: 'RegistrationForm',
@@ -185,7 +186,7 @@ export default {
             this.$emit('commonError')
           }
         } catch (error) {
-          if (error instanceof Error && error.message.includes('userExists')) {
+          if (isUserExist(error)) {
             this.$emit('userExists')
           } else {
             this.$emit('commonError')

@@ -13,8 +13,7 @@ export default async function userRegistration(
   isShippingAddressDefault: boolean,
   isBillingAddressDefault: boolean,
   shippindAddress: IShippingAddressModel,
-  billingAddress?: IBillingAddressModel,
-  anonymousCartId?: string
+  billingAddress?: IBillingAddressModel
 ) {
   const apiRootStore = useApiRootStore()
   const apiRoot = apiRootStore.apiRoot
