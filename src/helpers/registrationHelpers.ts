@@ -134,18 +134,21 @@ function checkBillingAddressIndexes(
   isBillingAddressDefault: boolean,
   areBothAddressesSame: boolean
 ) {
-  let billingAddressIndex = -1
-  let defaultBillingAddressIndex = -1
+  const res = {
+    billingAddressIndex: -1,
+    defaultBillingAddressIndex: -1
+  }
+
   if (areBothAddressesSame) {
-    billingAddressIndex = 0
+    res.billingAddressIndex = 0
     if (isBillingAddressDefault) {
-      defaultBillingAddressIndex = 0
+      res.defaultBillingAddressIndex = 0
     }
   } else {
-    billingAddressIndex = 1
+    res.billingAddressIndex = 1
     if (isBillingAddressDefault) {
-      defaultBillingAddressIndex = 1
+      res.defaultBillingAddressIndex = 1
     }
   }
-  return { billingAddressIndex, defaultBillingAddressIndex }
+  return res
 }
