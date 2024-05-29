@@ -7,7 +7,7 @@ export const useUserStore = defineStore('user', {
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
     userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
-    userCartId: localStorage.getItem('userCartId') || '',
+    userCartId: localStorage.getItem('userCartId') || ''
   }),
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
@@ -15,7 +15,7 @@ export const useUserStore = defineStore('user', {
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
     tokenExpirationTime: (state) => state.userTokenExpirationTime,
-    cartId: (state) => state.userCartId,
+    cartId: (state) => state.userCartId
   },
   actions: {
     login() {

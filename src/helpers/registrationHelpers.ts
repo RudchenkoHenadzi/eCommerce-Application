@@ -1,4 +1,10 @@
-import type { IAddressDraft, ICustomerDraft } from '@/types/customer-types'
+import type {
+  IAddressDraft,
+  IAddressesConfiguration,
+  IBillingAddressModel,
+  ICustomerDraft,
+  IShippingAddressModel
+} from '@/types/customer-types'
 
 export function createCustomerDraft(
   email: string,
@@ -6,13 +12,7 @@ export function createCustomerDraft(
   firstName: string,
   lastName: string,
   dateOfBirth: string,
-  addresses: IAddressDraft[],
-  addressesConfiguration?: {
-    defaultShippingAddress?: number
-    defaultBillingAddress?: number
-    shippingAddresses?: number[]
-    billingAddresses?: number[]
-  }
+  addressesConfiguration: IAddressesConfiguration
 ): ICustomerDraft {
   const customerDraft: ICustomerDraft = {
     dateOfBirth: dateOfBirth,
@@ -20,7 +20,7 @@ export function createCustomerDraft(
     firstName: firstName,
     lastName: lastName,
     password: password,
-    addresses: addresses,
+    addresses: addressesConfiguration.addresses,
     shippingAddresses: [0],
     billingAddresses: [0]
   }
@@ -49,21 +49,103 @@ export function createAddressDraft(
   firstName: string,
   lastName: string,
   email: string,
-  postalCode: string,
-  city: string,
-  streetName: string,
-  building: string,
-  apartment: string
-) {
-  return {
-    country: 'RU',
-    streetName: streetName,
-    postalCode: postalCode,
-    city: city,
-    firstName: firstName,
-    lastName: lastName,
-    building: building,
-    apartment: apartment,
-    email: email
+  addressModel: IShippingAddressModel | IBillingAddressModel
+): IAddressDraft {
+  if ('shippingStreetName' in addressModel) {
+    return {
+      firstName: firstName,
+      lastName: lastName,
+      streetName: addressModel.shippingStreetName,
+      building: addressModel.shippingBuilding,
+      apartment: addressModel.shippingApartment,
+      postalCode: addressModel.shippingPostalCode,
+      city: addressModel.shippingCity,
+      country: 'RU',
+      email: email
+    }
+  } else {
+    return {
+      firstName: firstName,
+      lastName: lastName,
+      streetName: addressModel.billingStreetName,
+      building: addressModel.billingBuilding,
+      apartment: addressModel.billingApartment,
+      postalCode: addressModel.billingPostalCode,
+      city: addressModel.billingCity,
+      country: 'RU',
+      email: email
+    }
   }
+}
+
+export function createAddressesConfiguration(
+  firstName: string,
+  lastName: string,
+  email: string,
+  isShippingAddressDefault: boolean,
+  isBillingAddressDefault: boolean,
+  shippindAddress: IShippingAddressModel,
+  billingAddress?: IBillingAddressModel
+): IAddressesConfiguration {
+  const addressesConfiguration: IAddressesConfiguration = {
+    addresses: [],
+    shippingAddresses: [0]
+  }
+  const shippingAddressDraft = createAddressDraft(firstName, lastName, email, shippindAddress)
+  addressesConfiguration.addresses.push(shippingAddressDraft)
+  if (billingAddress) {
+    const billingAddressDraft = createAddressDraft(firstName, lastName, email, billingAddress)
+    addressesConfiguration.addresses.push(billingAddressDraft)
+  }
+  const { billingAddressIndex, defaultBillingAddressIndex } = checkBillingAddressIndexes(
+    isBillingAddressDefault,
+    Boolean(billingAddress)
+  )
+  setAddressesIndexes(
+    isShippingAddressDefault,
+    billingAddressIndex,
+    defaultBillingAddressIndex,
+    addressesConfiguration
+  )
+  console.log('addressesConfigurationaddressesConfiguration')
+  console.log(addressesConfiguration)
+  return addressesConfiguration
+}
+
+function setAddressesIndexes(
+  isShippingAddressDefault: boolean,
+  billingBaseIndex: number,
+  billingDefaultIndex: number,
+  addressesConfiguration: IAddressesConfiguration
+) {
+  if (isShippingAddressDefault) {
+    addressesConfiguration.defaultShippingAddress = 0
+  }
+  if (billingBaseIndex >= 0) {
+    addressesConfiguration.billingAddresses = [billingBaseIndex]
+  }
+  if (billingDefaultIndex >= 0) {
+    addressesConfiguration.defaultBillingAddress = billingDefaultIndex
+  }
+  return addressesConfiguration
+}
+
+function checkBillingAddressIndexes(
+  isBillingAddressDefault: boolean,
+  areBothAddressesSame: boolean
+) {
+  let billingAddressIndex = -1
+  let defaultBillingAddressIndex = -1
+  if (areBothAddressesSame) {
+    billingAddressIndex = 0
+    if (isBillingAddressDefault) {
+      defaultBillingAddressIndex = 0
+    }
+  } else {
+    billingAddressIndex = 1
+    if (isBillingAddressDefault) {
+      defaultBillingAddressIndex = 1
+    }
+  }
+  return { billingAddressIndex, defaultBillingAddressIndex }
 }

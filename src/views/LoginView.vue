@@ -16,10 +16,7 @@
 import LoginForm from '@/components/forms/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
-import {
-  TIMEOUT_ERROR_MESSAGE,
-  TIMEOUT_SHORT_MESSAGE
-} from '@/constants/projectConfigs'
+import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/projectConfigs'
 
 export default {
   components: {
@@ -49,7 +46,7 @@ export default {
     },
     closeAlert() {
       this.isAlertShow = false
-    },
+    }
   }
 }
 </script>

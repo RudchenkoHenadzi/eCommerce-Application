@@ -7,7 +7,8 @@ export default {
     showProjectData() {
       const apiRoot = useApiRootStore()
       apiRoot.apiRoot
-        ?.get()
+        .me()
+        .get()
         .execute()
         .then((response) => {
           console.log(response)
@@ -19,8 +20,12 @@ export default {
     showUsersData() {
       const apiRoot = useApiRootStore()
       apiRoot.apiRoot
-        .me()
-        .get()
+        .carts()
+        .post({
+          body: {
+            currency: 'USD'
+          }
+        })
         /*.productProjections()
         .search()
         .get({
@@ -39,7 +44,7 @@ export default {
         })*/
         .execute()
         .then((response) => {
-          console.log(response.body)
+          console.log(`cart id is ${response.body.id}`)
         })
         .catch((e) => console.log(e))
     },
@@ -58,10 +63,8 @@ export default {
     <h1 class="main-page__title">Главная страница</h1>
     <button @click="goToRegistrationPage" class="main-page__btn">Регистрация</button>
     <button @click="goToLoginPage" class="main-page__btn">Вход</button>
-    <button @click="showProjectData" class="main-page__btn">
-      Показать в консоли данные проекта
-    </button>
-    <button @click="showUsersData" class="main-page__btn">Показать в консоли данные юзеров</button>
+    <button @click="showProjectData" class="main-page__btn">Показать в консоли юзера</button>
+    <button @click="showUsersData" class="main-page__btn">создать корзину и показать данные</button>
   </div>
 </template>
 

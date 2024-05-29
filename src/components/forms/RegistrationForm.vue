@@ -99,10 +99,8 @@ import InputCountry from '@/components/form-elements/text-inputs/InputCountry.vu
 import InputBuilding from '@/components/form-elements/text-inputs/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/text-inputs/InputApartment.vue'
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
-import { createCustomerDraft, createAddressDraft } from '@/helpers/registrationHelpers'
-import type { IAddressConfiguration, IAddressDraft } from '@/types/customer-types'
-import { useApiRootStore } from '@/stores/ApiRootStore'
 import userRegistration from '@/services/apiMethods/userRegistration'
+import { useUserStore } from '@/stores/User'
 
 export default {
   name: 'RegistrationForm',
@@ -163,129 +161,39 @@ export default {
       const result = await this.v$.$validate()
 
       if (result) {
-        const {
-          email,
-          password,
-          firstName,
-          lastName,
-          dateOfBirth,
-          shippingAddress,
-          billingAddress
-        } = this.registrationForm
-        const {
-          shippingPostalCode,
-          shippingCity,
-          shippingStreetName,
-          shippingBuilding,
-          shippingApartment
-        } = shippingAddress
-        /* TODO if anonymousCart exist -> add
-        *   anonymousCart: {
-            id: {{ID}},
-          },*/
-        const shippingAddressDraft = createAddressDraft(
-          firstName,
-          lastName,
-          email,
-          shippingPostalCode,
-          shippingCity,
-          shippingStreetName,
-          shippingBuilding,
-          shippingApartment
-        )
-        const addresses: IAddressDraft[] = [shippingAddressDraft]
-
-        if (!this.registrationForm.areBothAddressesSame) {
-          const {
-            billingPostalCode,
-            billingCity,
-            billingStreetName,
-            billingBuilding,
-            billingApartment
-          } = billingAddress
-          const billingAddressDraft = createAddressDraft(
-            firstName,
-            lastName,
-            email,
-            billingPostalCode,
-            billingCity,
-            billingStreetName,
-            billingBuilding,
-            billingApartment
-          )
-          addresses.push(billingAddressDraft)
-        }
-        const { billingAddressIndex, defaultBillingAddressIndex } = this.checkBillingIndexes()
-        const addressesConfiguration = this.createAddressesConfiguration(
-          this.registrationForm.isShippingAddressDefault,
-          billingAddressIndex,
-          defaultBillingAddressIndex
-        )
-
-        const customerDraft = createCustomerDraft(
-          email,
-          password,
-          firstName,
-          lastName,
-          dateOfBirth,
-          addresses,
-          addressesConfiguration
-        )
         try {
-          const response = await userRegistration(customerDraft)
+          const registrationResult = await userRegistration(
+            this.registrationForm.email,
+            this.registrationForm.password,
+            this.registrationForm.firstName,
+            this.registrationForm.lastName,
+            this.registrationForm.dateOfBirth,
+            this.registrationForm.isShippingAddressDefault,
+            this.registrationForm.isBillingAddressDefault,
+            this.registrationForm.shippingAddress,
+            this.registrationForm.areBothAddressesSame
+              ? this.registrationForm.billingAddress
+              : undefined
+          )
 
-          if (response && 'statusCode' in response) {
-            if (response.statusCode === 201) {
-              this.$emit('successRegistrationEvent', { email: email })
-            } else if (response.statusCode === 400) {
-              this.$emit('errorUserExists')
-            } else {
-              this.$emit('errorFailedRequest')
-            }
+          if (registrationResult.statusCode === 201) {
+            const user = useUserStore()
+            user.login()
+            user.setUserMail(this.registrationForm.email)
+            this.$emit('registrationSuccess', this.registrationForm.email)
           } else {
-            this.$emit('errorFailedRequest')
+            this.$emit('commonError')
           }
         } catch (error) {
-          this.$emit('errorFailedRequest', error)
+          if (error instanceof Error && error.message.includes('userExists')) {
+            this.$emit('userExists')
+          } else {
+            this.$emit('commonError')
+          }
         }
       } else {
         this.$emit('errorInvalidInput')
       }
-    },
-    checkBillingIndexes() {
-      let billingAddressIndex = -1
-      let defaultBillingAddressIndex = -1
-      if (this.registrationForm.areBothAddressesSame) {
-        billingAddressIndex = 0
-        if (this.registrationForm.isBillingAddressDefault) {
-          defaultBillingAddressIndex = 0
-        }
-      } else {
-        billingAddressIndex = 1
-        if (this.registrationForm.isBillingAddressDefault) {
-          defaultBillingAddressIndex = 1
-        }
-      }
-      return { billingAddressIndex, defaultBillingAddressIndex }
-    },
-    createAddressesConfiguration(
-      isShippingAddressDefault: boolean,
-      billingBaseIndex: number,
-      billingDefaultIndex: number
-    ) {
-      const addressesConfiguration: IAddressConfiguration = {
-        shippingAddresses: [0]
-      }
-      if (isShippingAddressDefault) {
-        addressesConfiguration.defaultShippingAddress = 0
-      }
-      if (billingBaseIndex >= 0) {
-        addressesConfiguration.billingAddresses = [billingBaseIndex]
-      }
-      if (billingDefaultIndex >= 0) {
-        addressesConfiguration.defaultBillingAddress = billingDefaultIndex
-      }
-      return addressesConfiguration
     }
   },
   computed: {

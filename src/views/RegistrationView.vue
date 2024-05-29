@@ -1,9 +1,9 @@
 <template>
   <div class="auth-page">
     <RegistrationForm
-      @successRegistrationEvent="successRegistrationHandler"
-      @errorFailedRequest="commonErrorsHandler"
-      @errorUserExists="userExistsErrorHandler"
+      @registrationSuccess="successRegistrationHandler"
+      @commonError="commonErrorsHandler"
+      @userExists="userExistsErrorHandler"
       @errorInvalidInput="errorInvalidInputHandler"
     />
     <Transition>
@@ -19,7 +19,6 @@
 <script lang="ts">
 import RegistrationForm from '@/components/forms/RegistrationForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
-import { useUserStore } from '@/stores/User'
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
 import {
   TIMEOUT_SHORT_MESSAGE,
@@ -41,10 +40,7 @@ export default {
     }
   },
   methods: {
-    successRegistrationHandler(userData: { email: string }) {
-      const appUser = useUserStore()
-      appUser.login()
-      appUser.setUserMail(userData.email)
+    successRegistrationHandler() {
       this.showAlert('Пользователь успешно создан', TIMEOUT_SHORT_MESSAGE)
       setTimeout(() => {
         this.redirectTo('/')

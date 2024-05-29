@@ -11,12 +11,38 @@ export interface IAddressDraft {
   email: string
 }
 
-export interface IAddressConfiguration {
+export interface IShippingAddressModel {
+  shippingStreetName: string
+  shippingBuilding: string
+  shippingApartment: string
+  shippingCity: string
+  shippingPostalCode: string
+  shippingCountry: string
+}
+
+export interface IBillingAddressModel {
+  billingStreetName: string
+  billingBuilding: string
+  billingApartment: string
+  billingCity: string
+  billingPostalCode: string
+  billingCountry: string
+}
+
+export interface IAddressesConfiguration {
+  addresses: IAddressDraft[]
+  defaultShippingAddress?: number
+  defaultBillingAddress?: number
+  shippingAddresses?: number[]
+  billingAddresses?: number[]
+}
+
+/*export interface IAddressConfiguration {
   shippingAddresses: number[]
   defaultShippingAddress?: number
   billingAddresses?: number[]
   defaultBillingAddress?: number
-}
+}*/
 
 export interface ICustomerDraft {
   email: string
