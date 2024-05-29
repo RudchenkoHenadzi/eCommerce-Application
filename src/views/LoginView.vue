@@ -1,6 +1,10 @@
 <template>
   <div class="auth-page">
-    <LoginForm @successMessage="successMessage" @errorMessage="errorMessage" />
+    <LoginForm
+      @successLogin="successMessage"
+      @commonError="commonError"
+      @invalidPassword="invalidPassword"
+    />
     <Transition>
       <AlertMessage
         v-if="isAlertShow"
@@ -16,7 +20,11 @@
 import LoginForm from '@/components/forms/LoginForm.vue'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
-import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/projectConfigs'
+import {
+  ERROR_MESSAGE_TEXTS,
+  TIMEOUT_ERROR_MESSAGE,
+  TIMEOUT_SHORT_MESSAGE
+} from '@/constants/projectConfigs'
 
 export default {
   components: {
@@ -31,11 +39,14 @@ export default {
     }
   },
   methods: {
-    successMessage(text: string) {
-      this.showAlert(text, TIMEOUT_SHORT_MESSAGE)
+    successMessage() {
+      this.showAlert(ERROR_MESSAGE_TEXTS.successLogin, TIMEOUT_SHORT_MESSAGE)
     },
-    errorMessage(text: string) {
-      this.showAlert(text, TIMEOUT_ERROR_MESSAGE)
+    commonError() {
+      this.showAlert(ERROR_MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
+    },
+    invalidPassword() {
+      this.showAlert(ERROR_MESSAGE_TEXTS.invalidPassword, TIMEOUT_ERROR_MESSAGE)
     },
     showAlert(text: string, delay: number) {
       this.alertText = text

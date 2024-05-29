@@ -23,7 +23,8 @@ import type { ClientResponse, CustomerSignInResult } from '@commercetools/platfo
 import {
   TIMEOUT_SHORT_MESSAGE,
   TIMEOUT_REDIRECT,
-  TIMEOUT_ERROR_MESSAGE
+  TIMEOUT_ERROR_MESSAGE,
+  ERROR_MESSAGE_TEXTS
 } from '@/constants/projectConfigs'
 
 export default {
@@ -41,7 +42,7 @@ export default {
   },
   methods: {
     successRegistrationHandler() {
-      this.showAlert('Пользователь успешно создан', TIMEOUT_SHORT_MESSAGE)
+      this.showAlert(ERROR_MESSAGE_TEXTS.successRegistration, TIMEOUT_SHORT_MESSAGE)
       setTimeout(() => {
         this.redirectTo('/')
       }, TIMEOUT_REDIRECT)
@@ -67,16 +68,10 @@ export default {
       }
     },
     userExistsErrorHandler() {
-      this.showAlert(
-        'Пользователь с таким email уже зарегистрирован. Войдите в учетную запись или используйте другой email для регистрации.',
-        TIMEOUT_ERROR_MESSAGE
-      )
+      this.showAlert(ERROR_MESSAGE_TEXTS.userExists, TIMEOUT_ERROR_MESSAGE)
     },
     errorInvalidInputHandler() {
-      this.showAlert(
-        'Введены некорректные данные. Исправьте данные и попробуйте снова.',
-        TIMEOUT_ERROR_MESSAGE
-      )
+      this.showAlert(ERROR_MESSAGE_TEXTS.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
     }
   }
 }

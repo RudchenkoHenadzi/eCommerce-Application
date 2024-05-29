@@ -42,7 +42,7 @@ export default {
         if (doesUserExist) {
           const loginResult = await userLogin(this.loginForm.email, this.loginForm.password)
           if (loginResult.statusCode === 200) {
-            this.$emit('successMessage', 'Вы успешно вошли в учетную запись.')
+            this.$emit('successLogin')
             const user = useUserStore()
             user.login()
             user.setUserMail(this.loginForm.email)
@@ -50,16 +50,13 @@ export default {
               this.$router.push('/')
             }, TIMEOUT_REDIRECT)
           } else if (loginResult.statusCode === 400) {
-            this.$emit(
-              'errorMessage',
-              'Неверный пароль. Пожалуйста, исправьте введенный пароль и попробуйте еще раз.'
-            )
+            this.$emit('invalidPassword')
           } else {
-            this.$emit('errorMessage', 'Что-то пошло не так. Повторите попытку позже.')
+            this.$emit('commonError')
           }
         }
       } catch (error: unknown) {
-        this.$emit('errorMessage', 'Что-то пошло не так. Повторите попытку позже.')
+        this.$emit('commonError')
       }
     }
   }
