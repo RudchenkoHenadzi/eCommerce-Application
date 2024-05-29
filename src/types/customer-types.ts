@@ -37,13 +37,6 @@ export interface IAddressesConfiguration {
   billingAddresses?: number[]
 }
 
-/*export interface IAddressConfiguration {
-  shippingAddresses: number[]
-  defaultShippingAddress?: number
-  billingAddresses?: number[]
-  defaultBillingAddress?: number
-}*/
-
 export interface ICustomerDraft {
   email: string
   password: string

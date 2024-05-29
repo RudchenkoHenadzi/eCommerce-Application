@@ -1,5 +1,6 @@
 import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { useApiRootStore } from '@/stores/ApiRootStore'
+import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/errorsCheck/loginErrors'
 
 export default async function userLogin(email: string, password: string) {
   const apiRootStore = useApiRootStore()
@@ -14,13 +15,13 @@ export default async function userLogin(email: string, password: string) {
       })
       .execute()
 
-    if (result.statusCode !== 200) {
+    if (!isLoginRequestSuccess) {
       apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
     }
     return result
   } catch (e: unknown) {
     apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
-    if (e instanceof Error && e.message.includes('not found')) {
+    if (isUserNotFound(e)) {
       throw new Error('userNotExist')
     } else {
       throw new Error('commonError')

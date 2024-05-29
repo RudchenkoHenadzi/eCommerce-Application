@@ -2,6 +2,7 @@ import type { IBillingAddressModel, IShippingAddressModel } from '@/types/custom
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers'
+import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/errorsCheck/registrationErrors'
 
 export default async function userRegistration(
   email: string,
@@ -44,13 +45,13 @@ export default async function userRegistration(
         })
         .execute()
 
-      if (registrationResult.statusCode === 201) {
+      if (isRegistrationRequestSuccess(registrationResult)) {
         const { email, password } = customerDraft
         apiRootStore.setNewApiRoot(apiRootManagement.createAuthSessionFlow(email, password))
       }
       return registrationResult
     } catch (error) {
-      if (error instanceof Error && error.message.includes('already an existing customer')) {
+      if (isUserExist(error)) {
         throw new Error('userExists')
       } else {
         throw new Error('commonError')
