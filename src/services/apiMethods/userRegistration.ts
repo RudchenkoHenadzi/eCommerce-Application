@@ -2,7 +2,7 @@ import type { IBillingAddressModel, IShippingAddressModel } from '@/types/custom
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers'
-import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/errorsCheck/registrationErrors'
+import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/dataCheck/registrationCheck'
 
 export default async function userRegistration(
   email: string,

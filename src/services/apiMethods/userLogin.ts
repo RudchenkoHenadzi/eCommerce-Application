@@ -1,6 +1,6 @@
 import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { useApiRootStore } from '@/stores/ApiRootStore'
-import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/errorsCheck/loginErrors'
+import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/dataCheck/loginCheck'
 
 export default async function userLogin(email: string, password: string) {
   const apiRootStore = useApiRootStore()
