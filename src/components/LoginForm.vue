@@ -15,6 +15,7 @@ import axios from 'axios'
 import useValidate from '@vuelidate/core'
 import InputEmail from '@/components/form-elements/InputEmail.vue'
 import InputPassword from '@/components/form-elements/InputPassword.vue'
+import { useToken } from '@/stores/token'
 
 export default {
   name: 'LoginForm',
@@ -25,16 +26,18 @@ export default {
   },
 
   setup() {
+    const piniaToken = useToken()
     return {
-      v$: useValidate()
+      v$: useValidate(),
+      piniaToken
     }
   },
 
   data() {
     return {
       loginForm: {
-        email: '',
-        password: ''
+        email: 'grudchenko93@yandex.by',
+        password: 'HH0HH0HHf7SS'
       }
     }
   },
@@ -45,7 +48,16 @@ export default {
 
       if (result) {
         axios
-          .post('https://jsonplaceholder.typicode.com/posts')
+          .post(
+            `https://auth.europe-west1.gcp.commercetools.com/oauth/hook/customers/${this.piniaToken.token}`,
+            this.loginForm,
+            {
+              headers: {
+                Authorization: `Basic  ${this.piniaToken.token}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }
+            }
+          )
           .then((response) => {
             console.log(response)
           })

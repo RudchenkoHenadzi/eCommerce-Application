@@ -22,6 +22,16 @@
             <InputPotscode v-model="registrationForm.addresses[0].postalCode" />
             <InputCountry v-model="registrationForm.addresses[0].country" />
           </div>
+          <div class="registration-form__address-defaild">
+            <label for="shipping-checkbox">Установить как адрес по умолчанию:</label>
+            <input
+              id="shipping-checkbox"
+              class="registration-form__checkbox"
+              type="checkbox"
+              name="shipping-checkbox"
+              v-model="shippingCheckbox"
+            />
+          </div>
         </div>
         <div class="registration-form__address">
           <div class="registration-form__address-tag">Платежный Адрес</div>
@@ -33,6 +43,16 @@
           <div class="form__row">
             <InputPotscode v-model="registrationForm.addresses[1].postalCode" />
             <InputCountry v-model="registrationForm.addresses[1].country" />
+          </div>
+          <div class="registration-form__address-defaild">
+            <label for="billing-checkbox">Установить как адрес по умолчанию:</label>
+            <input
+              id="billing-checkbox"
+              class="registration-form__checkbox"
+              type="checkbox"
+              name="billing-checkbox"
+              v-model="billingCheckbox"
+            />
           </div>
         </div>
       </div>
@@ -55,6 +75,8 @@ import InputCity from '@/components/form-elements/InputCity.vue'
 import InputPotscode from '@/components/form-elements/InputPotscode.vue'
 import InputCountry from '@/components/form-elements/InputCountry.vue'
 import { useToken } from '@/stores/token'
+
+import type { RegistrationForm } from '@/interfaces/interfacesForm'
 
 export default {
   name: 'RegistrationForm',
@@ -82,8 +104,8 @@ export default {
   data() {
     return {
       registrationForm: {
-        email: 'grudchenko932@yandex.by',
-        password: 'Dd02b09ef7c5',
+        email: 'grudchenko95@yandex.by',
+        password: 'HH0HH0HHf7SS',
         firstName: 'Геннадий',
         lastName: 'Рудченко',
         dateOfBirth: '2024-05-15',
@@ -101,8 +123,28 @@ export default {
             streetName: 'Одинцова 103'
           }
         ],
-        defaultShippingAddress: 0,
-        defaultBillingAddress: 1
+        defaultShippingAddress: null,
+        defaultBillingAddress: null
+      } as RegistrationForm,
+      shippingCheckbox: false,
+      billingCheckbox: false
+    }
+  },
+
+  watch: {
+    shippingCheckbox(newValue) {
+      if (newValue) {
+        this.registrationForm.defaultShippingAddress = 0
+      } else {
+        this.registrationForm.defaultShippingAddress = null
+      }
+    },
+
+    billingCheckbox(newValue) {
+      if (newValue) {
+        this.registrationForm.defaultBillingAddress = 1
+      } else {
+        this.registrationForm.defaultBillingAddress = null
       }
     }
   },
@@ -148,6 +190,19 @@ export default {
     flex-direction: column;
     gap: 15px;
     flex: 1;
+  }
+
+  &__address-defaild {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    span {
+    }
+  }
+
+  &__checkbox {
+    width: 15px;
+    height: 15px;
   }
 }
 </style>
