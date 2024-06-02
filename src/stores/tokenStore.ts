@@ -14,10 +14,6 @@ class MyTokenStore implements TokenCache {
 
   set(newTokenCache: TokenStore) {
     Object.assign(this.cache, newTokenCache)
-    console.log('MyTokenStore')
-    console.log(newTokenCache.token)
-    console.log(newTokenCache.expirationTime)
-    console.log(newTokenCache.refreshToken)
     this.saveTokenToStore(
       newTokenCache.token,
       newTokenCache.expirationTime,
