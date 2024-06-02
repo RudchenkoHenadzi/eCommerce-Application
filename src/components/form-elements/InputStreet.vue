@@ -3,7 +3,6 @@
     <div class="form__label">Улица:</div>
     <input
       type="text"
-      id="registration-street"
       :value="modelValue"
       @input="updateModelValue"
       name="street"

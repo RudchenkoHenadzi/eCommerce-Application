@@ -12,6 +12,10 @@ import axios from 'axios'
 import { useToken } from './stores/token'
 
 export default {
+  components: {
+    TheHeader
+  },
+
   setup() {
     const piniaToken = useToken()
     return {

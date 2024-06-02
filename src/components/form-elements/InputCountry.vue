@@ -3,7 +3,6 @@
     <div class="form__label">Страна:</div>
     <input
       type="text"
-      id="registration-country"
       :value="modelValue"
       @input="updateModelValue"
       name="country"
