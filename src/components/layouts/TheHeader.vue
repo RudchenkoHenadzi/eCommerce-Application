@@ -12,7 +12,7 @@
 <script lang="ts">
 import TheNavigation from '@/components/menu/TheNavigation.vue'
 import { useUserStore } from '@/stores/User'
-import userLogout from '@/services/apiMethods/userLogout'
+import userLogout from '@/services/apiMethods/auth/userLogout'
 
 export default {
   name: 'TheHeader',

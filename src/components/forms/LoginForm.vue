@@ -13,8 +13,8 @@
 <script lang="ts">
 import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
 import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
-import userLogin from '@/services/apiMethods/userLogin'
-import checkUserExist from '@/services/apiMethods/checkUserExist'
+import userLogin from '@/services/apiMethods/auth/userLogin'
+import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
 import { TIMEOUT_REDIRECT } from '@/constants/projectConfigs'
 import { useUserStore } from '@/stores/User'
 

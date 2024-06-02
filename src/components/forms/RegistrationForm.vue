@@ -99,7 +99,7 @@ import InputCountry from '@/components/form-elements/text-inputs/InputCountry.vu
 import InputBuilding from '@/components/form-elements/text-inputs/InputBuilding.vue'
 import InputApartment from '@/components/form-elements/text-inputs/InputApartment.vue'
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
-import userRegistration from '@/services/apiMethods/userRegistration'
+import userRegistration from '@/services/apiMethods/auth/userRegistration'
 import { useUserStore } from '@/stores/User'
 import { isUserExist } from '@/helpers/dataCheck/registrationCheck'
 
