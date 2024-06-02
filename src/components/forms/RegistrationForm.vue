@@ -193,7 +193,7 @@ export default {
             if (error.message === 'commonError') {
               this.$emit('registrationEvents', 'commonError')
             } else {
-              this.$emit('registrationEvents','userExists')
+              this.$emit('registrationEvents', 'userExists')
             }
           } else {
             this.$emit('registrationEvents', 'commonError')

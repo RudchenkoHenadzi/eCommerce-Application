@@ -2,6 +2,12 @@
 @use 'variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Jost', sans-serif;
   font-optical-sizing: auto;

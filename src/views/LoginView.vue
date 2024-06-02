@@ -1,8 +1,6 @@
 <template>
   <div class="auth-page">
-    <LoginForm
-      @loginEvents="loginEventsHandler"
-    />
+    <LoginForm @loginEvents="loginEventsHandler" />
   </div>
 </template>
 

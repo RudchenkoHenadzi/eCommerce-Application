@@ -38,12 +38,7 @@ export default {
     <RouterView @showAlert="showAlert" />
   </main>
   <Transition>
-    <AlertMessage
-      v-if="isAlertShow"
-      :key="Date.now()"
-      :text="alertText"
-      @closeAlert="closeAlert"
-    />
+    <AlertMessage v-if="isAlertShow" :key="Date.now()" :text="alertText" @closeAlert="closeAlert" />
   </Transition>
 </template>
 

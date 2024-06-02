@@ -1,8 +1,6 @@
 <template>
   <div class="auth-page">
-    <RegistrationForm
-      @registrationEvents="registrationEventsHandler"
-    />
+    <RegistrationForm @registrationEvents="registrationEventsHandler" />
   </div>
 </template>
 <script lang="ts">
@@ -52,7 +50,7 @@ export default {
           this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
         }
       }
-    },
+    }
   }
 }
 </script>
