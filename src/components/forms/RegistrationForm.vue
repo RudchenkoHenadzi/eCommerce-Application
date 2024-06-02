@@ -102,6 +102,7 @@ import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
 import userRegistration from '@/services/apiMethods/auth/userRegistration'
 import { useUserStore } from '@/stores/User'
 import { isUserExist } from '@/helpers/dataCheck/registrationCheck'
+import type { ErrorResponse } from '@commercetools/platform-sdk'
 
 export default {
   name: 'RegistrationForm',
@@ -181,15 +182,21 @@ export default {
             const user = useUserStore()
             user.login()
             user.setUserMail(this.registrationForm.email)
-            this.$emit('registrationSuccess', this.registrationForm.email)
+            this.$emit('registrationEvents', 'registrationSuccess')
+          } else if (registrationResult.statusCode === 400) {
+            this.$emit('registrationEvents', 'userExists')
           } else {
-            this.$emit('commonError')
+            this.$emit('registrationEvents', 'commonError')
           }
-        } catch (error) {
-          if (isUserExist(error)) {
-            this.$emit('userExists')
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            if (error.message === 'commonError') {
+              this.$emit('registrationEvents', 'commonError')
+            } else {
+              this.$emit('registrationEvents','userExists')
+            }
           } else {
-            this.$emit('commonError')
+            this.$emit('registrationEvents', 'commonError')
           }
         }
       } else {

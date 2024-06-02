@@ -107,8 +107,6 @@ export function createAddressesConfiguration(
     defaultBillingAddressIndex,
     addressesConfiguration
   )
-  console.log('addressesConfigurationaddressesConfiguration')
-  console.log(addressesConfiguration)
   return addressesConfiguration
 }
 

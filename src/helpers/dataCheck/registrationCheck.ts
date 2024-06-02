@@ -1,7 +1,7 @@
 import type { ClientResponse, CustomerSignInResult } from '@commercetools/platform-sdk'
 
 export function isUserExist(error: unknown) {
-  return error instanceof Error && error.message.includes('already an existing customer')
+  return error instanceof Error && error.message === "There is already an existing customer with the provided email."
 }
 
 export function isRegistrationRequestSuccess(result: ClientResponse<CustomerSignInResult>) {

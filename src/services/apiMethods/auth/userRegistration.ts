@@ -1,6 +1,5 @@
 import type { IBillingAddressModel, IShippingAddressModel } from '@/types/customer-types'
 import { useApiRootStore } from '@/stores/ApiRootStore'
-import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers'
 import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/dataCheck/registrationCheck'
 
@@ -36,27 +35,24 @@ export default async function userRegistration(
       dateOfBirth,
       addressesConfiguration
     )
-    try {
-      const registrationResult = await apiRoot
-        .customers()
-        .post({
-          body: customerDraft
-        })
-        .execute()
 
-      if (isRegistrationRequestSuccess(registrationResult)) {
-        const { email, password } = customerDraft
-        apiRootStore.setNewApiRoot(apiRootManagement.createAuthSessionFlow(email, password))
-      }
-      return registrationResult
-    } catch (error) {
-      if (isUserExist(error)) {
-        throw new Error('userExists')
-      } else {
-        throw new Error('commonError')
-      }
+    const registrationResult = await apiRoot
+      .customers()
+      .post({
+        body: customerDraft
+      })
+      .execute()
+
+    if (isRegistrationRequestSuccess(registrationResult)) {
+      const { email, password } = customerDraft
+      apiRootStore.createAuthApiRoot(email, password)
     }
-  } catch (e) {
-    throw new Error('commonError')
+    return registrationResult
+  } catch (error) {
+    if (isUserExist(error)) {
+      throw new Error('userExists')
+    } else {
+      throw new Error('commonError')
+    }
   }
 }

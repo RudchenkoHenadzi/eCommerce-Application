@@ -24,6 +24,12 @@ export const useApiRootStore = defineStore('apiRoot', {
     },
     setNewApiRoot(apiRoot: ByProjectKeyRequestBuilder) {
       this.apiRoot = apiRoot
+    },
+    createAnonymousApiRoot() {
+      this.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
+    },
+    createAuthApiRoot(email: string, password: string) {
+      this.setNewApiRoot(apiRootManagement.createAuthSessionFlow(email, password))
     }
   }
 })
