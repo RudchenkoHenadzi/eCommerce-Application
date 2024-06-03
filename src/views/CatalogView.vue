@@ -13,16 +13,22 @@
         />
       </div>
     </div>
+    <div class="loading-message" v-if="isProductsLoading">Идет загрузка</div>
+    <div class="observer" ref="observer"></div>
   </div>
 </template>
 
 <script lang="ts">
 import getProducts from '@/services/apiMethods/products/getProducts'
-import isFailedResponseType from '@/helpers/dataCheck/isFailedResponseType'
-import type { Product } from '@commercetools/platform-sdk'
+import type {
+  ClientResponse,
+  Product,
+  ProductPagedQueryResponse
+} from '@commercetools/platform-sdk'
 import ProductCard from '@/components/cards/ProductCard.vue'
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
+import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
 
 export default {
   name: 'CatalogView',
@@ -30,20 +36,25 @@ export default {
   data() {
     return {
       products: new Array<Product>(),
-      appSettings: useAppSettingsStore()
+      appSettings: useAppSettingsStore(),
+      pageNumber: 0,
+      totalItems: 0,
+      isProductsLoading: false
     }
   },
   methods: {
     async getProducts() {
+      this.isProductsLoading = true
       try {
-        const products = await getProducts()
-        if (isFailedResponseType(products)) {
-          this.$emit('commonError')
-        } else {
-          this.products = products
-        }
+        const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
+          this.pageNumber
+        )
+        this.products = [...this.products, ...products.body.results]
+        this.totalItems = products.body.total || this.products.length
       } catch (error) {
         this.$emit('commonError')
+      } finally {
+        this.isProductsLoading = false
       }
     },
     getPrices(product: Product) {
@@ -162,26 +173,28 @@ export default {
         return []
       }
     },
-    getPrice(product: Product) {
-      const priceArray = product.masterData.current.masterVariant.prices
-      if (priceArray) {
-        for (let i = 0; i < priceArray?.length; i += 1) {
-          if (priceArray[i].value.currencyCode === this.currency) {
-            return priceArray[i].value.centAmount
-          }
-        }
-      } else {
-        return 'Not available now'
+    loadProducts() {
+      this.pageNumber += 1
+      if (this.pageNumber <= this.totalPages) {
+        this.getProducts()
       }
     },
-    isProductDiscounted(product: Product) {
-      if (product.masterData.current.masterVariant.price?.discounted) {
-        console.log('discounted')
+    intersectionHandler(entries: IntersectionObserverEntry[]) {
+      console.log('intersectionHandler')
+      if (entries[0].isIntersecting) {
+        console.log('work!')
+        this.loadProducts()
       }
     }
   },
   mounted() {
     this.getProducts()
+    const options = {
+      rootMargin: '0px',
+      threshold: 1.0
+    }
+    const observer = new IntersectionObserver(this.intersectionHandler, options)
+    observer.observe(this.$refs.observer as Element)
   },
   computed: {
     lang() {
@@ -189,6 +202,9 @@ export default {
     },
     currency() {
       return this.appSettings.currency
+    },
+    totalPages() {
+      return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD)
     }
   }
 }
