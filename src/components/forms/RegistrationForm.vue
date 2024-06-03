@@ -171,9 +171,7 @@ export default {
             this.registrationForm.isShippingAddressDefault,
             this.registrationForm.isBillingAddressDefault,
             this.registrationForm.shippingAddress,
-            this.registrationForm.areBothAddressesSame
-              ? this.registrationForm.billingAddress
-              : undefined
+            this.registrationForm.billingAddress
           )
 
           if (registrationResult.statusCode === 201) {
