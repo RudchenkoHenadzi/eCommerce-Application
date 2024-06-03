@@ -30,6 +30,8 @@ const MESSAGE_TEXTS = {
   commonError: 'Что-то пошло не так. Повторите попытку позже.'
 }
 
+const PRODUCTS_LIMIT_PER_LOAD = 20
+
 export default PROJECT_CONFIG
 export {
   AGE_RESTRICTION,
@@ -38,5 +40,6 @@ export {
   TIMEOUT_SHORT_MESSAGE,
   TIMEOUT_ERROR_MESSAGE,
   TIMEOUT_REDIRECT,
-  MESSAGE_TEXTS
+  MESSAGE_TEXTS,
+  PRODUCTS_LIMIT_PER_LOAD
 }
