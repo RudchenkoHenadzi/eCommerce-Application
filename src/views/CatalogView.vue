@@ -8,7 +8,8 @@
           :description="getDescription(product)"
           :src="getSrc(product)"
           :attributes="getAttributes(product)"
-          :price="getPrice(product)"
+          :prices="getPrices(product)"
+          label-name=""
         />
       </div>
     </div>
@@ -45,6 +46,18 @@ export default {
         this.$emit('commonError')
       }
     },
+    getPrices(product: Product) {
+      const prices = product.masterData.current.masterVariant.prices
+      let selectedPrice = {}
+      if (prices) {
+        prices.forEach((priceData) => {
+          if (priceData.value.currencyCode === this.currency) {
+            selectedPrice = priceData
+          }
+        })
+      }
+      return selectedPrice
+    },
     getSrc(product: Product) {
       return product.masterData.current.masterVariant.images
         ? product.masterData.current.masterVariant.images[0]?.url
@@ -57,8 +70,6 @@ export default {
     },
     getAttributes(product: Product) {
       const rawAttributes = product.masterData.current.masterVariant.attributes
-      let isColorFind = false
-      let isFinishFind = false
       if (rawAttributes) {
         return rawAttributes.reduce((acc: Record<string, string>[], attribute) => {
           if (attribute.name === 'productspec') {
@@ -161,6 +172,11 @@ export default {
         }
       } else {
         return 'Not available now'
+      }
+    },
+    isProductDiscounted(product: Product) {
+      if (product.masterData.current.masterVariant.price?.discounted) {
+        console.log('discounted')
       }
     }
   },

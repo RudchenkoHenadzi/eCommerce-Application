@@ -1,7 +1,7 @@
 <template>
   <div class="product-card__slider slider">
     <img :src="src" :alt="productName" class="slider__img" />
-    <span class="slider__label">ХИТ</span>
+    <button class="slider__label" v-if="labelName">{{ labelName }}</button>
     <CompareIcon class="slider__compare-btn" />
     <div class="slider__controls controls">
       <button class="controls__btn">
@@ -19,7 +19,8 @@
         {{ attribute.label }}
       </li>
     </ul>
-    <div class="about__price">{{ price }} {{ currency }}</div>
+    <div class="about__price">{{ discountedPrice ? 'NOW' : '' }} {{ price }} {{ currency }}</div>
+    <div class="about__price" v-if="discountedPrice">WAS {{ discountedPrice }} {{ currency }}</div>
     <button class="about__btn button-purple">В корзину</button>
   </div>
 </template>
@@ -32,7 +33,7 @@ import ArrowLeft from '@/Icons/ArrowLeft.vue'
 export default defineComponent({
   name: 'ProductCard',
   components: { ArrowLeft, CompareIcon },
-  props: ['productName', 'description', 'src', 'attributes', 'price'],
+  props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName'],
   data() {
     return {
       appSettingsStore: useAppSettingsStore()
@@ -41,6 +42,16 @@ export default defineComponent({
   computed: {
     currency() {
       return this.appSettingsStore.currency
+    },
+    price() {
+      return this.prices.value.centAmount
+    },
+    discountedPrice() {
+      if (this.prices.discounted) {
+        return this.prices.discounted.value.centAmount
+      } else {
+        return undefined
+      }
     }
   }
 })
@@ -62,6 +73,7 @@ export default defineComponent({
     top: 10px;
     left: 10px;
     padding: 4px 9px;
+    height: auto;
     background-color: $color-orange-main;
     border-radius: 5px;
     color: $color-white;
@@ -70,6 +82,7 @@ export default defineComponent({
     position: absolute;
     top: 10px;
     right: 10px;
+    height: auto;
   }
   &__controls {
     position: absolute;
@@ -85,13 +98,18 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0 3px;
   transform: translateY(-50%);
   width: 100%;
   &__btn {
     height: 40px;
     width: 40px;
     border-radius: 100%;
-    background-color: $color-white;
+    background-color: $color-gray-200;
+
+    &:active {
+      box-shadow: 0 0 5px $color-pale-purple;
+    }
   }
   &__right {
     transform: rotate(180deg);
