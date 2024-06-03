@@ -15,9 +15,9 @@ import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
 import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
 import userLogin from '@/services/apiMethods/auth/userLogin'
 import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
-import { TIMEOUT_REDIRECT } from '@/constants/projectConfigs'
 import { useUserStore } from '@/stores/User'
 import { isUserNotFound } from '@/helpers/dataCheck/loginCheck'
+import { TIMEOUT_REDIRECT } from '@/constants/constants'
 
 export default {
   name: 'LoginForm',

@@ -5,12 +5,8 @@
 </template>
 <script lang="ts">
 import RegistrationForm from '@/components/forms/RegistrationForm.vue'
-import {
-  TIMEOUT_SHORT_MESSAGE,
-  TIMEOUT_REDIRECT,
-  TIMEOUT_ERROR_MESSAGE,
-  MESSAGE_TEXTS
-} from '@/constants/projectConfigs'
+import { MESSAGE_TEXTS } from '@/constants/texts'
+import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_REDIRECT, TIMEOUT_SHORT_MESSAGE } from '@/constants/constants'
 
 export default {
   components: {
