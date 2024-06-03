@@ -19,8 +19,13 @@
         {{ attribute.label }}
       </li>
     </ul>
-    <div class="about__price">{{ discountedPrice ? 'NOW' : '' }} {{ price }} {{ currency }}</div>
-    <div class="about__price" v-if="discountedPrice">WAS {{ discountedPrice }} {{ currency }}</div>
+    <div class="about__discount discount" v-if="discountedPrice">
+      <div class="discount__full-price">{{ price }} {{ currency }}</div>
+      <div class="discount__actual-price">{{ discountedPrice }} {{ currency }}</div>
+    </div>
+    <div class="about__full-price-only full-price-only" v-else>
+      <div class="full-price-only__price">{{ price }} {{ currency }}</div>
+    </div>
     <button class="about__btn button-purple">В корзину</button>
   </div>
 </template>
@@ -130,7 +135,6 @@ export default defineComponent({
     font-size: 18px;
     color: $color-black;
   }
-
   &__btn {
     width: 90%;
   }
@@ -138,5 +142,16 @@ export default defineComponent({
 
 .attributes {
   overflow: hidden;
+}
+
+.discount {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  &__full-price {
+    color: $color-gray-600;
+    text-decoration: line-through;
+  }
 }
 </style>
