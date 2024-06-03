@@ -1,4 +1,5 @@
 export interface IAddressDraft {
+  id?: string
   key?: string
   firstName: string
   lastName: string
