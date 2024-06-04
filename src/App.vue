@@ -10,6 +10,7 @@ import { RouterView } from 'vue-router'
 import TheHeader from '@/components/TheHeader.vue'
 import axios from 'axios'
 import { useToken } from './stores/token'
+import { useClient } from '@/stores/client'
 
 export default {
   components: {
@@ -18,17 +19,17 @@ export default {
 
   setup() {
     const piniaToken = useToken()
+    const piniaClient = useClient()
     return {
-      piniaToken
+      piniaToken,
+      piniaClient
     }
   },
 
   mounted() {
     const data = new URLSearchParams()
     data.append('grant_type', 'client_credentials')
-    const clientId = 'HhEhXOfsW-_PKzrn5KwrP90m'
-    const clientSecret = 'TokyAdrYJd1jArF-QoVp5pNlAuXzO2if'
-    const basicAuth = btoa(`${clientId}:${clientSecret}`)
+    const basicAuth = btoa(`${this.piniaClient.clientId}:${this.piniaClient.clientSecret}`)
     axios
       .post('https://auth.europe-west1.gcp.commercetools.com/oauth/token', data, {
         headers: {

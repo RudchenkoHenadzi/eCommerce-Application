@@ -33,7 +33,6 @@
 
 .navigation {
   font-weight: 500;
-  background: $color-bachground;
 
   &__list {
     display: flex;
@@ -42,7 +41,6 @@
     padding-top: 10px;
     padding-bottom: 10px;
     @extend %clear-ul;
-    @extend %container-1100;
   }
 
   &__link {

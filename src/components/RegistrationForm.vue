@@ -104,23 +104,23 @@ export default {
   data() {
     return {
       registrationForm: {
-        email: 'grudchenko95@yandex.by',
-        password: 'HH0HH0HHf7SS',
-        firstName: 'Геннадий',
-        lastName: 'Рудченко',
-        dateOfBirth: '2024-05-15',
+        email: '',
+        password: '',
+        firstName: '',
+        lastName: '',
+        dateOfBirth: '',
         addresses: [
           {
             country: 'RU',
-            city: 'Минск',
-            postalCode: '220136',
-            streetName: 'Савицкого, 10'
+            city: '',
+            postalCode: '',
+            streetName: ''
           },
           {
             country: 'RU',
-            city: 'Минск',
-            postalCode: '220137',
-            streetName: 'Одинцова 103'
+            city: '',
+            postalCode: '',
+            streetName: ''
           }
         ],
         defaultShippingAddress: null,
