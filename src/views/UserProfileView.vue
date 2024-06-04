@@ -39,6 +39,7 @@ import {
   type TUserProfileEventNames,
   USER_PROFILE_EVENTS
 } from '@/constants/constants'
+import { useUserStore } from '@/stores/User'
 
 export default {
   name: 'UserProfileView',
@@ -64,7 +65,8 @@ export default {
       isUserDataViewSelected: true,
       isShippingAddressesViewSelected: false,
       isBillingAddressesViewSelected: false,
-      viewName: USER_PROFILE_EVENTS.USER_INFO as TUserProfileEventNames
+      viewName: USER_PROFILE_EVENTS.USER_INFO as TUserProfileEventNames,
+      userStore: useUserStore()
     }
   },
   methods: {
@@ -72,12 +74,14 @@ export default {
       try {
         getUserData().then((response) => {
           if (response.statusCode === 200 || response.statusCode === 201) {
-            console.log('response.body')
-            console.log(response.body)
             this.email = response.body.email
+            this.userStore.setUserMail(this.email)
             this.firstName = response.body.firstName || ''
+            this.userStore.setUserFirstName(this.firstName)
             this.lastName = response.body.lastName || ''
+            this.userStore.setUserLastName(this.lastName)
             this.birthDate = response.body.dateOfBirth || ''
+            this.userStore.setUserBirthDate(this.birthDate)
             this.addresses = response.body.addresses || []
             this.shippingAddressIds = response.body.shippingAddressIds || []
             this.billingAddressIds = response.body.billingAddressIds || []

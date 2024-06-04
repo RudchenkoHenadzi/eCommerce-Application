@@ -10,24 +10,33 @@
         >
       </figcaption>
     </figure>
-    <div class="user__about about">
-      <div class="about__name"><span>Name: </span> {{ firstName }}</div>
-      <div class="about__lastName"><span>Last Name: </span> {{ lastName }}</div>
-      <div class="about__birthDate"><span>Date of birth: </span> {{ birthDate }}</div>
+    <EditUserDataForm
+      v-if="isEditModeOn"
+      @editModeOff="editModeOffHandler"
+      :firstName="firstName"
+      :lastName="lastName"
+      :birthDate="birthDate"
+      :email="email"
+    />
+    <AboutUserDataBlock v-else @editModeOn="editModeOnHandler" />
+    <!--    <div class="user__about about" v-else>
+      <div class="about__name"><span>Имя: </span> {{ firstName }}</div>
+      <div class="about__lastName"><span>Фамилия: </span> {{ lastName }}</div>
+      <div class="about__birthDate"><span>Дата рождения: </span> {{ birthDate }}</div>
       <div class="about__email"><span>Email: </span> {{ email }}</div>
       <DoneIcon class="about__done-btn" v-if="isEditModeOn" @click="isEditModeOn = false" />
-      <PencilIcon class="about__edit-btn" v-else @click="isEditModeOn = true" />
-    </div>
+      <PencilIcon class="about__edit-btn" @click="isEditModeOn = true" />
+    </div>-->
   </div>
 </template>
 
 <script lang="ts">
-import PencilIcon from '@/Icons/PencilIcon.vue'
-import DoneIcon from '@/Icons/DoneIcon.vue'
+import EditUserDataForm from '@/components/forms/EditUserDataForm.vue'
+import AboutUserDataBlock from '@/components/blocks/AboutUserDataBlock.vue'
 
 export default {
   name: 'UserDataBlock',
-  components: { DoneIcon, PencilIcon },
+  components: { AboutUserDataBlock, EditUserDataForm },
   props: {
     firstName: String,
     lastName: String,
@@ -37,6 +46,15 @@ export default {
   data() {
     return {
       isEditModeOn: false
+    }
+  },
+  methods: {
+    editModeOffHandler(firstName: string, lastName: string, birthDate: string, email: string) {
+      this.isEditModeOn = false
+      /* TODO update user data */
+    },
+    editModeOnHandler() {
+      this.isEditModeOn = true
     }
   }
 }
