@@ -11,19 +11,20 @@ export default async function userRegistration(
   dateOfBirth: string,
   isShippingAddressDefault: boolean,
   isBillingAddressDefault: boolean,
+  areBothAddressesSame: boolean,
   shippingAddress: IShippingAddressModel,
   billingAddress?: IBillingAddressModel
 ) {
   const apiRootStore = useApiRootStore()
   const apiRoot = apiRootStore.apiRoot
   try {
-    /* TODO неверно создает конфиг, проверить*/
     const addressesConfiguration = createAddressesConfiguration(
       firstName,
       lastName,
       email,
       isShippingAddressDefault,
       isBillingAddressDefault,
+      areBothAddressesSame,
       shippingAddress,
       billingAddress
     )

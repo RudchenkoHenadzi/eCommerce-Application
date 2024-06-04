@@ -170,6 +170,7 @@ export default {
             this.registrationForm.dateOfBirth,
             this.registrationForm.isShippingAddressDefault,
             this.registrationForm.isBillingAddressDefault,
+            this.registrationForm.areBothAddressesSame,
             this.registrationForm.shippingAddress,
             this.registrationForm.billingAddress
           )

@@ -84,14 +84,15 @@ export function createAddressesConfiguration(
   email: string,
   isShippingAddressDefault: boolean,
   isBillingAddressDefault: boolean,
-  shippindAddress: IShippingAddressModel,
+  areBothAddressesSame: boolean,
+  shippingAddress: IShippingAddressModel,
   billingAddress?: IBillingAddressModel
 ): IAddressesConfiguration {
   const addressesConfiguration: IAddressesConfiguration = {
     addresses: [],
     shippingAddresses: [0]
   }
-  const shippingAddressDraft = createAddressDraft(firstName, lastName, email, shippindAddress)
+  const shippingAddressDraft = createAddressDraft(firstName, lastName, email, shippingAddress)
   addressesConfiguration.addresses.push(shippingAddressDraft)
   if (billingAddress) {
     const billingAddressDraft = createAddressDraft(firstName, lastName, email, billingAddress)
@@ -99,7 +100,7 @@ export function createAddressesConfiguration(
   }
   const { billingAddressIndex, defaultBillingAddressIndex } = checkBillingAddressIndexes(
     isBillingAddressDefault,
-    Boolean(billingAddress)
+    areBothAddressesSame
   )
   setAddressesIndexes(
     isShippingAddressDefault,
