@@ -76,4 +76,3 @@ export default {
   color: $color-purple;
 }
 </style>
-<script setup lang="ts"></script>

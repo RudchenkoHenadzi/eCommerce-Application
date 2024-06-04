@@ -15,18 +15,29 @@
       <div class="about__lastName"><span>Last Name: </span> {{ lastName }}</div>
       <div class="about__birthDate"><span>Date of birth: </span> {{ birthDate }}</div>
       <div class="about__email"><span>Email: </span> {{ email }}</div>
+      <DoneIcon class="about__done-btn" v-if="isEditModeOn" @click="isEditModeOn = false" />
+      <PencilIcon class="about__edit-btn" v-else @click="isEditModeOn = true" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import PencilIcon from '@/Icons/PencilIcon.vue'
+import DoneIcon from '@/Icons/DoneIcon.vue'
+
 export default {
   name: 'UserDataBlock',
+  components: { DoneIcon, PencilIcon },
   props: {
     firstName: String,
     lastName: String,
     email: String,
     birthDate: String
+  },
+  data() {
+    return {
+      isEditModeOn: false
+    }
   }
 }
 </script>
@@ -56,6 +67,7 @@ export default {
 }
 
 .about {
+  position: relative;
   grid-area: about;
   display: flex;
   flex-direction: column;
@@ -71,6 +83,13 @@ export default {
   &__birthDate span,
   &__email span {
     font-weight: bold;
+  }
+
+  &__edit-btn,
+  &__done-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 }
 </style>
