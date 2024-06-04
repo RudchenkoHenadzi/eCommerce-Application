@@ -14,17 +14,21 @@ import PencilIcon from '@/Icons/PencilIcon.vue'
 
 export default {
   name: 'AboutUserDataBlock',
+
   components: { PencilIcon },
+
   data() {
     return {
       userStore: useUserStore()
     }
   },
+
   methods: {
     switchEditMode() {
       this.$emit('editModeOn')
     }
   },
+
   computed: {
     firstName() {
       return this.userStore.firstName

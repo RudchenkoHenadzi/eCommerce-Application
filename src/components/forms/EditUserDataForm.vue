@@ -18,7 +18,9 @@ import { useUserStore } from '@/stores/User'
 
 export default {
   name: 'EditUserDataForm',
+
   components: { DoneIcon, InputEmail, InputDate, InputLastName, InputName },
+
   data() {
     return {
       userStore: useUserStore(),
@@ -28,6 +30,7 @@ export default {
       email: ''
     }
   },
+
   methods: {
     switchEditMode() {
       this.userStore.setUserFirstName(this.firstName)
@@ -37,12 +40,14 @@ export default {
       this.$emit('editModeOff', this.firstName, this.lastName, this.birthDate, this.email)
     }
   },
+
   mounted() {
     this.firstName = this.userStore.firstName
     this.lastName = this.userStore.lastName
     this.birthDate = this.userStore.birthDate
     this.email = this.userStore.email
   },
+
   computed: {
     userFirstName: {
       get(): string {

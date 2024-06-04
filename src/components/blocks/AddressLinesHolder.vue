@@ -15,6 +15,7 @@
 <script lang="ts">
 export default {
   name: 'AddressLinesHolder',
+
   props: {
     streetName: String,
     building: String,
@@ -24,6 +25,7 @@ export default {
     country: String,
     isAddressDefault: Boolean
   },
+
   data() {
     return {
       wrapperClasses: {
@@ -37,6 +39,7 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables';
+
 .address-lines {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -73,6 +76,7 @@ export default {
       cursor: pointer;
     }
   }
+
   span {
     font-weight: bold;
   }
@@ -90,6 +94,7 @@ export default {
 .default {
   border: 1px dashed $color-gray-600;
   border-radius: 10px;
+
   & .address-lines__marker {
     background-color: mediumpurple;
   }

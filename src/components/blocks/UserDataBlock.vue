@@ -28,22 +28,27 @@ import AboutUserDataBlock from '@/components/blocks/AboutUserDataBlock.vue'
 import { updateUserData } from '@/services/apiMethods/user/updateUserData'
 import { useUserStore } from '@/stores/User'
 import { USER_PROFILE_EVENTS } from '@/constants/constants'
+import { ERROR_TEXTS } from '@/constants/texts'
 
 export default {
   name: 'UserDataBlock',
+
   components: { AboutUserDataBlock, EditUserDataForm },
+
   props: {
     firstName: String,
     lastName: String,
     email: String,
     birthDate: String
   },
+
   data() {
     return {
       isEditModeOn: false,
       userStore: useUserStore()
     }
   },
+
   methods: {
     editModeOffHandler(firstName: string, lastName: string, birthDate: string, email: string) {
       this.isEditModeOn = false
@@ -53,15 +58,22 @@ export default {
             this.userStore.setUserVersion(response.body.version)
             this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.SUCCESS)
           } else {
+            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.DUPLICATE_DATA)
+          }
+        })
+        .catch((error) => {
+          if (error.message === ERROR_TEXTS.DUPLICATED_DATA) {
+            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.DUPLICATE_DATA)
+          } else {
             this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.ERROR)
           }
         })
-        .catch(() => this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.ERROR))
     },
     editModeOnHandler() {
       this.isEditModeOn = true
     }
   },
+
   computed: {
     version() {
       return this.userStore.version
@@ -72,6 +84,7 @@ export default {
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables';
+
 .user {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

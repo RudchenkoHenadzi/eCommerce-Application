@@ -3,6 +3,7 @@
     <h1>Страница корзины</h1>
   </div>
 </template>
+
 <script lang="ts">
 export default {
   name: 'CartShoppingView'

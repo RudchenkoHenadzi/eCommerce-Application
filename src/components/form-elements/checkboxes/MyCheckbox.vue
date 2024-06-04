@@ -1,23 +1,3 @@
-<script lang="ts">
-export default {
-  name: 'MyCheckbox',
-  props: {
-    modelValue: Boolean,
-    id: String,
-    name: String,
-    text: String
-  },
-  methods: {
-    updateModelValue(event: Event) {
-      if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.checked
-        this.$emit('update:modelValue', value)
-      }
-    }
-  }
-}
-</script>
-
 <template>
   <div class="form__checkbox-container">
     <label :for="id">{{ text }}</label>
@@ -33,6 +13,28 @@ export default {
   </div>
 </template>
 
+<script lang="ts">
+export default {
+  name: 'MyCheckbox',
+
+  props: {
+    modelValue: Boolean,
+    id: String,
+    name: String,
+    text: String
+  },
+
+  methods: {
+    updateModelValue(event: Event) {
+      if (event.target && event.target instanceof HTMLInputElement) {
+        const value = event.target.checked
+        this.$emit('update:modelValue', value)
+      }
+    }
+  }
+}
+</script>
+
 <style scoped lang="scss">
 .form__checkbox-container {
   display: grid;
@@ -45,12 +47,5 @@ export default {
   &__input:focus {
     box-shadow: none;
   }
-  /*
-  &__switch {
-    height: 8px;
-    width: 24px;
-    border: 3px solid violet;
-    border-radius: 50%;
-  }*/
 }
 </style>

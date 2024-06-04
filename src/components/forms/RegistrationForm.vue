@@ -156,6 +156,7 @@ export default {
       }
     }
   },
+
   methods: {
     async submitRegistrationForm() {
       const result = await this.v$.$validate()
@@ -174,7 +175,6 @@ export default {
             this.registrationForm.shippingAddress,
             this.registrationForm.billingAddress
           )
-
           if (registrationResult.statusCode === 201) {
             const user = useUserStore()
             user.login()
@@ -201,6 +201,7 @@ export default {
       }
     }
   },
+
   computed: {
     billingAddressStreetName: {
       get(): string {

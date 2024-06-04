@@ -48,6 +48,7 @@ export default {
       minLength: helpers.withMessage(`Укажите ${minLength(1).$params.min} цифр`, minLength(1))
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
@@ -56,6 +57,7 @@ export default {
       }
     }
   },
+
   computed: {
     idName() {
       return `${this.blockName}-building`

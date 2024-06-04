@@ -32,7 +32,9 @@ import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
 
 export default {
   name: 'CatalogView',
+
   components: { ProductCard },
+
   data() {
     return {
       products: new Array<Product>(),
@@ -42,6 +44,7 @@ export default {
       isProductsLoading: false
     }
   },
+
   methods: {
     async getProducts() {
       this.isProductsLoading = true
@@ -187,6 +190,7 @@ export default {
       }
     }
   },
+
   mounted() {
     this.getProducts()
     const options = {
@@ -196,6 +200,7 @@ export default {
     const observer = new IntersectionObserver(this.intersectionHandler, options)
     observer.observe(this.$refs.observer as Element)
   },
+
   computed: {
     lang() {
       return this.appSettings.lang
@@ -216,6 +221,7 @@ export default {
 .catalog {
   text-align: center;
 }
+
 .products {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -224,6 +230,7 @@ export default {
   padding: 20px;
   width: 100%;
 }
+
 .product-card {
   display: grid;
   grid-template-rows: 47% 53%;

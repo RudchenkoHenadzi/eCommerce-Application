@@ -7,22 +7,25 @@
       v-if="viewName === USER_PROFILE_EVENTS.USER_INFO"
       @dataChangedSuccessfully="successDataChangeHandler"
       @DataChangeFailed="errorDataChangeHandler"
+      @DuplicateData="duplicateDataHandler"
       :first-name="firstName"
       :last-name="lastName"
       :birth-date="birthDate"
       :email="email"
     />
-    <ShippingAddressBlock
+    <AddressBlock
       class="profile__content"
       v-else-if="viewName === USER_PROFILE_EVENTS.SHIPPING_ADDRESSES"
+      title="Адреса доставки"
       :addresses="shippingAddresses"
-      :defaultShippingAddressId="defaultShippingAddressId"
+      :defaultAddressId="defaultShippingAddressId"
     />
-    <BillingAddressBlock
+    <AddressBlock
       class="profile__content"
       v-else
+      title="Платежные адреса"
       :addresses="billingAddresses"
-      :defaultBillingAddressId="defaultBillingAddressId"
+      :defaultAddressId="defaultBillingAddressId"
     />
   </div>
 </template>
@@ -33,8 +36,6 @@ import UserDataBlock from '@/components/blocks/UserDataBlock.vue'
 import { getUserData } from '@/services/apiMethods/user/getUserData'
 import type { Address } from '@commercetools/platform-sdk'
 import { extractAddress } from '@/helpers/extractData/extractAddress'
-import ShippingAddressBlock from '@/components/blocks/ShippingAddressBlock.vue'
-import BillingAddressBlock from '@/components/blocks/BillingAddressBlock.vue'
 import { MESSAGE_TEXTS } from '@/constants/texts'
 import {
   TIMEOUT_ERROR_MESSAGE,
@@ -43,15 +44,19 @@ import {
   USER_PROFILE_EVENTS
 } from '@/constants/constants'
 import { useUserStore } from '@/stores/User'
+import AddressBlock from '@/components/blocks/AddressBlock.vue'
 
 export default {
   name: 'UserProfileView',
+
   computed: {
     USER_PROFILE_EVENTS() {
-      return USER_PROFILE_EVENTS
+      return USER_PROFILE_EVENTS.VIEW_CHANGE
     }
   },
-  components: { BillingAddressBlock, ShippingAddressBlock, UserDataBlock, ProfileNavigation },
+
+  components: { AddressBlock, UserDataBlock, ProfileNavigation },
+
   data() {
     return {
       firstName: '',
@@ -69,10 +74,11 @@ export default {
       isUserDataViewSelected: true,
       isShippingAddressesViewSelected: false,
       isBillingAddressesViewSelected: false,
-      viewName: USER_PROFILE_EVENTS.USER_INFO as TUserProfileEventNames,
+      viewName: USER_PROFILE_EVENTS.VIEW_CHANGE.USER_INFO as TUserProfileEventNames,
       userStore: useUserStore()
     }
   },
+
   methods: {
     getUserData() {
       try {
@@ -109,8 +115,12 @@ export default {
     },
     errorDataChangeHandler() {
       this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
+    },
+    duplicateDataHandler() {
+      this.$emit('showAlert', MESSAGE_TEXTS.PROFILE.duplicatedData, TIMEOUT_ERROR_MESSAGE)
     }
   },
+
   mounted() {
     this.getUserData()
   }

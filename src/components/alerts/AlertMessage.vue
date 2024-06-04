@@ -1,17 +1,3 @@
-<script lang="ts">
-export default {
-  name: 'AlertMessage',
-  props: {
-    text: String
-  },
-  methods: {
-    closeAlert() {
-      this.$emit('closeAlert')
-    }
-  }
-}
-</script>
-
 <template>
   <div class="layout">
     <div class="alert">
@@ -20,6 +6,22 @@ export default {
     </div>
   </div>
 </template>
+
+<script lang="ts">
+export default {
+  name: 'AlertMessage',
+
+  props: {
+    text: String
+  },
+
+  methods: {
+    closeAlert() {
+      this.$emit('closeAlert')
+    }
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .layout {

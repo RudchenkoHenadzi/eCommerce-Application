@@ -17,15 +17,16 @@ import { USER_PROFILE_EVENTS } from '@/constants/constants'
 
 export default {
   name: 'ProfileNavigation',
+
   methods: {
     goToUserInfo() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.USER_INFO)
+      this.$emit('switchView', USER_PROFILE_EVENTS.VIEW_CHANGE.USER_INFO)
     },
     goToUserBillingAddresses() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.BILLING_ADDRESSES)
+      this.$emit('switchView', USER_PROFILE_EVENTS.VIEW_CHANGE.BILLING_ADDRESSES)
     },
     goToUserShippingAddresses() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.SHIPPING_ADDRESSES)
+      this.$emit('switchView', USER_PROFILE_EVENTS.VIEW_CHANGE.SHIPPING_ADDRESSES)
     }
   }
 }

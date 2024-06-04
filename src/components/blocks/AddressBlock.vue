@@ -1,6 +1,6 @@
 <template>
   <div class="addresses">
-    <h2 class="addresses__title">Платежные адреса</h2>
+    <h2 class="addresses__title">{{ title }}</h2>
     <AddressLinesHolder
       v-for="address in addresses"
       :key="address.id"
@@ -10,7 +10,7 @@
       :postalCode="address.postalCode"
       :city="address.city"
       :country="address.country"
-      :isAddressDefault="defaultBillingAddressId === address.id"
+      :isAddressDefault="defaultAddressId === address.id"
     />
   </div>
 </template>
@@ -20,13 +20,23 @@ import AddressLinesHolder from '@/components/blocks/AddressLinesHolder.vue'
 import type { Address } from '@commercetools/platform-sdk'
 
 export default {
-  name: 'BillingAddressBlock',
+  name: 'AddressBlock',
+
   components: { AddressLinesHolder },
+
   props: {
+    title: String,
     addresses: Array<Address>,
-    defaultBillingAddressId: String
+    defaultAddressId: String
   }
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+.addresses {
+  padding: 30px;
+  background-color: #eaebed;
+  border-radius: 15px;
+  box-shadow: 5px 5px 10px darkgray;
+}
+</style>

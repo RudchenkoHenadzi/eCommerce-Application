@@ -34,10 +34,16 @@ import { useUserStore } from '../../stores/User'
 
 export default {
   name: 'TheNavigation',
+
+  data() {
+    return {
+      userStore: useUserStore()
+    }
+  },
+
   computed: {
-    isLoggedIn: () => {
-      const user = useUserStore()
-      return user.isLoggedIn
+    isLoggedIn() {
+      return this.userStore.isLoggedIn
     }
   }
 }

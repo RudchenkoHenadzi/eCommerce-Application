@@ -1,3 +1,13 @@
+<template>
+  <TheHeader />
+  <main>
+    <RouterView @showAlert="showAlert" />
+  </main>
+  <Transition>
+    <AlertMessage v-if="isAlertShow" :key="Date.now()" :text="alertText" @closeAlert="closeAlert" />
+  </Transition>
+</template>
+
 <script lang="ts">
 import { RouterView } from 'vue-router'
 import TheHeader from '@/components/layouts/TheHeader.vue'
@@ -6,13 +16,16 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue'
 
 export default {
   components: { AlertMessage, TheHeader, RouterView },
+
   name: 'App',
+
   data() {
     return {
       isAlertShow: false,
       alertText: ''
     }
   },
+
   methods: {
     showAlert(text: string, delay: number) {
       this.alertText = text
@@ -25,21 +38,12 @@ export default {
       this.isAlertShow = false
     }
   },
+
   mounted() {
     const apiRoot = useApiRootStore()
     apiRoot.start()
   }
 }
 </script>
-
-<template>
-  <TheHeader />
-  <main>
-    <RouterView @showAlert="showAlert" />
-  </main>
-  <Transition>
-    <AlertMessage v-if="isAlertShow" :key="Date.now()" :text="alertText" @closeAlert="closeAlert" />
-  </Transition>
-</template>
 
 <style lang="scss" scoped></style>

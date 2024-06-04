@@ -13,6 +13,8 @@ import {
 } from '@/constants/constants'
 
 export default {
+  name: 'RegistrationView',
+
   components: {
     RegistrationForm
   },
@@ -24,6 +26,7 @@ export default {
       alertText: ''
     }
   },
+
   methods: {
     redirectTo(path: string) {
       this.$router.push(path)
@@ -31,11 +34,11 @@ export default {
     registrationEventsHandler(errorType: string) {
       switch (errorType) {
         case 'userExists': {
-          this.$emit('showAlert', MESSAGE_TEXTS.userExists, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.userExists, TIMEOUT_ERROR_MESSAGE)
           break
         }
         case 'registrationSuccess': {
-          this.$emit('showAlert', MESSAGE_TEXTS.successRegistration, TIMEOUT_SHORT_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.successRegistration, TIMEOUT_SHORT_MESSAGE)
 
           setTimeout(() => {
             this.redirectTo('/')
@@ -43,7 +46,7 @@ export default {
           break
         }
         case 'errorInvalidInput': {
-          this.$emit('showAlert', MESSAGE_TEXTS.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
           break
         }
         default: {
@@ -57,6 +60,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
+
 .auth-page {
   display: flex;
   justify-content: center;
