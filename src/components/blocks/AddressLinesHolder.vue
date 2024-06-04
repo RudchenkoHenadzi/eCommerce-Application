@@ -1,11 +1,14 @@
 <template>
   <div :class="wrapperClasses">
-    <div class="country">Страна: {{ country }}</div>
-    <div class="city">Город: {{ city }}</div>
-    <div class="postalCode">Индекс: {{ postalCode }}</div>
-    <div class="streetName">Улица: {{ streetName }}</div>
-    <div class="building">Дом: {{ building }}</div>
-    <div class="apartment">Квартира: {{ apartment }}</div>
+    <div class="address-lines__marker"></div>
+    <div class="address-lines__content content">
+      <div class="content__country"><span>Страна:</span> {{ country }}</div>
+      <div class="content__city"><span>Город:</span> {{ city }}</div>
+      <div class="content__postalCode"><span>Индекс:</span> {{ postalCode }}</div>
+      <div class="content__streetName"><span>Улица:</span> {{ streetName }}</div>
+      <div class="content__building"><span>Дом:</span> {{ building }}</div>
+      <div class="content__apartment"><span>Квартира:</span> {{ apartment }}</div>
+    </div>
   </div>
 </template>
 
@@ -25,7 +28,7 @@ export default {
     return {
       wrapperClasses: {
         default: this.isAddressDefault,
-        'address-lines__wrapper': true
+        'address-lines': true
       }
     }
   }
@@ -33,7 +36,62 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import '@/assets/styles/variables';
+.address-lines {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    'marker content content content content'
+    'marker content content content content'
+    'marker content content content content';
+  border: 1px dashed $color-gray-200;
+  border-radius: 10px;
+  background-color: $color-white;
+  transition:
+    background-color 0.3s ease-in-out,
+    border 0.3s ease-in-out;
+
+  &:hover {
+    border: 1px dashed $color-gray-600;
+    cursor: pointer;
+    & .address-lines__marker {
+      background-color: #ac8eee;
+      cursor: pointer;
+    }
+  }
+
+  &__marker {
+    grid-area: marker;
+    width: 30%;
+    background-color: transparent;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    transition: background-color 0.3s ease-in-out;
+    &:active {
+      background-color: mediumpurple;
+      cursor: pointer;
+    }
+  }
+  span {
+    font-weight: bold;
+  }
+}
+
+.content {
+  grid-area: content;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  text-align: left;
+  padding: 10px;
+}
+
 .default {
-  border: 3px solid #d21e1e;
+  border: 1px dashed $color-gray-600;
+  border-radius: 10px;
+  & .address-lines__marker {
+    background-color: mediumpurple;
+  }
 }
 </style>

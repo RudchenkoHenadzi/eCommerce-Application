@@ -1,8 +1,9 @@
 <template>
   <div class="profile">
-    <h1>Страница профиля пользователя</h1>
-    <ProfileNavigation @switchView="switchViewHandler" />
+    <h1 class="profile__title">Страница профиля пользователя</h1>
+    <ProfileNavigation class="profile__nav" @switchView="switchViewHandler" />
     <UserDataBlock
+      class="profile__content"
       v-if="viewName === USER_PROFILE_EVENTS.USER_INFO"
       :first-name="firstName"
       :last-name="lastName"
@@ -10,10 +11,17 @@
       :email="email"
     />
     <ShippingAddressBlock
+      class="profile__content"
       v-else-if="viewName === USER_PROFILE_EVENTS.SHIPPING_ADDRESSES"
       :addresses="shippingAddresses"
+      :defaultShippingAddressId="defaultShippingAddressId"
     />
-    <BillingAddressBlock v-else :addresses="billingAddresses" />
+    <BillingAddressBlock
+      class="profile__content"
+      v-else
+      :addresses="billingAddresses"
+      :defaultBillingAddressId="defaultBillingAddressId"
+    />
   </div>
 </template>
 
@@ -51,6 +59,8 @@ export default {
       billingAddressIds: new Array<string>(),
       shippingAddresses: new Array<Address>(),
       billingAddresses: new Array<Address>(),
+      defaultBillingAddressId: '',
+      defaultShippingAddressId: '',
       isUserDataViewSelected: true,
       isShippingAddressesViewSelected: false,
       isBillingAddressesViewSelected: false,
@@ -73,6 +83,8 @@ export default {
             this.billingAddressIds = response.body.billingAddressIds || []
             this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds)
             this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds)
+            this.defaultShippingAddressId = response.body.defaultShippingAddressId || ''
+            this.defaultBillingAddressId = response.body.defaultBillingAddressId || ''
           }
         })
       } catch (e) {
@@ -91,7 +103,28 @@ export default {
 
 <style lang="scss" scoped>
 .profile {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: 60px 1fr;
+  grid-template-areas:
+    'title title title title title'
+    'nav content content content content';
+  gap: 20px;
   padding: 20px;
+  height: 90vh;
+  width: 100%;
   text-align: center;
+
+  &__title {
+    grid-area: title;
+  }
+
+  &__nav {
+    grid-area: nav;
+  }
+
+  &__content {
+    grid-area: content;
+  }
 }
 </style>

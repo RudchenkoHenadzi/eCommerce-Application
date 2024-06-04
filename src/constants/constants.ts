@@ -4,7 +4,6 @@ const TIMEOUT_REDIRECT = 2100
 
 const USER_PROFILE_EVENTS = {
   USER_INFO: 'userInfo',
-  USER_CARTS: 'userCarts',
   BILLING_ADDRESSES: 'billingAddresses',
   SHIPPING_ADDRESSES: 'shippingAddresses'
 } as const
