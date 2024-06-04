@@ -64,6 +64,10 @@ router.beforeEach((to) => {
   ) {
     return '/'
   }
+
+  if (!appUser.isLoggedIn && to.name == 'user') {
+    return '/'
+  }
 })
 
 export default router

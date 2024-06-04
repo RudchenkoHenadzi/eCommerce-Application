@@ -16,7 +16,7 @@
       <li class="navigation__item">
         <RouterLink class="navigation__link" to="/cart-shopping">Корзина</RouterLink>
       </li>
-      <li class="navigation__item">
+      <li class="navigation__item" v-if="isLoggedIn">
         <RouterLink class="navigation__link" to="/user">Пользователь</RouterLink>
       </li>
       <li class="navigation__item" v-if="!isLoggedIn">
