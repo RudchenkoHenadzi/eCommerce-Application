@@ -1,5 +1,18 @@
 <template>
-  <h1>Страница о нас</h1>
+  <div class="about">
+    <h1>Страница о нас</h1>
+  </div>
 </template>
 
-<style lang="scss" scoped></style>
+<script lang="ts">
+export default {
+  name: 'AboutView'
+}
+</script>
+
+<style lang="scss" scoped>
+.about {
+  padding: 20px;
+  text-align: center;
+}
+</style>
