@@ -5,7 +5,11 @@ const TIMEOUT_REDIRECT = 2100
 const USER_PROFILE_EVENTS = {
   USER_INFO: 'userInfo',
   BILLING_ADDRESSES: 'billingAddresses',
-  SHIPPING_ADDRESSES: 'shippingAddresses'
+  SHIPPING_ADDRESSES: 'shippingAddresses',
+  DATA_CHANGE: {
+    SUCCESS: 'dataChangedSuccessfully',
+    ERROR: 'DataChangeFailed'
+  }
 } as const
 type TUserProfileEventKeys = keyof typeof USER_PROFILE_EVENTS
 export type TUserProfileEventNames = (typeof USER_PROFILE_EVENTS)[TUserProfileEventKeys]

@@ -19,20 +19,15 @@
       :email="email"
     />
     <AboutUserDataBlock v-else @editModeOn="editModeOnHandler" />
-    <!--    <div class="user__about about" v-else>
-      <div class="about__name"><span>Имя: </span> {{ firstName }}</div>
-      <div class="about__lastName"><span>Фамилия: </span> {{ lastName }}</div>
-      <div class="about__birthDate"><span>Дата рождения: </span> {{ birthDate }}</div>
-      <div class="about__email"><span>Email: </span> {{ email }}</div>
-      <DoneIcon class="about__done-btn" v-if="isEditModeOn" @click="isEditModeOn = false" />
-      <PencilIcon class="about__edit-btn" @click="isEditModeOn = true" />
-    </div>-->
   </div>
 </template>
 
 <script lang="ts">
 import EditUserDataForm from '@/components/forms/EditUserDataForm.vue'
 import AboutUserDataBlock from '@/components/blocks/AboutUserDataBlock.vue'
+import { updateUserData } from '@/services/apiMethods/user/updateUserData'
+import { useUserStore } from '@/stores/User'
+import { USER_PROFILE_EVENTS } from '@/constants/constants'
 
 export default {
   name: 'UserDataBlock',
@@ -45,16 +40,31 @@ export default {
   },
   data() {
     return {
-      isEditModeOn: false
+      isEditModeOn: false,
+      userStore: useUserStore()
     }
   },
   methods: {
     editModeOffHandler(firstName: string, lastName: string, birthDate: string, email: string) {
       this.isEditModeOn = false
-      /* TODO update user data */
+      updateUserData(this.version, firstName, lastName, birthDate, email)
+        .then((response) => {
+          if (response.statusCode === 200) {
+            this.userStore.setUserVersion(response.body.version)
+            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.SUCCESS)
+          } else {
+            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.ERROR)
+          }
+        })
+        .catch(() => this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.ERROR))
     },
     editModeOnHandler() {
       this.isEditModeOn = true
+    }
+  },
+  computed: {
+    version() {
+      return this.userStore.version
     }
   }
 }

@@ -5,6 +5,8 @@
     <UserDataBlock
       class="profile__content"
       v-if="viewName === USER_PROFILE_EVENTS.USER_INFO"
+      @dataChangedSuccessfully="successDataChangeHandler"
+      @DataChangeFailed="errorDataChangeHandler"
       :first-name="firstName"
       :last-name="lastName"
       :birth-date="birthDate"
@@ -36,6 +38,7 @@ import BillingAddressBlock from '@/components/blocks/BillingAddressBlock.vue'
 import { MESSAGE_TEXTS } from '@/constants/texts'
 import {
   TIMEOUT_ERROR_MESSAGE,
+  TIMEOUT_SHORT_MESSAGE,
   type TUserProfileEventNames,
   USER_PROFILE_EVENTS
 } from '@/constants/constants'
@@ -55,6 +58,7 @@ export default {
       lastName: '',
       email: '',
       birthDate: '',
+      version: 0,
       addresses: new Array<Address>(),
       shippingAddressIds: new Array<string>(),
       billingAddressIds: new Array<string>(),
@@ -82,6 +86,8 @@ export default {
             this.userStore.setUserLastName(this.lastName)
             this.birthDate = response.body.dateOfBirth || ''
             this.userStore.setUserBirthDate(this.birthDate)
+            this.version = response.body.version
+            this.userStore.setUserVersion(this.version)
             this.addresses = response.body.addresses || []
             this.shippingAddressIds = response.body.shippingAddressIds || []
             this.billingAddressIds = response.body.billingAddressIds || []
@@ -97,6 +103,12 @@ export default {
     },
     switchViewHandler(viewName: TUserProfileEventNames) {
       this.viewName = viewName
+    },
+    successDataChangeHandler() {
+      this.$emit('showAlert', MESSAGE_TEXTS.PROFILE.successUpdateData, TIMEOUT_SHORT_MESSAGE)
+    },
+    errorDataChangeHandler() {
+      this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
     }
   },
   mounted() {

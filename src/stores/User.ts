@@ -7,6 +7,7 @@ export const useUserStore = defineStore('user', {
     userFirstName: '',
     userLastName: '',
     userBirthDate: '',
+    userVersion: 0,
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
     userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
@@ -18,6 +19,7 @@ export const useUserStore = defineStore('user', {
     firstName: (state) => state.userFirstName,
     lastName: (state) => state.userLastName,
     birthDate: (state) => state.userBirthDate,
+    version: (state) => state.userVersion,
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
     tokenExpirationTime: (state) => state.userTokenExpirationTime,
@@ -52,6 +54,9 @@ export const useUserStore = defineStore('user', {
     },
     setUserBirthDate(birthDate: string) {
       this.userBirthDate = birthDate
+    },
+    setUserVersion(newUserVersion: number) {
+      this.userVersion = newUserVersion
     },
     setUserToken(token: string) {
       this.userToken = token
