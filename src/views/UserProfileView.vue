@@ -15,12 +15,14 @@
       title="Адреса доставки"
       :addresses="shippingAddresses"
       :defaultAddressId="defaultShippingAddressId"
+      text-to-add-button="Добавить еще адрес"
     />
     <AddressBlock
       v-else-if="viewName === USER_PROFILE_EVENTS.BILLING_ADDRESSES"
       title="Платежные адреса"
       :addresses="billingAddresses"
       :defaultAddressId="defaultBillingAddressId"
+      text-to-add-button="Добавить еще адрес"
     />
     <ChangePasswordBlock v-else @changePasswordEvents="changePasswordEventsHandler" />
   </div>

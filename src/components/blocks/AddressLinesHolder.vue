@@ -9,12 +9,24 @@
       <div class="content__building"><span>Дом:</span> {{ building }}</div>
       <div class="content__apartment"><span>Квартира:</span> {{ apartment }}</div>
     </div>
+    <div class="address-lines__controls">
+      <button class="controls__btn">
+        <PencilIcon class="svg-icon" />
+      </button>
+      <button class="controls__btn">
+        <TrashIcon class="svg-icon" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
+import TrashIcon from '@/Icons/TrashIcon.vue'
+import PencilIcon from '@/Icons/PencilIcon.vue'
+
 export default {
   name: 'AddressLinesHolder',
+  components: { PencilIcon, TrashIcon },
 
   props: {
     streetName: String,
@@ -42,12 +54,12 @@ export default {
 
 .address-lines {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: 60px repeat(4, 1fr) 40px;
+  grid-template-rows: repeat(3, 50px);
   grid-template-areas:
-    'marker content content content content'
-    'marker content content content content'
-    'marker content content content content';
+    'marker content content content content controls'
+    'marker content content content content controls'
+    'marker content content content content controls';
   border: 1px dashed $color-gray-200;
   border-radius: 10px;
   background-color: $color-white;
@@ -86,7 +98,7 @@ export default {
   grid-area: content;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 50px);
   text-align: left;
   padding: 10px;
 }
@@ -97,6 +109,17 @@ export default {
 
   & .address-lines__marker {
     background-color: mediumpurple;
+  }
+}
+
+.controls {
+  grid-area: controls;
+  &__btn {
+    .svg-icon {
+      padding: 10px;
+      height: 30px;
+      width: 30px;
+    }
   }
 }
 </style>

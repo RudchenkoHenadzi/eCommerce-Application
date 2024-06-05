@@ -5,7 +5,8 @@ const TIMEOUT_REDIRECT = 2100
 const EVENT_NAMES = {
   VIEW_CHANGE: 'viewChangeEvents',
   CHANGE_USER_DATA: 'changeUserDataEvents',
-  CHANGE_PASSWORD: 'changePasswordEvents'
+  CHANGE_PASSWORD: 'changePasswordEvents',
+  MANAGE_ADDRESSES: 'manageAddresses'
 }
 
 const EVENT_TYPE_NAMES = {
@@ -29,6 +30,12 @@ const EVENT_TYPE_NAMES = {
       WRONG_PASSWORD: 'wrongPassword',
       SUCCESS: 'successChange',
       THE_SAME_PASSWORDS: 'samePasswords'
+    },
+    MANAGE_ADDRESSES: {
+      ADD_ADDRESS: 'addAddress',
+      CHANGE_VIEW_TO_EDIT: 'editAddress',
+      CHANGE_VIEW_TO_READ: 'submitAddress',
+      DELETE_ADDRESS: 'deleteAddress'
     }
   },
   AUTH_EVENTS: {}
