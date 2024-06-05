@@ -6,7 +6,8 @@ const USER_PROFILE_EVENTS = {
   VIEW_CHANGE: {
     USER_INFO: 'userInfo',
     BILLING_ADDRESSES: 'billingAddresses',
-    SHIPPING_ADDRESSES: 'shippingAddresses'
+    SHIPPING_ADDRESSES: 'shippingAddresses',
+    PASSWORD_CHANGE: 'passwordChange'
   },
   DATA_CHANGE: {
     SUCCESS: 'dataChangedSuccessfully',

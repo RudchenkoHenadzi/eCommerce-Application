@@ -22,11 +22,12 @@
     />
     <AddressBlock
       class="profile__content"
-      v-else
+      v-else-if="viewName === USER_PROFILE_EVENTS.BILLING_ADDRESSES"
       title="Платежные адреса"
       :addresses="billingAddresses"
       :defaultAddressId="defaultBillingAddressId"
     />
+    <ChangePasswordBlock v-else />
   </div>
 </template>
 
@@ -45,6 +46,7 @@ import {
 } from '@/constants/constants'
 import { useUserStore } from '@/stores/User'
 import AddressBlock from '@/components/blocks/AddressBlock.vue'
+import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue'
 
 export default {
   name: 'UserProfileView',
@@ -55,7 +57,7 @@ export default {
     }
   },
 
-  components: { AddressBlock, UserDataBlock, ProfileNavigation },
+  components: { ChangePasswordBlock, AddressBlock, UserDataBlock, ProfileNavigation },
 
   data() {
     return {

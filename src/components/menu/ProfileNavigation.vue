@@ -8,6 +8,7 @@
       <li class="side-nav__item button-purple" @click="goToUserBillingAddresses">
         Платежные адреса
       </li>
+      <li class="side-nav__item button-purple" @click="goToPasswordChange">Изменить пароль</li>
     </ul>
   </nav>
 </template>
@@ -27,6 +28,9 @@ export default {
     },
     goToUserShippingAddresses() {
       this.$emit('switchView', USER_PROFILE_EVENTS.VIEW_CHANGE.SHIPPING_ADDRESSES)
+    },
+    goToPasswordChange() {
+      this.$emit('switchView', USER_PROFILE_EVENTS.VIEW_CHANGE.PASSWORD_CHANGE)
     }
   }
 }
