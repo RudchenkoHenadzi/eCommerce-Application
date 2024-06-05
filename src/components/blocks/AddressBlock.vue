@@ -1,5 +1,5 @@
 <template>
-  <div class="addresses">
+  <div class="addresses profile__content">
     <h2 class="addresses__title">{{ title }}</h2>
     <AddressLinesHolder
       v-for="address in addresses"

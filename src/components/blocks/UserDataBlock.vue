@@ -1,5 +1,5 @@
 <template>
-  <div class="user">
+  <div class="user profile__content">
     <figure class="user__avatar">
       <img class="user__img" src="@/assets/images/avatar.jpg" alt="avatar" />
       <figcaption>
@@ -10,7 +10,6 @@
         >
       </figcaption>
     </figure>
-    <!-- TODO add styles    -->
     <EditUserDataForm
       v-if="isEditModeOn"
       @editModeOff="editModeOffHandler"
@@ -28,7 +27,7 @@ import EditUserDataForm from '@/components/forms/EditUserDataForm.vue'
 import ReadUserDataBlock from '@/components/blocks/ReadUserDataBlock.vue'
 import { updateUserData } from '@/services/apiMethods/user/updateUserData'
 import { useUserStore } from '@/stores/User'
-import { USER_PROFILE_EVENTS } from '@/constants/constants'
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
 import { ERROR_TEXTS } from '@/constants/texts'
 
 export default {
@@ -61,16 +60,28 @@ export default {
             this.userStore.setUserBirthDate(birthDate)
             this.userStore.setUserMail(email)
             this.userStore.setUserVersion(response.body.version)
-            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.SUCCESS)
+            this.$emit(
+              EVENT_NAMES.CHANGE_USER_DATA,
+              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.SUCCESS
+            )
           } else {
-            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.DUPLICATE_DATA)
+            this.$emit(
+              EVENT_NAMES.CHANGE_USER_DATA,
+              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA
+            )
           }
         })
         .catch((error) => {
           if (error.message === ERROR_TEXTS.DUPLICATED_DATA) {
-            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.DUPLICATE_DATA)
+            this.$emit(
+              EVENT_NAMES.CHANGE_USER_DATA,
+              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA
+            )
           } else {
-            this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.ERROR)
+            this.$emit(
+              EVENT_NAMES.CHANGE_USER_DATA,
+              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.ERROR
+            )
           }
         })
     },
@@ -95,10 +106,6 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: 1fr;
   grid-template-areas: 'pic about about';
-  padding: 50px;
-  background-color: #eaebed;
-  border-radius: 15px;
-  box-shadow: 5px 5px 10px darkgray;
 
   &__avatar {
     grid-area: pic;

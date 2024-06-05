@@ -46,11 +46,11 @@ export default {
           break
         }
         case 'errorInvalidInput': {
-          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
           break
         }
         default: {
-          this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
         }
       }
     }

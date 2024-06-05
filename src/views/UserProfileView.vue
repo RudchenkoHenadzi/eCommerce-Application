@@ -3,31 +3,26 @@
     <h1 class="profile__title">Страница профиля пользователя</h1>
     <ProfileNavigation class="profile__nav" @switchView="switchViewHandler" />
     <UserDataBlock
-      class="profile__content"
       v-if="viewName === USER_PROFILE_EVENTS.USER_INFO"
-      @dataChangedSuccessfully="successDataChangeHandler"
-      @DataChangeFailed="errorDataChangeHandler"
-      @DuplicateData="duplicateDataHandler"
+      @changeUserDataEvents="changeUserDataEventHandler"
       :first-name="firstName"
       :last-name="lastName"
       :birth-date="birthDate"
       :email="email"
     />
     <AddressBlock
-      class="profile__content"
       v-else-if="viewName === USER_PROFILE_EVENTS.SHIPPING_ADDRESSES"
       title="Адреса доставки"
       :addresses="shippingAddresses"
       :defaultAddressId="defaultShippingAddressId"
     />
     <AddressBlock
-      class="profile__content"
       v-else-if="viewName === USER_PROFILE_EVENTS.BILLING_ADDRESSES"
       title="Платежные адреса"
       :addresses="billingAddresses"
       :defaultAddressId="defaultBillingAddressId"
     />
-    <ChangePasswordBlock v-else />
+    <ChangePasswordBlock v-else @changePasswordEvents="changePasswordEventsHandler" />
   </div>
 </template>
 
@@ -42,7 +37,8 @@ import {
   TIMEOUT_ERROR_MESSAGE,
   TIMEOUT_SHORT_MESSAGE,
   type TUserProfileEventNames,
-  USER_PROFILE_EVENTS
+  EVENT_TYPE_NAMES,
+  TIMEOUT_REDIRECT
 } from '@/constants/constants'
 import { useUserStore } from '@/stores/User'
 import AddressBlock from '@/components/blocks/AddressBlock.vue'
@@ -50,12 +46,6 @@ import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue'
 
 export default {
   name: 'UserProfileView',
-
-  computed: {
-    USER_PROFILE_EVENTS() {
-      return USER_PROFILE_EVENTS.VIEW_CHANGE
-    }
-  },
 
   components: { ChangePasswordBlock, AddressBlock, UserDataBlock, ProfileNavigation },
 
@@ -76,7 +66,7 @@ export default {
       isUserDataViewSelected: true,
       isShippingAddressesViewSelected: false,
       isBillingAddressesViewSelected: false,
-      viewName: USER_PROFILE_EVENTS.VIEW_CHANGE.USER_INFO as TUserProfileEventNames,
+      viewName: EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO as TUserProfileEventNames,
       userStore: useUserStore()
     }
   },
@@ -106,25 +96,80 @@ export default {
           }
         })
       } catch (e) {
-        this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
+        this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
       }
     },
     switchViewHandler(viewName: TUserProfileEventNames) {
       this.viewName = viewName
     },
-    successDataChangeHandler() {
-      this.$emit('showAlert', MESSAGE_TEXTS.PROFILE.successUpdateData, TIMEOUT_SHORT_MESSAGE)
+    changeUserDataEventHandler(eventType: string) {
+      switch (eventType) {
+        case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.SUCCESS: {
+          this.$emit(
+            'showAlert',
+            MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
+            TIMEOUT_SHORT_MESSAGE
+          )
+          break
+        }
+        case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA: {
+          this.$emit(
+            'showAlert',
+            MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
+            TIMEOUT_ERROR_MESSAGE
+          )
+          break
+        }
+        default: {
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+        }
+      }
+      this.$emit(
+        'showAlert',
+        MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
+        TIMEOUT_SHORT_MESSAGE
+      )
     },
-    errorDataChangeHandler() {
-      this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
-    },
-    duplicateDataHandler() {
-      this.$emit('showAlert', MESSAGE_TEXTS.PROFILE.duplicatedData, TIMEOUT_ERROR_MESSAGE)
+    changePasswordEventsHandler(eventType: string) {
+      switch (eventType) {
+        case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.SUCCESS: {
+          this.$emit(
+            'showAlert',
+            MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.successChange,
+            TIMEOUT_SHORT_MESSAGE
+          )
+          setTimeout(() => {
+            this.viewName = EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO
+          }, TIMEOUT_REDIRECT)
+          break
+        }
+        case EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT: {
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
+          break
+        }
+        case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD: {
+          this.$emit(
+            'showAlert',
+            MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.wrongPassword,
+            TIMEOUT_SHORT_MESSAGE
+          )
+          break
+        }
+        default: {
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+        }
+      }
     }
   },
 
   mounted() {
     this.getUserData()
+  },
+
+  computed: {
+    USER_PROFILE_EVENTS() {
+      return EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW
+    }
   }
 }
 </script>
@@ -153,6 +198,10 @@ export default {
 
   &__content {
     grid-area: content;
+    padding: 50px;
+    background-color: #eaebed;
+    border-radius: 15px;
+    box-shadow: 5px 5px 10px darkgray;
   }
 }
 </style>
