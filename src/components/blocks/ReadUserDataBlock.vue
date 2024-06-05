@@ -4,7 +4,7 @@
     <div class="about__lastName"><span>Фамилия: </span> {{ lastName }}</div>
     <div class="about__birthDate"><span>Дата рождения: </span> {{ birthDate }}</div>
     <div class="about__email"><span>Email: </span> {{ email }}</div>
-    <PencilIcon class="about__done-btn" @click="switchEditMode" />
+    <PencilIcon class="about__edit-btn" @click="switchEditMode" />
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import { useUserStore } from '@/stores/User'
 import PencilIcon from '@/Icons/PencilIcon.vue'
 
 export default {
-  name: 'AboutUserDataBlock',
+  name: 'ReadUserDataBlock',
 
   components: { PencilIcon },
 
@@ -46,4 +46,45 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import '@/assets/styles/variables';
+
+.about {
+  grid-area: about;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 15px;
+  background-color: $color-white;
+  border-radius: 10px;
+
+  &__name,
+  &__lastName,
+  &__birthDate,
+  &__email {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    margin-bottom: 7px;
+    justify-items: start;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    width: 100%;
+    text-align: left;
+  }
+
+  &__name span,
+  &__lastName span,
+  &__birthDate span,
+  &__email span {
+    font-weight: bold;
+  }
+
+  &__edit-btn {
+    margin: 0 auto;
+    padding: 10px;
+  }
+}
+</style>

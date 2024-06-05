@@ -33,10 +33,6 @@ export default {
 
   methods: {
     switchEditMode() {
-      this.userStore.setUserFirstName(this.firstName)
-      this.userStore.setUserLastName(this.lastName)
-      this.userStore.setUserBirthDate(this.birthDate)
-      this.userStore.setUserMail(this.email)
       this.$emit('editModeOff', this.firstName, this.lastName, this.birthDate, this.email)
     }
   },
@@ -85,4 +81,34 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+@import '@/assets/styles/variables';
+
+.edit {
+  grid-area: about;
+  padding: 15px;
+  background-color: $color-white;
+  border-radius: 10px;
+}
+
+.form {
+  &__item {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    margin-bottom: 15px;
+    justify-content: start;
+    gap: 10px;
+    text-align: left;
+  }
+
+  &__label {
+    margin: auto 0;
+  }
+
+  &__input {
+    color: $color-gray-600;
+    border: 1px solid $color-gray-600;
+    background-color: transparent;
+  }
+}
+</style>

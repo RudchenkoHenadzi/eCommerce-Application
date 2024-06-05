@@ -10,6 +10,7 @@
         >
       </figcaption>
     </figure>
+    <!-- TODO add styles    -->
     <EditUserDataForm
       v-if="isEditModeOn"
       @editModeOff="editModeOffHandler"
@@ -18,13 +19,13 @@
       :birthDate="birthDate"
       :email="email"
     />
-    <AboutUserDataBlock v-else @editModeOn="editModeOnHandler" />
+    <ReadUserDataBlock v-else @editModeOn="editModeOnHandler" />
   </div>
 </template>
 
 <script lang="ts">
 import EditUserDataForm from '@/components/forms/EditUserDataForm.vue'
-import AboutUserDataBlock from '@/components/blocks/AboutUserDataBlock.vue'
+import ReadUserDataBlock from '@/components/blocks/ReadUserDataBlock.vue'
 import { updateUserData } from '@/services/apiMethods/user/updateUserData'
 import { useUserStore } from '@/stores/User'
 import { USER_PROFILE_EVENTS } from '@/constants/constants'
@@ -33,7 +34,7 @@ import { ERROR_TEXTS } from '@/constants/texts'
 export default {
   name: 'UserDataBlock',
 
-  components: { AboutUserDataBlock, EditUserDataForm },
+  components: { ReadUserDataBlock, EditUserDataForm },
 
   props: {
     firstName: String,
@@ -55,6 +56,10 @@ export default {
       updateUserData(this.version, firstName, lastName, birthDate, email)
         .then((response) => {
           if (response.statusCode === 200) {
+            this.userStore.setUserFirstName(firstName)
+            this.userStore.setUserLastName(lastName)
+            this.userStore.setUserBirthDate(birthDate)
+            this.userStore.setUserMail(email)
             this.userStore.setUserVersion(response.body.version)
             this.$emit(USER_PROFILE_EVENTS.DATA_CHANGE.SUCCESS)
           } else {
@@ -104,33 +109,6 @@ export default {
   &__img {
     margin-bottom: 15px;
     width: 100%;
-  }
-}
-
-.about {
-  position: relative;
-  grid-area: about;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 15px;
-  background-color: $color-white;
-  border-radius: 10px;
-
-  &__name span,
-  &__lastName span,
-  &__birthDate span,
-  &__email span {
-    font-weight: bold;
-  }
-
-  &__edit-btn,
-  &__done-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
   }
 }
 </style>

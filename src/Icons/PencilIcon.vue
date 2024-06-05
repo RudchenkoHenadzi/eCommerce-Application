@@ -18,7 +18,7 @@ export default {
 
 <style scoped lang="scss">
 svg {
-  width: 20px;
+  width: 40px;
   cursor: pointer;
 }
 </style>
