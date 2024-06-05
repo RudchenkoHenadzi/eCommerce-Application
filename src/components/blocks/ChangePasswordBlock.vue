@@ -58,34 +58,41 @@ export default {
     async changePassword() {
       const result = await this.v$.$validate()
       if (result) {
-        try {
-          const changeResult = await changePassword(
-            this.version,
-            this.currentPassword,
-            this.newPassword
+        if (this.currentPassword !== this.newPassword) {
+          try {
+            const changeResult = await changePassword(
+              this.version,
+              this.currentPassword,
+              this.newPassword
+            )
+            if (changeResult.statusCode === 200) {
+              this.$emit(
+                EVENT_NAMES.CHANGE_PASSWORD,
+                EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.SUCCESS
+              )
+            } else {
+              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
+            }
+          } catch (e) {
+            if (
+              typeof e === 'object' &&
+              e !== null &&
+              'message' in e &&
+              e.message === 'The given current password does not match.'
+            ) {
+              this.$emit(
+                EVENT_NAMES.CHANGE_PASSWORD,
+                EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD
+              )
+            } else {
+              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
+            }
+          }
+        } else {
+          this.$emit(
+            EVENT_NAMES.CHANGE_PASSWORD,
+            EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.THE_SAME_PASSWORDS
           )
-          if (changeResult.statusCode === 200) {
-            this.$emit(
-              EVENT_NAMES.CHANGE_PASSWORD,
-              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.SUCCESS
-            )
-          } else {
-            this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
-          }
-        } catch (e) {
-          if (
-            typeof e === 'object' &&
-            e !== null &&
-            'message' in e &&
-            e.message === 'The given current password does not match.'
-          ) {
-            this.$emit(
-              EVENT_NAMES.CHANGE_PASSWORD,
-              EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD
-            )
-          } else {
-            this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
-          }
         }
       } else {
         this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT)

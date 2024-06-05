@@ -27,7 +27,8 @@ const EVENT_TYPE_NAMES = {
     },
     CHANGE_PASSWORD: {
       WRONG_PASSWORD: 'wrongPassword',
-      SUCCESS: 'successChange'
+      SUCCESS: 'successChange',
+      THE_SAME_PASSWORDS: 'samePasswords'
     }
   },
   AUTH_EVENTS: {}

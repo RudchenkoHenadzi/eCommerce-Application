@@ -147,6 +147,14 @@ export default {
           this.$emit('showAlert', MESSAGE_TEXTS.COMMON.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
           break
         }
+        case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.THE_SAME_PASSWORDS: {
+          this.$emit(
+            'showAlert',
+            MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.theSamePasswords,
+            TIMEOUT_ERROR_MESSAGE
+          )
+          break
+        }
         case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD: {
           this.$emit(
             'showAlert',

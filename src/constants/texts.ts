@@ -25,7 +25,8 @@ const MESSAGE_TEXTS = {
     },
     CHANGE_PASSWORD: {
       successChange: 'Пароль успешно изменен.',
-      wrongPassword: 'Введен неверный пароль.'
+      wrongPassword: 'Введен неверный пароль.',
+      theSamePasswords: 'Старый пароль совпадает с новым.'
     }
   }
 }
