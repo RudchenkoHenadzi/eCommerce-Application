@@ -1,15 +1,25 @@
 <template>
   <div class="addresses profile__content">
     <h2 class="addresses__title">{{ title }}</h2>
-    <AddressForm
-      v-if="isAddressEditModeOn"
-      :close-event-name="EVENT_NAMES.MANAGE_ADDRESSES"
-      @manageAddresses="manageAddressesHandler"
-    />
+    <div class="address-form__wrapper" v-if="isAddressEditModeOn">
+      <AddressForm
+        v-for="address in addresses"
+        :close-event-name="EVENT_NAMES.MANAGE_ADDRESSES"
+        :block-name="blockName"
+        formTitle="Добавить адрес"
+        :key="address.id"
+        :id="String(address.id)"
+        :isAddressDefault="defaultAddressId === address.id"
+        @manageAddresses="editAddressesHandler"
+        @changeDefaultAddress="changeDefaultAddressHandler"
+        @cancelChanges="cancelChangesHandler"
+      />
+    </div>
     <div class="address-liner__wrapper" v-else>
       <AddressLinesHolder
         v-for="address in addresses"
         :key="address.id"
+        :id="address.id"
         :streetName="address.streetName"
         :building="address.building"
         :apartment="address.apartment"
@@ -17,11 +27,14 @@
         :city="address.city"
         :country="address.country"
         :isAddressDefault="defaultAddressId === address.id"
+        @manageAddresses="editAddressesHandler"
       />
     </div>
     <AddressForm
       v-if="isAddressAddModeOn"
       :close-event-name="EVENT_NAMES.MANAGE_ADDRESSES"
+      :id="newAddressId"
+      :block-name="blockName"
       @manageAddresses="addAddressesHandler"
     />
     <AddElementCard v-else :text="textToAddButton" @manageAddresses="addAddressesHandler" />
@@ -34,8 +47,9 @@ import type { Address } from '@commercetools/platform-sdk'
 import AddElementCard from '@/components/cards/AddElementCard.vue'
 import AddressForm from '@/components/forms/AddressForm.vue'
 import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
-import { addNewAddress } from '@/services/apiMethods/user/addNewAddress'
 import { useUserStore } from '@/stores/User'
+import { editAddress } from '@/services/apiMethods/user/editAddress'
+import { addNewAddress } from '@/services/apiMethods/user/addNewAddress'
 
 export default {
   name: 'AddressBlock',
@@ -44,6 +58,10 @@ export default {
 
   props: {
     title: String,
+    blockName: {
+      type: String,
+      required: true
+    },
     addresses: Array<Address>,
     defaultAddressId: String,
     textToAddButton: String
@@ -53,7 +71,8 @@ export default {
     return {
       userStore: useUserStore(),
       isAddressEditModeOn: false,
-      isAddressAddModeOn: false
+      isAddressAddModeOn: false,
+      newAddressId: String(Date.now())
     }
   },
 
@@ -66,8 +85,10 @@ export default {
       apartment?: string,
       postCode?: string
     ) {
+      console.log('add')
       if (eventType === EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT) {
         this.isAddressEditModeOn = true
+        this.isAddressAddModeOn = false
       } else {
         if (city && street && building && apartment && postCode)
           try {
@@ -80,12 +101,50 @@ export default {
               postCode
             )
             if (result.statusCode === 200 || result.statusCode === 201) {
-              this.isAddressEditModeOn = false
+              this.isAddressAddModeOn = false
             }
           } catch (error) {
             console.log(error)
           }
       }
+    },
+    async editAddressesHandler(
+      eventType: string,
+      city?: string,
+      street?: string,
+      building?: string,
+      apartment?: string,
+      postCode?: string
+    ) {
+      if (eventType === EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT) {
+        this.isAddressEditModeOn = true
+        this.isAddressAddModeOn = false
+      } else {
+        if (city && street && building && apartment && postCode) {
+          try {
+            const result = await editAddress(
+              this.version,
+              '',
+              city,
+              street,
+              building,
+              apartment,
+              postCode
+            )
+            if (result.statusCode === 200 || result.statusCode === 201) {
+              this.isAddressEditModeOn = false
+            }
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+    },
+    changeDefaultAddressHandler(id: string, isDefault: string) {
+      this.$emit('changeDefaultAddress', id, isDefault)
+    },
+    cancelChangesHandler() {
+      this.isAddressEditModeOn = false
     }
   },
 

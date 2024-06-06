@@ -14,16 +14,21 @@
       v-else-if="viewName === USER_PROFILE_EVENTS.SHIPPING_ADDRESSES"
       title="Адреса доставки"
       :addresses="shippingAddresses"
+      block-name="shipping"
       :defaultAddressId="defaultShippingAddressId"
       text-to-add-button="Добавить еще адрес"
     />
+    <!--      @changeDefaultAddress="changeDefaultAddressHandler"-->
+
     <AddressBlock
       v-else-if="viewName === USER_PROFILE_EVENTS.BILLING_ADDRESSES"
       title="Платежные адреса"
       :addresses="billingAddresses"
+      block-name="billing"
       :defaultAddressId="defaultBillingAddressId"
       text-to-add-button="Добавить еще адрес"
     />
+    <!-- @changeDefaultAddress="changeDefaultAddressHandler"   -->
     <ChangePasswordBlock v-else @changePasswordEvents="changePasswordEventsHandler" />
   </div>
 </template>
@@ -45,6 +50,7 @@ import {
 import { useUserStore } from '@/stores/User'
 import AddressBlock from '@/components/blocks/AddressBlock.vue'
 import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue'
+import { useAddressesStore } from '@/stores/AddressesStore'
 
 export default {
   name: 'UserProfileView',
@@ -69,7 +75,8 @@ export default {
       isShippingAddressesViewSelected: false,
       isBillingAddressesViewSelected: false,
       viewName: EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO as TUserProfileEventNames,
-      userStore: useUserStore()
+      userStore: useUserStore(),
+      addressesStore: useAddressesStore()
     }
   },
 
@@ -89,8 +96,11 @@ export default {
             this.version = response.body.version
             this.userStore.setUserVersion(this.version)
             this.addresses = response.body.addresses || []
+            this.addressesStore.addAddress(this.addresses)
             this.shippingAddressIds = response.body.shippingAddressIds || []
+            this.addressesStore.addId('shipping', this.shippingAddressIds)
             this.billingAddressIds = response.body.billingAddressIds || []
+            this.addressesStore.addId('billing', this.billingAddressIds)
             this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds)
             this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds)
             this.defaultShippingAddressId = response.body.defaultShippingAddressId || ''
@@ -168,6 +178,20 @@ export default {
         default: {
           this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
         }
+      }
+    },
+    changeDefaultAddressHandler(addressType: string, id: string, isDefault: boolean) {
+      let addressesBunch: string[] = []
+      if (addressType === 'shipping') {
+        addressesBunch = this.shippingAddressIds
+      } else {
+        addressesBunch = this.billingAddressIds
+      }
+      if (isDefault) {
+        addressesBunch.push(id)
+        return addressesBunch
+      } else {
+        return [...addressesBunch.filter((addressId: string) => addressId !== id)]
       }
     }
   },

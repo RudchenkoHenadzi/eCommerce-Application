@@ -10,7 +10,7 @@
       <div class="content__apartment"><span>Квартира:</span> {{ apartment }}</div>
     </div>
     <div class="address-lines__controls">
-      <button class="controls__btn">
+      <button class="controls__btn" @click="switchEditModeOn">
         <PencilIcon class="svg-icon" />
       </button>
       <button class="controls__btn">
@@ -23,12 +23,14 @@
 <script lang="ts">
 import TrashIcon from '@/Icons/TrashIcon.vue'
 import PencilIcon from '@/Icons/PencilIcon.vue'
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
 
 export default {
   name: 'AddressLinesHolder',
   components: { PencilIcon, TrashIcon },
 
   props: {
+    id: String,
     streetName: String,
     building: String,
     apartment: String,
@@ -44,6 +46,16 @@ export default {
         default: this.isAddressDefault,
         'address-lines': true
       }
+    }
+  },
+
+  methods: {
+    switchEditModeOn() {
+      this.$emit(
+        EVENT_NAMES.MANAGE_ADDRESSES,
+        EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT,
+        this.id
+      )
     }
   }
 }
