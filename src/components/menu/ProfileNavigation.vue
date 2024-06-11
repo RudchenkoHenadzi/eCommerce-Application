@@ -8,24 +8,29 @@
       <li class="side-nav__item button-purple" @click="goToUserBillingAddresses">
         Платежные адреса
       </li>
+      <li class="side-nav__item button-purple" @click="goToPasswordChange">Изменить пароль</li>
     </ul>
   </nav>
 </template>
 
 <script lang="ts">
-import { USER_PROFILE_EVENTS } from '@/constants/constants'
+import { EVENT_TYPE_NAMES } from '@/constants/constants'
 
 export default {
   name: 'ProfileNavigation',
+
   methods: {
     goToUserInfo() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.USER_INFO)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO)
     },
     goToUserBillingAddresses() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.BILLING_ADDRESSES)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.BILLING_ADDRESSES)
     },
     goToUserShippingAddresses() {
-      this.$emit('switchView', USER_PROFILE_EVENTS.SHIPPING_ADDRESSES)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.SHIPPING_ADDRESSES)
+    },
+    goToPasswordChange() {
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.PASSWORD_CHANGE)
     }
   }
 }

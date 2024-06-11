@@ -1,7 +1,6 @@
 <template>
   <header class="header">
     <TheNavigation />
-
     <div v-if="store.isLoggedIn" class="header__user-name">
       {{ 'Hello, ' + store.userMail }}
       <button class="header__logout" @click="logout">Выход</button>
@@ -16,17 +15,21 @@ import userLogout from '@/services/apiMethods/auth/userLogout'
 
 export default {
   name: 'TheHeader',
+
   setup() {
     return {
       store: useUserStore()
     }
   },
+
   components: {
     TheNavigation
   },
+
   data() {
     return {}
   },
+
   methods: {
     logout() {
       userLogout()

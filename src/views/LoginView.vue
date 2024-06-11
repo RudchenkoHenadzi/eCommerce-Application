@@ -8,8 +8,9 @@
 import LoginForm from '@/components/forms/LoginForm.vue'
 import { MESSAGE_TEXTS } from '@/constants/texts'
 import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/constants'
-
 export default {
+  name: 'LoginView',
+
   components: { LoginForm },
 
   data() {
@@ -18,23 +19,24 @@ export default {
       alertText: ''
     }
   },
+
   methods: {
     loginEventsHandler(eventType: string) {
       switch (eventType) {
         case 'invalidPassword': {
-          this.$emit('showAlert', MESSAGE_TEXTS.invalidPassword, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.invalidPassword, TIMEOUT_ERROR_MESSAGE)
           break
         }
         case 'userNotExist': {
-          this.$emit('showAlert', MESSAGE_TEXTS.userNotExist, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.userNotExist, TIMEOUT_ERROR_MESSAGE)
           break
         }
         case 'successLogin': {
-          this.$emit('showAlert', MESSAGE_TEXTS.successLogin, TIMEOUT_SHORT_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.successLogin, TIMEOUT_SHORT_MESSAGE)
           break
         }
         default: {
-          this.$emit('showAlert', MESSAGE_TEXTS.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
         }
       }
     }

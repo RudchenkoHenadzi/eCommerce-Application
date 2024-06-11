@@ -48,6 +48,7 @@ export default {
       email: helpers.withMessage('Не корректный email', email)
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {

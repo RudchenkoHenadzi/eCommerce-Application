@@ -44,6 +44,7 @@ export default {
       required: helpers.withMessage('Укажите улицу', required)
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
@@ -52,6 +53,7 @@ export default {
       }
     }
   },
+
   computed: {
     idName() {
       return `${this.blockName}-street`

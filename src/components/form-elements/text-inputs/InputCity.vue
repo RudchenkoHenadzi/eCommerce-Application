@@ -49,6 +49,7 @@ export default {
       regexSpecialSymbol: helpers.withMessage('Недопустимые символы', regexSpecialSymbol)
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
@@ -57,6 +58,7 @@ export default {
       }
     }
   },
+
   computed: {
     idName() {
       return `${this.blockName}-city`

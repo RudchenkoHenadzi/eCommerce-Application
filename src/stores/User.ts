@@ -4,6 +4,10 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     isUserLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
     userMail: localStorage.getItem('userMail') || '',
+    userFirstName: '',
+    userLastName: '',
+    userBirthDate: '',
+    userVersion: 0,
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
     userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
@@ -12,6 +16,10 @@ export const useUserStore = defineStore('user', {
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
     email: (state) => state.userMail,
+    firstName: (state) => state.userFirstName,
+    lastName: (state) => state.userLastName,
+    birthDate: (state) => state.userBirthDate,
+    version: (state) => state.userVersion,
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
     tokenExpirationTime: (state) => state.userTokenExpirationTime,
@@ -37,6 +45,18 @@ export const useUserStore = defineStore('user', {
     removeUserMail() {
       this.userMail = ''
       localStorage.removeItem('userMail')
+    },
+    setUserFirstName(firstName: string) {
+      this.userFirstName = firstName
+    },
+    setUserLastName(lastName: string) {
+      this.userLastName = lastName
+    },
+    setUserBirthDate(birthDate: string) {
+      this.userBirthDate = birthDate
+    },
+    setUserVersion(newUserVersion: number) {
+      this.userVersion = newUserVersion
     },
     setUserToken(token: string) {
       this.userToken = token

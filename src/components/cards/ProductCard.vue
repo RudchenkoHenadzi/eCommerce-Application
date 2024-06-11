@@ -31,19 +31,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import CompareIcon from '@/Icons/CompareIcon.vue'
 import ArrowLeft from '@/Icons/ArrowLeft.vue'
-export default defineComponent({
+export default {
   name: 'ProductCard',
+
   components: { ArrowLeft, CompareIcon },
+
   props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName'],
+
   data() {
     return {
       appSettingsStore: useAppSettingsStore()
     }
   },
+
   computed: {
     currency() {
       return this.appSettingsStore.currency
@@ -59,7 +62,7 @@ export default defineComponent({
       }
     }
   }
-})
+}
 </script>
 
 <style scoped lang="scss">
@@ -83,12 +86,14 @@ export default defineComponent({
     border-radius: 5px;
     color: $color-white;
   }
+
   &__compare-btn {
     position: absolute;
     top: 10px;
     right: 10px;
     height: auto;
   }
+
   &__controls {
     position: absolute;
     top: 0;
@@ -106,6 +111,7 @@ export default defineComponent({
   padding: 0 3px;
   transform: translateY(-50%);
   width: 100%;
+
   &__btn {
     height: 40px;
     width: 40px;
@@ -116,6 +122,7 @@ export default defineComponent({
       box-shadow: 0 0 5px $color-pale-purple;
     }
   }
+
   &__right {
     transform: rotate(180deg);
   }
@@ -129,12 +136,14 @@ export default defineComponent({
   background: #f0f1f5;
   text-align: left;
   cursor: pointer;
+
   &__name {
     margin-bottom: 20px;
     font-weight: 600;
     font-size: 18px;
     color: $color-black;
   }
+
   &__btn {
     width: 90%;
   }
@@ -149,6 +158,7 @@ export default defineComponent({
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+
   &__full-price {
     color: $color-gray-600;
     text-decoration: line-through;

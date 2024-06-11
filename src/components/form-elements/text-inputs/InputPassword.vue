@@ -1,10 +1,10 @@
 <template>
   <div class="form__item">
-    <div class="form__label">Пароль:</div>
+    <div class="form__label">{{ labelName }}</div>
     <div class="form__input-wrapper">
       <input
         :type="inputType"
-        id="login-password"
+        :id="id"
         :value="modelValue"
         @input="updateModelValue"
         name="password"
@@ -59,7 +59,9 @@ export default {
   props: {
     modelValue: {
       type: String
-    }
+    },
+    labelName: String,
+    id: String
   },
 
   setup() {
@@ -96,6 +98,7 @@ export default {
       )
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {

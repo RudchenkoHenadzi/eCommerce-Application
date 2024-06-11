@@ -29,12 +29,14 @@ import { required, helpers, minLength, maxLength } from '@vuelidate/validators'
 
 export default {
   name: 'InputApartment',
+
   props: {
     modelValue: {
       type: String
     },
     blockName: String
   },
+
   setup() {
     return {
       v$: useValidate()
@@ -48,6 +50,7 @@ export default {
       maxLength: helpers.withMessage(`Укажите ${maxLength(6).$params.max} цифр`, maxLength(6))
     }
   },
+
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
@@ -56,6 +59,7 @@ export default {
       }
     }
   },
+
   computed: {
     idName() {
       return `${this.blockName}-apartment`

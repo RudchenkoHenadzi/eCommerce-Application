@@ -8,6 +8,7 @@
 <script lang="ts">
 export default {
   name: 'NotFoundView',
+
   methods: {
     goToMainPage() {
       this.$router.push('/')

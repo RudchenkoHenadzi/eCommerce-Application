@@ -1,9 +1,9 @@
 <template>
-  <form class="form login-form" @submit.prevent="submitLoginForm()">
+  <form class="form login-form purple-form" @submit.prevent="submitLoginForm()">
     <div class="form__title">Вход</div>
     <div class="form__wrapper">
       <InputEmail v-model.trim="loginForm.email" />
-      <InputPassword v-model.trim="loginForm.password" />
+      <InputPassword v-model.trim="loginForm.password" label-name="Пароль:" id="login-password" />
     </div>
     <button type="submit" class="form__btn button-white">Войти</button>
     <RouterLink class="form__switch" to="/registration">Зарегистрироваться</RouterLink>
@@ -18,7 +18,6 @@ import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
 import { useUserStore } from '@/stores/User'
 import { isUserNotFound } from '@/helpers/dataCheck/loginCheck'
 import { TIMEOUT_REDIRECT } from '@/constants/constants'
-
 
 export default {
   name: 'LoginForm',

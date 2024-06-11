@@ -1,5 +1,5 @@
 <template>
-  <form id="registration-form" class="form" @submit.prevent="submitRegistrationForm()">
+  <form id="registration-form" class="form purple-form" @submit.prevent="submitRegistrationForm()">
     <div class="form__title">Регистрация</div>
     <div class="form__wrapper">
       <div class="form__block block base-info">
@@ -10,7 +10,11 @@
         <InputDate v-model="registrationForm.dateOfBirth" />
         <div class="form__row">
           <InputEmail v-model="registrationForm.email" />
-          <InputPassword v-model="registrationForm.password" />
+          <InputPassword
+            id="registration-password"
+            v-model="registrationForm.password"
+            label-name="Пароль:"
+          />
         </div>
       </div>
       <div class="form__block block shipping-address">
@@ -156,6 +160,7 @@ export default {
       }
     }
   },
+
   methods: {
     async submitRegistrationForm() {
       const result = await this.v$.$validate()
@@ -174,7 +179,6 @@ export default {
             this.registrationForm.shippingAddress,
             this.registrationForm.billingAddress
           )
-
           if (registrationResult.statusCode === 201) {
             const user = useUserStore()
             user.login()
@@ -197,10 +201,11 @@ export default {
           }
         }
       } else {
-        this.$emit('errorInvalidInput')
+        this.$emit('registrationEvents', 'errorInvalidInput')
       }
     }
   },
+
   computed: {
     billingAddressStreetName: {
       get(): string {
