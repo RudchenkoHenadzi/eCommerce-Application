@@ -29,7 +29,7 @@
   </nav>
 </template>
 
-<script>
+<script lang="ts">
 import { useUserStore } from '../../stores/User'
 
 export default {
