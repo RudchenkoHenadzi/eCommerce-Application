@@ -33,6 +33,7 @@ import InputConfirmPassword from '@/components/form-elements/text-inputs/InputCo
 import { changePassword } from '@/services/apiMethods/user/changePassword'
 import { useUserStore } from '@/stores/User'
 import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
+import { useApiRootStore } from '@/stores/ApiRootStore'
 
 export default {
   name: 'ChangePasswordBlock',
@@ -50,7 +51,8 @@ export default {
       currentPassword: '',
       newPassword: '',
       confirmNewPassword: '',
-      version: useUserStore().userVersion
+      userStore: useUserStore(),
+      apiRoot: useApiRootStore()
     }
   },
 
@@ -66,6 +68,7 @@ export default {
               this.newPassword
             )
             if (changeResult.statusCode === 200) {
+              this.apiRoot.createAuthApiRoot(this.email, this.newPassword)
               this.$emit(
                 EVENT_NAMES.CHANGE_PASSWORD,
                 EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.SUCCESS
@@ -97,6 +100,15 @@ export default {
       } else {
         this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT)
       }
+    }
+  },
+
+  computed: {
+    version() {
+      return this.userStore.userVersion
+    },
+    email() {
+      return this.userStore.email
     }
   }
 }
