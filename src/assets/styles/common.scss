@@ -2,6 +2,12 @@
 @use 'variables.scss';
 @import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
 
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Jost', sans-serif;
   font-optical-sizing: auto;
@@ -88,8 +94,6 @@ input {
   width: 100%;
   max-width: 480px;
   padding: 30px 20px;
-  background-color: variables.$color-purple;
-  color: variables.$color-white;
   border-radius: 10px;
 
   @media (width <=380px) {
@@ -147,5 +151,26 @@ input {
     text-align: center;
     text-decoration: none;
     color: variables.$color-white;
+  }
+}
+
+.purple-form {
+  background-color: variables.$color-purple;
+  color: variables.$color-white;
+}
+
+.transparent-input {
+  input {
+    color: variables.$color-black;
+    border: 1px solid variables.$color-gray-600;
+    background-color: transparent;
+
+    &::placeholder {
+      color: variables.$color-gray-600;
+    }
+  }
+
+  .form__password-icon {
+    fill: variables.$color-purple;
   }
 }

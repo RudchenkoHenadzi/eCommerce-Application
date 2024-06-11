@@ -10,3 +10,14 @@
     }
   }
 }
+
+.button-purple {
+  color: variables.$color-white;
+  background: variables.$color-purple;
+
+  @media (hover) {
+    &:hover {
+      box-shadow: 0 0 5px 0 variables.$color-white;
+    }
+  }
+}
