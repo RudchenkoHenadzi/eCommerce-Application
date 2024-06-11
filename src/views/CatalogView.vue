@@ -183,9 +183,7 @@ export default {
       }
     },
     intersectionHandler(entries: IntersectionObserverEntry[]) {
-      console.log('intersectionHandler')
       if (entries[0].isIntersecting) {
-        console.log('work!')
         this.loadProducts()
       }
     }
