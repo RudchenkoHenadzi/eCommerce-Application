@@ -20,12 +20,9 @@ export default {
     showUsersData() {
       const apiRoot = useApiRootStore()
       apiRoot.apiRoot
-        .carts()
-        .post({
-          body: {
-            currency: 'USD'
-          }
-        })
+        .products()
+        .withKey({ key: 'harmony-drinking-glass' })
+        .get()
         /*.productProjections()
         .search()
         .get({
@@ -44,7 +41,7 @@ export default {
         })*/
         .execute()
         .then((response) => {
-          console.log(`cart id is ${response.body.id}`)
+          console.log(response)
         })
         .catch((e) => console.log(e))
     },

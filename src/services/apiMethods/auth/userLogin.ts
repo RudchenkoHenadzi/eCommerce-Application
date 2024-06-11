@@ -1,11 +1,10 @@
-import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/dataCheck/loginCheck'
 
 export default async function userLogin(email: string, password: string) {
   const apiRootStore = useApiRootStore()
   const apiRoot = apiRootStore.apiRoot
-  apiRootStore.setNewApiRoot(apiRootManagement.createAuthSessionFlow(email, password))
+  apiRootStore.createAuthApiRoot(email, password)
   try {
     const result = await apiRoot
       .me()
@@ -16,11 +15,11 @@ export default async function userLogin(email: string, password: string) {
       .execute()
 
     if (!isLoginRequestSuccess) {
-      apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
+      apiRootStore.createAnonymousApiRoot()
     }
     return result
   } catch (e: unknown) {
-    apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
+    apiRootStore.createAnonymousApiRoot()
     if (isUserNotFound(e)) {
       throw new Error('userNotExist')
     } else {

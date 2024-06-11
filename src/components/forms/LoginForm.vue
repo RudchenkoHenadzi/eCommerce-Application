@@ -13,10 +13,11 @@
 <script lang="ts">
 import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
 import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
-import userLogin from '@/services/apiMethods/userLogin'
-import checkUserExist from '@/services/apiMethods/checkUserExist'
+import userLogin from '@/services/apiMethods/auth/userLogin'
+import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
 import { TIMEOUT_REDIRECT } from '@/constants/projectConfigs'
 import { useUserStore } from '@/stores/User'
+import { isUserNotFound } from '@/helpers/dataCheck/loginCheck'
 
 export default {
   name: 'LoginForm',
@@ -40,23 +41,33 @@ export default {
       try {
         const doesUserExist = await checkUserExist(this.loginForm.email)
         if (doesUserExist) {
-          const loginResult = await userLogin(this.loginForm.email, this.loginForm.password)
-          if (loginResult.statusCode === 200) {
-            this.$emit('successLogin')
-            const user = useUserStore()
-            user.login()
-            user.setUserMail(this.loginForm.email)
-            setTimeout(() => {
-              this.$router.push('/')
-            }, TIMEOUT_REDIRECT)
-          } else if (loginResult.statusCode === 400) {
-            this.$emit('invalidPassword')
-          } else {
-            this.$emit('commonError')
+          try {
+            const loginResult = await userLogin(this.loginForm.email, this.loginForm.password)
+            if (loginResult.statusCode === 200) {
+              this.$emit('loginEvents', 'successLogin')
+              const user = useUserStore()
+              user.login()
+              user.setUserMail(this.loginForm.email)
+              setTimeout(() => {
+                this.$router.push('/')
+              }, TIMEOUT_REDIRECT)
+            } else if (loginResult.statusCode === 400) {
+              this.$emit('loginEvents', 'invalidPassword')
+            } else {
+              this.$emit('loginEvents', 'commonError')
+            }
+          } catch (e) {
+            if (isUserNotFound(e)) {
+              this.$emit('loginEvents', 'userNotExist')
+            } else {
+              this.$emit('loginEvents', 'commonError')
+            }
           }
+        } else {
+          this.$emit('loginEvents', 'userNotExist')
         }
       } catch (error: unknown) {
-        this.$emit('commonError')
+        this.$emit('loginEvents', 'commonError')
       }
     }
   }
