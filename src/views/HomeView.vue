@@ -1,7 +1,6 @@
 <template>
   <div class="main-page">
     <h1 class="main-page__title">Главная страница</h1>
-    <p>Привет! Не успеваем :( Очень сильно просим проверить в четверг T_T Спасибо за понимание!</p>
   </div>
 </template>
 
