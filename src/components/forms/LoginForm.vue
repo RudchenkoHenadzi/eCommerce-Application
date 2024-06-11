@@ -1,5 +1,5 @@
 <template>
-  <form class="form login-form purple-form" @submit.prevent="submitLoginForm()">
+  <form class="form login-form form-purple" @submit.prevent="submitLoginForm()">
     <div class="form__title">Вход</div>
     <div class="form__wrapper">
       <InputEmail v-model.trim="loginForm.email" />

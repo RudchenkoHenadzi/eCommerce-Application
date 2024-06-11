@@ -21,3 +21,13 @@
     }
   }
 }
+
+.catalog-card-button {
+  height: 50px;
+  width: 90%;
+  border-radius: 5px;
+
+  &:active {
+    box-shadow: 5px 5px 5px gainsboro;
+  }
+}

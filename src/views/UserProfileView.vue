@@ -28,7 +28,6 @@
       :defaultAddressId="defaultBillingAddressId"
       text-to-add-button="Добавить еще адрес"
     />
-    <!-- @changeDefaultAddress="changeDefaultAddressHandler"   -->
     <ChangePasswordBlock v-else @changePasswordEvents="changePasswordEventsHandler" />
   </div>
 </template>

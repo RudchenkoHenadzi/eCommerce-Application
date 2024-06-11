@@ -1,12 +1,16 @@
 <template>
   <div class="main-page">
     <h1 class="main-page__title">Главная страница</h1>
+    <AlreadyInCartButton />
   </div>
 </template>
 
 <script lang="ts">
+import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue'
+
 export default {
-  name: 'HomeView'
+  name: 'HomeView',
+  components: { AlreadyInCartButton }
 }
 </script>
 

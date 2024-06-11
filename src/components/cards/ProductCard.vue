@@ -26,7 +26,10 @@
     <div class="about__full-price-only full-price-only" v-else>
       <div class="full-price-only__price">{{ price }} {{ currency }}</div>
     </div>
-    <button class="about__btn button-purple">В корзину</button>
+    <AlreadyInCartButton v-if="isItemInCart" @allItemsDeleted="deleteItemFromCart" />
+    <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
+      В корзину
+    </button>
   </div>
 </template>
 
@@ -34,16 +37,27 @@
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import CompareIcon from '@/Icons/CompareIcon.vue'
 import ArrowLeft from '@/Icons/ArrowLeft.vue'
+import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue'
 export default {
   name: 'ProductCard',
 
-  components: { ArrowLeft, CompareIcon },
+  components: { AlreadyInCartButton, ArrowLeft, CompareIcon },
 
   props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName'],
 
   data() {
     return {
-      appSettingsStore: useAppSettingsStore()
+      appSettingsStore: useAppSettingsStore(),
+      isItemInCart: false
+    }
+  },
+
+  methods: {
+    addItemToCart() {
+      this.isItemInCart = true
+    },
+    deleteItemFromCart() {
+      this.isItemInCart = false
     }
   },
 
