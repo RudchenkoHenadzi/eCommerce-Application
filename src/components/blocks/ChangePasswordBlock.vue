@@ -110,16 +110,10 @@ export default {
   align-content: flex-start;
   padding: 10px;
 
-  &__input {
-    margin: 0 auto;
-    max-width: 450px;
-  }
-
   &__btn {
-    margin: 25px auto 0;
+    margin-top: 25px;
     padding: 5px 0;
     width: 100%;
-    max-width: 450px;
   }
 }
 </style>
