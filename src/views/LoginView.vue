@@ -8,6 +8,7 @@
 import LoginForm from '@/components/forms/LoginForm.vue'
 import { MESSAGE_TEXTS } from '@/constants/texts'
 import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/constants'
+
 export default {
   components: { LoginForm },
 
