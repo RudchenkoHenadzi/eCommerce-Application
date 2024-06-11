@@ -101,8 +101,6 @@ import InputApartment from '@/components/form-elements/text-inputs/InputApartmen
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
 import userRegistration from '@/services/apiMethods/auth/userRegistration'
 import { useUserStore } from '@/stores/User'
-import { isUserExist } from '@/helpers/dataCheck/registrationCheck'
-import type { ErrorResponse } from '@commercetools/platform-sdk'
 
 export default {
   name: 'RegistrationForm',
@@ -172,10 +170,9 @@ export default {
             this.registrationForm.dateOfBirth,
             this.registrationForm.isShippingAddressDefault,
             this.registrationForm.isBillingAddressDefault,
+            this.registrationForm.areBothAddressesSame,
             this.registrationForm.shippingAddress,
-            this.registrationForm.areBothAddressesSame
-              ? this.registrationForm.billingAddress
-              : undefined
+            this.registrationForm.billingAddress
           )
 
           if (registrationResult.statusCode === 201) {

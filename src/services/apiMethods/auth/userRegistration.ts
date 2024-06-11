@@ -11,7 +11,8 @@ export default async function userRegistration(
   dateOfBirth: string,
   isShippingAddressDefault: boolean,
   isBillingAddressDefault: boolean,
-  shippindAddress: IShippingAddressModel,
+  areBothAddressesSame: boolean,
+  shippingAddress: IShippingAddressModel,
   billingAddress?: IBillingAddressModel
 ) {
   const apiRootStore = useApiRootStore()
@@ -23,7 +24,8 @@ export default async function userRegistration(
       email,
       isShippingAddressDefault,
       isBillingAddressDefault,
-      shippindAddress,
+      areBothAddressesSame,
+      shippingAddress,
       billingAddress
     )
 

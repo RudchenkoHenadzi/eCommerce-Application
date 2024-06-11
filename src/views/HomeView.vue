@@ -1,10 +1,8 @@
 <script lang="ts">
-import { useApiRootStore } from '@/stores/ApiRootStore'
-
 export default {
   name: 'HomeView',
   methods: {
-    showProjectData() {
+    /*showProjectData() {
       const apiRoot = useApiRootStore()
       apiRoot.apiRoot
         .me()
@@ -23,7 +21,7 @@ export default {
         .products()
         .withKey({ key: 'harmony-drinking-glass' })
         .get()
-        /*.productProjections()
+        /!*.productProjections()
         .search()
         .get({
           queryArgs: {
@@ -31,14 +29,14 @@ export default {
             limit: 20, // The number of products to return
            /!* priceCurrency: 'EUR',*!/
           },
-        })*/
-        /*.search()
+        })*!/
+        /!*.search()
         .get({
           queryArgs: {
             filter: `productType.key:"furniture-and-decor"`,
             limit: 20,
           },
-        })*/
+        })*!/
         .execute()
         .then((response) => {
           console.log(response)
@@ -50,7 +48,7 @@ export default {
     },
     goToLoginPage() {
       this.$router.push('/authorization')
-    }
+    }*/
   }
 }
 </script>
@@ -58,10 +56,7 @@ export default {
 <template>
   <div class="main-page">
     <h1 class="main-page__title">Главная страница</h1>
-    <button @click="goToRegistrationPage" class="main-page__btn">Регистрация</button>
-    <button @click="goToLoginPage" class="main-page__btn">Вход</button>
-    <button @click="showProjectData" class="main-page__btn">Показать в консоли юзера</button>
-    <button @click="showUsersData" class="main-page__btn">создать корзину и показать данные</button>
+    <p>Привет! Не успеваем :( Очень сильно просим проверить в четверг T_T Спасибо за понимание!</p>
   </div>
 </template>
 
