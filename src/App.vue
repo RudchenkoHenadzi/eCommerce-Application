@@ -18,7 +18,7 @@ export default {
   components: { AlertMessage, TheHeader, RouterView },
 
   name: 'App',
-
+  
   data() {
     return {
       isAlertShow: false,

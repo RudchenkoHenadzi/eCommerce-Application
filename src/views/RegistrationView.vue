@@ -39,7 +39,6 @@ export default {
         }
         case 'registrationSuccess': {
           this.$emit('showAlert', MESSAGE_TEXTS.AUTH.successRegistration, TIMEOUT_SHORT_MESSAGE)
-
           setTimeout(() => {
             this.redirectTo('/')
           }, TIMEOUT_REDIRECT)

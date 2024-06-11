@@ -71,7 +71,7 @@ export default {
     }
   },
 
-  methods: {
+methods: {
     getUserData() {
       try {
         getUserData().then((response) => {
