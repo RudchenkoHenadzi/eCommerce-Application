@@ -17,9 +17,8 @@
       block-name="shipping"
       :defaultAddressId="defaultShippingAddressId"
       text-to-add-button="Добавить еще адрес"
+      @commonError="commonErrorHandler"
     />
-    <!--      @changeDefaultAddress="changeDefaultAddressHandler"-->
-
     <AddressBlock
       v-else-if="viewName === USER_PROFILE_EVENTS.BILLING_ADDRESSES"
       title="Платежные адреса"
@@ -27,6 +26,7 @@
       block-name="billing"
       :defaultAddressId="defaultBillingAddressId"
       text-to-add-button="Добавить еще адрес"
+      @commonError="commonErrorHandler"
     />
     <ChangePasswordBlock v-else @changePasswordEvents="changePasswordEventsHandler" />
   </div>
@@ -192,6 +192,9 @@ export default {
       } else {
         return [...addressesBunch.filter((addressId: string) => addressId !== id)]
       }
+    },
+    commonErrorHandler() {
+      this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
     }
   },
 

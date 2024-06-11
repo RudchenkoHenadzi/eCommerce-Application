@@ -85,7 +85,6 @@ export default {
       apartment?: string,
       postCode?: string
     ) {
-      console.log('add')
       if (eventType === EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT) {
         this.isAddressEditModeOn = true
         this.isAddressAddModeOn = false
@@ -104,7 +103,7 @@ export default {
               this.isAddressAddModeOn = false
             }
           } catch (error) {
-            console.log(error)
+            this.$emit('commonError')
           }
       }
     },
@@ -135,7 +134,7 @@ export default {
               this.isAddressEditModeOn = false
             }
           } catch (error) {
-            console.log(error)
+            this.$emit('commonError')
           }
         }
       }
