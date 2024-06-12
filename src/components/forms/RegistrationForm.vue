@@ -1,5 +1,5 @@
 <template>
-  <form id="registration-form" class="form purple-form" @submit.prevent="submitRegistrationForm()">
+  <form id="registration-form" class="form form-purple" @submit.prevent="submitRegistrationForm()">
     <div class="form__title">Регистрация</div>
     <div class="form__wrapper">
       <div class="form__block block base-info">
