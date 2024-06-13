@@ -9,6 +9,7 @@
           :src="getSrc(product)"
           :attributes="getAttributes(product)"
           :prices="getPrices(product)"
+          :productId="product.id"
           label-name=""
         />
       </div>
@@ -29,6 +30,7 @@ import ProductCard from '@/components/cards/ProductCard.vue'
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
 import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
+import filterProducts from '@/helpers/extractData/filterProducts'
 
 export default {
   name: 'CatalogView',
@@ -52,7 +54,13 @@ export default {
         const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
           this.pageNumber
         )
-        this.products = [...this.products, ...products.body.results]
+
+        if (this.products.length < 1) {
+          this.products = filterProducts(products.body.results)
+        } else {
+          this.products = [...this.products, ...filterProducts(products.body.results)]
+        }
+
         this.totalItems = products.body.total || this.products.length
       } catch (error) {
         this.$emit('commonError')
@@ -93,7 +101,7 @@ export default {
                 .split('-')
                 .filter((val: string) => val.trim() !== '')
                 .map((val: string) => val.trim())
-            } else {
+            } else if (attribute.value) {
               label = attribute.value[this.lang]
                 .split('-')
                 .filter((val: string) => val.trim() !== '')

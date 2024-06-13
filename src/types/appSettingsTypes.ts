@@ -1,2 +1,2 @@
-export type TLang = 'en-US' | 'en-GB' | 'de-DE' | 'ru' | 'be'
-export type TCurrencyType = 'USD' | 'GBP' | 'EUR' | 'BYN' | 'RUB'
+export type TLang = 'en-US' | 'en' | 'ru' | 'be' | 'en-GB' | 'de-DE'
+export type TCurrencyType = 'USD' | 'EUR' | 'BYN' | 'RUB' | 'GBP'
