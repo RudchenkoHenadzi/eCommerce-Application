@@ -1,4 +1,4 @@
-import type { IBillingAddressModel, IShippingAddressModel } from '@/types/customer-types'
+import type { IBillingAddressModel, IShippingAddressModel } from '@/types/customerTypes'
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers'
 import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/dataCheck/registrationCheck'
