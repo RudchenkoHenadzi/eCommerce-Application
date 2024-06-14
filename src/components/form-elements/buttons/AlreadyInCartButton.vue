@@ -15,23 +15,11 @@ export default {
     itemCount: Number
   },
 
-  // data() {
-  //   return {
-  //     itemCount: 1
-  //   }
-  // },
-
   methods: {
     addItem() {
-      /*this.itemCount += 1*/
       this.$emit('changeItemCount', 'add')
     },
     deleteItem() {
-      /*if (this.itemCount <= 1) {
-        this.itemCount = 0
-      } else {
-        this.itemCount -= 1
-      }*/
       this.$emit('changeItemCount', 'delete')
     }
   }

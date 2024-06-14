@@ -115,9 +115,6 @@ export default {
       }
       return 0
     },
-    /*    changeItemsNumberInCartHandler(cart: Cart) {
-      this.setUserCurrentCart(cart)
-    },*/
     getLineItemId(product: Product) {
       if (this.userCurrentCart) {
         return getLineItemId(this.userCurrentCart.lineItems, product.id)
