@@ -50,3 +50,7 @@ export interface ICustomerDraft {
   defaultBillingAddress?: number // Index of the address in the addresses array to use as the default billing address
   billingAddresses?: number[]
 }
+
+export interface IUserCartIdItem {
+  id: string
+}

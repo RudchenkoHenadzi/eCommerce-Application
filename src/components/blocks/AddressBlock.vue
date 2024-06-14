@@ -50,6 +50,7 @@ import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
 import { useUserStore } from '@/stores/User'
 import { editAddress } from '@/services/apiMethods/user/editAddress'
 import { addNewAddress } from '@/services/apiMethods/user/addNewAddress'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'AddressBlock',
@@ -72,7 +73,8 @@ export default {
       userStore: useUserStore(),
       isAddressEditModeOn: false,
       isAddressAddModeOn: false,
-      newAddressId: String(Date.now())
+      newAddressId: String(Date.now()),
+      appStatus: useAppStatusStore()
     }
   },
 
@@ -91,6 +93,7 @@ export default {
       } else {
         if (city && street && building && apartment && postCode)
           try {
+            this.appStatus.startLoading()
             const result = await addNewAddress(
               this.version,
               city,
@@ -104,6 +107,8 @@ export default {
             }
           } catch (error) {
             this.$emit('commonError')
+          } finally {
+            this.appStatus.stopLoading()
           }
       }
     },
@@ -121,6 +126,7 @@ export default {
       } else {
         if (city && street && building && apartment && postCode) {
           try {
+            this.appStatus.startLoading()
             const result = await editAddress(
               this.version,
               '',
@@ -135,6 +141,8 @@ export default {
             }
           } catch (error) {
             this.$emit('commonError')
+          } finally {
+            this.appStatus.stopLoading()
           }
         }
       }

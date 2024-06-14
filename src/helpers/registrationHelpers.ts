@@ -4,7 +4,7 @@ import type {
   IBillingAddressModel,
   ICustomerDraft,
   IShippingAddressModel
-} from '@/types/customer-types'
+} from '@/types/customerTypes'
 
 export function createCustomerDraft(
   email: string,

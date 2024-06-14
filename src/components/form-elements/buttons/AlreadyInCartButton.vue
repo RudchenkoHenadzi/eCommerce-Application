@@ -10,22 +10,17 @@
 export default {
   name: 'AlreadyInCartButton',
 
-  data() {
-    return {
-      itemCount: 1
-    }
+  props: {
+    productId: String,
+    itemCount: Number
   },
 
   methods: {
     addItem() {
-      this.itemCount += 1
+      this.$emit('changeItemCount', 'add')
     },
     deleteItem() {
-      if (this.itemCount <= 1) {
-        this.$emit('allItemsDeleted')
-      } else {
-        this.itemCount -= 1
-      }
+      this.$emit('changeItemCount', 'delete')
     }
   }
 }

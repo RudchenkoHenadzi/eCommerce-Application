@@ -12,6 +12,7 @@
 import TheNavigation from '@/components/menu/TheNavigation.vue'
 import { useUserStore } from '@/stores/User'
 import userLogout from '@/services/apiMethods/auth/userLogout'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'TheHeader',
@@ -27,17 +28,21 @@ export default {
   },
 
   data() {
-    return {}
+    return {
+      appStatus: useAppStatusStore()
+    }
   },
 
   methods: {
     logout() {
+      this.appStatus.startLoading()
       userLogout()
       const userApp = useUserStore()
       userApp.logout()
       userApp.removeUserMail()
 
       this.$router.push('/')
+      this.appStatus.stopLoading()
     }
   }
 }

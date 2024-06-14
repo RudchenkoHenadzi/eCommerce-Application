@@ -1,3 +1,5 @@
+import type { TCountryType, TCurrencyType, TLangType } from '@/types/appSettingsTypes'
+
 const PROJECT_CONFIG = {
   projectKey: 'scooters-online-shop',
   authURL: 'https://auth.europe-west1.gcp.commercetools.com',
@@ -9,10 +11,23 @@ const PROJECT_CONFIG = {
   ]
 }
 
-const DEFAULT_LANG = 'en-US'
-const DEFAULT_CURRENCY = 'USD'
+const DEFAULT_LANG: TLangType = 'en-US'
+const APP_LANGUAGES: TLangType[] = ['de-DE', 'en-US', 'en-GB']
+const DEFAULT_CURRENCY: TCurrencyType = 'USD'
+const APP_CURRENCIES: TCurrencyType[] = ['USD', 'GBP', 'EUR']
+const DEFAULT_COUNTRY: TCountryType = 'US'
+const APP_COUNTRIES: TCountryType[] = ['US', 'GB', 'DE']
 const AGE_RESTRICTION = 13
 const PRODUCTS_LIMIT_PER_LOAD = 20
 
 export default PROJECT_CONFIG
-export { AGE_RESTRICTION, DEFAULT_LANG, DEFAULT_CURRENCY, PRODUCTS_LIMIT_PER_LOAD }
+export {
+  AGE_RESTRICTION,
+  DEFAULT_LANG,
+  DEFAULT_CURRENCY,
+  DEFAULT_COUNTRY,
+  APP_LANGUAGES,
+  APP_CURRENCIES,
+  APP_COUNTRIES,
+  PRODUCTS_LIMIT_PER_LOAD
+}

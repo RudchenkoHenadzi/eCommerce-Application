@@ -9,7 +9,10 @@
           :src="getSrc(product)"
           :attributes="getAttributes(product)"
           :prices="getPrices(product)"
+          :productId="product.id"
           label-name=""
+          :inCartNumber="getInCartNumber(product)"
+          :lineItemId="getLineItemId(product)"
         />
       </div>
     </div>
@@ -21,6 +24,7 @@
 <script lang="ts">
 import getProducts from '@/services/apiMethods/products/getProducts'
 import type {
+  Cart,
   ClientResponse,
   Product,
   ProductPagedQueryResponse
@@ -29,36 +33,93 @@ import ProductCard from '@/components/cards/ProductCard.vue'
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
 import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
+import filterProducts from '@/helpers/extractData/filterProducts'
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
+import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
+import { useCartsStore } from '@/stores/Carts'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
+import { getLineItemId } from '@/helpers/extractData/getLineItemId'
 
 export default {
   name: 'CatalogView',
 
   components: { ProductCard },
 
-  data() {
+  data(): ICatalogViewData {
     return {
       products: new Array<Product>(),
       appSettings: useAppSettingsStore(),
+      cartStore: useCartsStore(),
+      appStatus: useAppStatusStore(),
       pageNumber: 0,
       totalItems: 0,
-      isProductsLoading: false
+      isProductsLoading: false,
+      userCurrentCart: undefined
     }
   },
 
   methods: {
     async getProducts() {
-      this.isProductsLoading = true
+      this.appStatus.startLoading()
       try {
         const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
           this.pageNumber
         )
-        this.products = [...this.products, ...products.body.results]
+
+        if (this.products.length < 1) {
+          this.products = filterProducts(products.body.results)
+        } else {
+          this.products = [...this.products, ...filterProducts(products.body.results)]
+        }
+
         this.totalItems = products.body.total || this.products.length
       } catch (error) {
         this.$emit('commonError')
       } finally {
-        this.isProductsLoading = false
+        this.appStatus.stopLoading()
       }
+    },
+    async getUserCart() {
+      try {
+        this.appStatus.startLoading()
+        const response = await getUserCarts()
+
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          const userCart = getUserCurrentCart(response.body.results)
+          this.setUserCurrentCart(userCart)
+        } else {
+          this.$emit('commonError')
+        }
+      } catch (error) {
+        this.$emit('commonError')
+      } finally {
+        this.appStatus.stopLoading()
+      }
+    },
+    setUserCurrentCart(cart?: Cart) {
+      const cartsStore = useCartsStore()
+      cartsStore.setCurrentCart(cart)
+      this.userCurrentCart = cart
+    },
+    getInCartNumber(product: Product) {
+      const items = this.userCurrentCart ? this.userCurrentCart.lineItems : ''
+
+      if (items) {
+        const lineItem = items.find((item) => item.productId === product.id)
+
+        if (lineItem) {
+          return lineItem.quantity
+        }
+        return 0
+      }
+      return 0
+    },
+    getLineItemId(product: Product) {
+      if (this.userCurrentCart) {
+        return getLineItemId(this.userCurrentCart.lineItems, product.id)
+      }
+      return
     },
     getPrices(product: Product) {
       const prices = product.masterData.current.masterVariant.prices
@@ -93,7 +154,7 @@ export default {
                 .split('-')
                 .filter((val: string) => val.trim() !== '')
                 .map((val: string) => val.trim())
-            } else {
+            } else if (attribute.value) {
               label = attribute.value[this.lang]
                 .split('-')
                 .filter((val: string) => val.trim() !== '')
@@ -191,6 +252,7 @@ export default {
 
   mounted() {
     this.getProducts()
+    this.getUserCart()
     const options = {
       rootMargin: '0px',
       threshold: 1.0

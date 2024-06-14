@@ -34,6 +34,7 @@ import { changePassword } from '@/services/apiMethods/user/changePassword'
 import { useUserStore } from '@/stores/User'
 import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
 import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'ChangePasswordBlock',
@@ -52,7 +53,8 @@ export default {
       newPassword: '',
       confirmNewPassword: '',
       userStore: useUserStore(),
-      apiRoot: useApiRootStore()
+      apiRoot: useApiRootStore(),
+      appStatus: useAppStatusStore()
     }
   },
 
@@ -62,6 +64,7 @@ export default {
       if (result) {
         if (this.currentPassword !== this.newPassword) {
           try {
+            this.appStatus.startLoading()
             const changeResult = await changePassword(
               this.version,
               this.currentPassword,
@@ -90,6 +93,8 @@ export default {
             } else {
               this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
             }
+          } finally {
+            this.appStatus.stopLoading()
           }
         } else {
           this.$emit(

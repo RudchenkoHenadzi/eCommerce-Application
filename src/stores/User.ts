@@ -10,8 +10,7 @@ export const useUserStore = defineStore('user', {
     userVersion: 0,
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
-    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
-    userCartId: localStorage.getItem('userCartId') || ''
+    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0
   }),
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
@@ -22,8 +21,7 @@ export const useUserStore = defineStore('user', {
     version: (state) => state.userVersion,
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
-    tokenExpirationTime: (state) => state.userTokenExpirationTime,
-    cartId: (state) => state.userCartId
+    tokenExpirationTime: (state) => state.userTokenExpirationTime
   },
   actions: {
     login() {
@@ -77,14 +75,6 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('tokenExpirationTime')
       localStorage.removeItem('userToken')
       localStorage.removeItem('userRefreshToken')
-    },
-    setCardId(id: string) {
-      this.userCartId = id
-      localStorage.setItem('userCartId', id)
-    },
-    removeCartId() {
-      this.userCartId = ''
-      localStorage.removeItem('userCartId')
     }
   }
 })

@@ -26,7 +26,12 @@
     <div class="about__full-price-only full-price-only" v-else>
       <div class="full-price-only__price">{{ price }} {{ currency }}</div>
     </div>
-    <AlreadyInCartButton v-if="isItemInCart" @allItemsDeleted="deleteItemFromCart" />
+    <AlreadyInCartButton
+      v-if="localInCartNumber !== 0"
+      @changeItemCount="changeItemCountHandler"
+      :productId="productId"
+      :item-count="localInCartNumber"
+    />
     <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
     </button>
@@ -38,26 +43,149 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import CompareIcon from '@/Icons/CompareIcon.vue'
 import ArrowLeft from '@/Icons/ArrowLeft.vue'
 import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue'
+import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist'
+import addProductToCart from '@/services/apiMethods/cart/addProductToCart'
+import createNewCart from '@/services/apiMethods/cart/createNewCart'
+import { useUserStore } from '@/stores/User'
+import { getLineItemId } from '@/helpers/extractData/getLineItemId'
+import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
+import { useCartsStore } from '@/stores/Carts'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
+import { getProductQuantity } from '@/helpers/extractData/getProductQuantity'
 export default {
   name: 'ProductCard',
 
   components: { AlreadyInCartButton, ArrowLeft, CompareIcon },
 
-  props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName'],
+  props: [
+    'productName',
+    'description',
+    'src',
+    'attributes',
+    'prices',
+    'labelName',
+    'productId',
+    'inCartNumber',
+    'lineItemId'
+  ],
+
+  emits: ['changeItemsNumberInCart', 'productCardEvents'],
 
   data() {
     return {
       appSettingsStore: useAppSettingsStore(),
-      isItemInCart: false
+      appSettings: useAppSettingsStore(),
+      user: useUserStore(),
+      cartsStore: useCartsStore(),
+      appStatus: useAppStatusStore(),
+      localLineItemId: this.lineItemId,
+      localInCartNumber: this.inCartNumber
     }
   },
 
   methods: {
-    addItemToCart() {
-      this.isItemInCart = true
+    setLineItemId(lineItemId: string) {
+      this.localLineItemId = lineItemId
     },
-    deleteItemFromCart() {
-      this.isItemInCart = false
+    setLocalInCartNumber(newInCartNumber: number) {
+      this.localInCartNumber = newInCartNumber
+    },
+    async addItemToCart() {
+      if (!isCartExist(this.cartId)) {
+        try {
+          this.appStatus.startLoading()
+          const cartCreationResult = await createNewCart()
+
+          if (cartCreationResult.statusCode === 200) {
+            this.cartsStore.setCurrentCart(cartCreationResult.body)
+            const addingItemResult = await addProductToCart(
+              cartCreationResult.body.id,
+              this.productId,
+              cartCreationResult.body.version
+            )
+
+            if (addingItemResult.statusCode === 200) {
+              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+
+              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.setLocalInCartNumber(
+                getProductQuantity(addingItemResult.body.lineItems, this.productId)
+              )
+              this.cartsStore.setCurrentCart(addingItemResult.body)
+            } else {
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+            }
+          } else {
+            this.$emit(
+              'productCardEvents',
+              'Товар не удалось добавить в корзину. Не была создана корзина.'
+            )
+          }
+        } catch (e) {
+          this.$emit('productCardEvents', 'Что-то пошло не так.')
+        } finally {
+          this.appStatus.stopLoading()
+        }
+      } else {
+        try {
+          this.appStatus.startLoading()
+          const cartId = this.cartsStore.currentCart?.id
+          const cartVersion = this.cartsStore.currentCart?.version
+
+          if (cartId && cartVersion) {
+            const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion)
+
+            if (addingItemResult.statusCode === 200) {
+              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+              this.setLocalInCartNumber(
+                getProductQuantity(addingItemResult.body.lineItems, this.productId)
+              )
+              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.cartsStore.setCurrentCart(addingItemResult.body)
+            } else {
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+            }
+          } else {
+            this.$emit('productCardEvents', 'Что-то пошло не так.')
+          }
+        } catch (e) {
+          this.$emit('productCardEvents', 'Что-то пошло не так.')
+        } finally {
+          this.appStatus.stopLoading()
+        }
+      }
+    },
+    async changeItemCountHandler(action: string): void {
+      if (action === 'add') {
+        this.addItemToCart()
+      } else {
+        const cartStore = useCartsStore()
+        const cartId = cartStore.userCurrentCart ? cartStore.userCurrentCart.id : ''
+
+        if (cartId) {
+          try {
+            this.appStatus.startLoading()
+            const deletingProductResult = await deleteProductFromCart(
+              cartId,
+              this.localLineItemId,
+              this.cartVersion
+            )
+
+            if (deletingProductResult.statusCode === 200) {
+              this.cartsStore.setCurrentCart(deletingProductResult.body)
+              this.setLocalInCartNumber(
+                getProductQuantity(deletingProductResult.body.lineItems, this.productId)
+              )
+            }
+          } catch (error) {
+            this.$emit('productCardEvents', 'не удалось удалить товар из корзины1')
+          } finally {
+            this.appStatus.stopLoading()
+          }
+        } else {
+          this.$emit('productCardEvents', 'не удалось удалить товар из корзины')
+        }
+      }
     }
   },
 
@@ -74,6 +202,12 @@ export default {
       } else {
         return undefined
       }
+    },
+    cartVersion() {
+      return this.cartsStore.currentCart ? this.cartsStore.currentCart.version : 0
+    },
+    cartId() {
+      return getCartID()
     }
   }
 }
