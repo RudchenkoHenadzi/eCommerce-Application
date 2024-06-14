@@ -105,7 +105,6 @@ export default {
             )
 
             if (addingItemResult.statusCode === 200) {
-              console.log('добавлено')
               this.$emit('changeItemsNumberInCart', addingItemResult.body)
 
               this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
@@ -137,7 +136,6 @@ export default {
             const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion)
 
             if (addingItemResult.statusCode === 200) {
-              console.log('добавлено')
               this.$emit('changeItemsNumberInCart', addingItemResult.body)
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
