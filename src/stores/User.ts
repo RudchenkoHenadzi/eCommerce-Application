@@ -1,4 +1,9 @@
 import { defineStore } from 'pinia'
+import type { TCurrencyType } from '@/types/appSettingsTypes'
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
+import type { Cart } from '@commercetools/platform-sdk'
+import { userCartIds } from '@/helpers/setUp/setUpUserCartsToStore'
+import { deleteCart } from '@/services/apiMethods/cart/deleteCart'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -11,7 +16,7 @@ export const useUserStore = defineStore('user', {
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
     userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
-    userCartId: localStorage.getItem('userCartId') || ''
+    userCartIds: userCartIds,
   }),
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
@@ -23,7 +28,6 @@ export const useUserStore = defineStore('user', {
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
     tokenExpirationTime: (state) => state.userTokenExpirationTime,
-    cartId: (state) => state.userCartId
   },
   actions: {
     login() {
@@ -78,13 +82,36 @@ export const useUserStore = defineStore('user', {
       localStorage.removeItem('userToken')
       localStorage.removeItem('userRefreshToken')
     },
-    setCardId(id: string) {
-      this.userCartId = id
-      localStorage.setItem('userCartId', id)
+    saveCartId(currency: TCurrencyType, id: string) {
+      this.userCartIds[currency].id = id
     },
-    removeCartId() {
-      this.userCartId = ''
-      localStorage.removeItem('userCartId')
+    saveCartVersion(currency: TCurrencyType, version: number) {
+      this.userCartIds[currency].version = version
+    },
+    getUserCarts() {
+      getUserCarts().then((res) => {
+        console.log(' getUserCarts then')
+        if (res.statusCode === 200) {
+          const carts = res.body.results.reverse()
+          carts.forEach((cart: Cart) => {
+            const currency = cart.totalPrice.currencyCode as TCurrencyType
+            if (this.userCartIds[currency]) {
+              if (this.userCartIds[currency].id === '') {
+                this.userCartIds[currency] = {
+                  id: cart.id,
+                  version: cart.version
+                }
+              } else {
+                deleteCart(cart.id, cart.version).then(console.log).catch(console.error)
+              }
+            } else {
+              deleteCart(cart.id, cart.version).then(console.log).catch(console.error)
+            }
+          })
+        } else {
+          console.log(res)
+        }
+      }).catch((e) => console.log(e))
     }
   }
 })

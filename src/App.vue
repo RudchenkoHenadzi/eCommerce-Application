@@ -13,6 +13,7 @@ import { RouterView } from 'vue-router'
 import TheHeader from '@/components/layouts/TheHeader.vue'
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
+import { useUserStore } from '@/stores/User'
 
 export default {
   components: { AlertMessage, TheHeader, RouterView },
@@ -22,7 +23,8 @@ export default {
   data() {
     return {
       isAlertShow: false,
-      alertText: ''
+      alertText: '',
+      user: useUserStore()
     }
   },
 
@@ -42,6 +44,7 @@ export default {
   mounted() {
     const apiRoot = useApiRootStore()
     apiRoot.start()
+    this.user.getUserCarts()
   }
 }
 </script>

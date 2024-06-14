@@ -26,8 +26,8 @@
     <div class="about__full-price-only full-price-only" v-else>
       <div class="full-price-only__price">{{ price }} {{ currency }}</div>
     </div>
-    <AlreadyInCartButton v-if="isItemInCart" @allItemsDeleted="deleteItemFromCart" />
-    <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
+    <AlreadyInCartButton v-if="isItemInCart" @changeItemCount="changeItemCount" :productId="productId" />
+    <button v-else class="about__btn button-purple catalog-card-button" @click="addItemHandler">
       В корзину
     </button>
   </div>
@@ -38,26 +38,89 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import CompareIcon from '@/Icons/CompareIcon.vue'
 import ArrowLeft from '@/Icons/ArrowLeft.vue'
 import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue'
+import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist'
+import addProductToCart from '@/services/apiMethods/cart/addProductToCart'
+import createNewCartWithCurrency from '@/services/apiMethods/cart/createNewCartWithCurrency'
+import { useUserStore } from '@/stores/User'
+import { getLineItemId } from '@/helpers/extractData/getLineItemId'
+import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
 export default {
   name: 'ProductCard',
 
   components: { AlreadyInCartButton, ArrowLeft, CompareIcon },
 
-  props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName'],
+  props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName', 'productId'],
 
   data() {
     return {
       appSettingsStore: useAppSettingsStore(),
-      isItemInCart: false
+      appSettings: useAppSettingsStore(),
+      user: useUserStore(),
+      isItemInCart: false,
+      cartId: '',
+      lineItemId: ''
     }
   },
 
   methods: {
+    addItemHandler() {
+      this.addItemToCart()
+    },
+    setLineItemId(lineItemId: string) {
+      this.lineItemId = lineItemId
+    },
     addItemToCart() {
       this.isItemInCart = true
+      try {
+        if (!isCartExist(this.cartId)) {
+          createNewCartWithCurrency()
+            .then((result) => {
+              if (result.statusCode === 201) {
+                this.user.saveCartId(this.appSettingsStore.currency, result.body.id)
+                this.user.saveCartVersion(this.appSettingsStore.currency, result.body.version)
+                addProductToCart(this.productId, this.cartVersion).then((res) => {
+                  if (res.statusCode === 200) {
+                    console.log('добавлено')
+                    this.setLineItemId(getLineItemId(res.body.lineItems, this.productId))
+                    this.user.saveCartVersion(this.appSettingsStore.currency, res.body.version)
+                  } else {
+                    this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+                  }
+                })
+              } else {
+                this.$emit('productCardEvents', 'Не удалось создать корзину')
+              }
+            })
+            .catch((error) => {
+              if (error instanceof Error) {
+                this.$emit('productCardEvents', error.message)
+              } else {
+                this.$emit('productCardEvents', 'commonError')
+              }
+            })
+        } else {
+          addProductToCart(this.productId, this.cartVersion).then((res) => {
+            if (res.statusCode === 200) {
+              console.log('добавлено')
+              this.setLineItemId(getLineItemId(res.body.lineItems, this.productId))
+              this.user.saveCartVersion(this.appSettingsStore.currency, res.body.version)
+            } else {
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+            }
+          })
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
     },
-    deleteItemFromCart() {
-      this.isItemInCart = false
+    changeItemCount(itemCount: number): void {
+      if (itemCount) {
+        this.addItemToCart()
+      } else {
+        deleteProductFromCart(this.lineItemId, this.cartVersion).then((res) => {console.log(res)}).catch((e) => {console.log(e)})
+        this.isItemInCart = false
+      }
     }
   },
 
@@ -74,8 +137,15 @@ export default {
       } else {
         return undefined
       }
+    },
+    cartVersion() {
+      return this.user.userCartIds[this.appSettings.currency].version
     }
-  }
+  },
+
+  mounted() {
+      this.cartId = getCartID()
+  },
 }
 </script>
 
