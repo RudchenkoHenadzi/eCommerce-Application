@@ -11,6 +11,8 @@
           :prices="getPrices(product)"
           :productId="product.id"
           label-name=""
+          :inCartNumber="getInCartNumber(product)"
+          :lineItemId="getLineItemId(product)"
         />
       </div>
     </div>
@@ -37,6 +39,7 @@ import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
 import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
 import { useCartsStore } from '@/stores/Carts'
 import { useAppStatusStore } from '@/stores/AppStatusStore'
+import { getLineItemId } from '@/helpers/extractData/getLineItemId'
 
 export default {
   name: 'CatalogView',
@@ -83,14 +86,12 @@ export default {
         const response = await getUserCarts()
 
         if (response.statusCode === 200 || response.statusCode === 201) {
-          console.log(response.body.results)
           const userCart = getUserCurrentCart(response.body.results)
           this.setUserCurrentCart(userCart)
         } else {
           this.$emit('commonError')
         }
       } catch (error) {
-        console.log(error)
         this.$emit('commonError')
       } finally {
         this.appStatus.stopLoading()
@@ -100,6 +101,28 @@ export default {
       const cartsStore = useCartsStore()
       cartsStore.setCurrentCart(cart)
       this.userCurrentCart = cart
+    },
+    getInCartNumber(product: Product) {
+      const items = this.userCurrentCart ? this.userCurrentCart.lineItems : ''
+
+      if (items) {
+        const lineItem = items.find((item) => item.productId === product.id)
+
+        if (lineItem) {
+          return lineItem.quantity
+        }
+        return 0
+      }
+      return 0
+    },
+    /*    changeItemsNumberInCartHandler(cart: Cart) {
+      this.setUserCurrentCart(cart)
+    },*/
+    getLineItemId(product: Product) {
+      if (this.userCurrentCart) {
+        return getLineItemId(this.userCurrentCart.lineItems, product.id)
+      }
+      return
     },
     getPrices(product: Product) {
       const prices = product.masterData.current.masterVariant.prices

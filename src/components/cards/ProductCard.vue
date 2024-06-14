@@ -27,9 +27,10 @@
       <div class="full-price-only__price">{{ price }} {{ currency }}</div>
     </div>
     <AlreadyInCartButton
-      v-if="isItemInCart"
-      @changeItemCount="changeItemCount"
+      v-if="localInCartNumber !== 0"
+      @changeItemCount="changeItemCountHandler"
       :productId="productId"
+      :item-count="localInCartNumber"
     />
     <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
@@ -50,12 +51,25 @@ import { getLineItemId } from '@/helpers/extractData/getLineItemId'
 import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
 import { useCartsStore } from '@/stores/Carts'
 import { useAppStatusStore } from '@/stores/AppStatusStore'
+import { getProductQuantity } from '@/helpers/extractData/getProductQuantity'
 export default {
   name: 'ProductCard',
 
   components: { AlreadyInCartButton, ArrowLeft, CompareIcon },
 
-  props: ['productName', 'description', 'src', 'attributes', 'prices', 'labelName', 'productId'],
+  props: [
+    'productName',
+    'description',
+    'src',
+    'attributes',
+    'prices',
+    'labelName',
+    'productId',
+    'inCartNumber',
+    'lineItemId'
+  ],
+
+  emits: ['changeItemsNumberInCart', 'productCardEvents'],
 
   data() {
     return {
@@ -64,18 +78,19 @@ export default {
       user: useUserStore(),
       cartsStore: useCartsStore(),
       appStatus: useAppStatusStore(),
-      isItemInCart: false,
-      lineItemId: ''
+      localLineItemId: this.lineItemId,
+      localInCartNumber: this.inCartNumber
     }
   },
 
   methods: {
     setLineItemId(lineItemId: string) {
-      this.lineItemId = lineItemId
+      this.localLineItemId = lineItemId
+    },
+    setLocalInCartNumber(newInCartNumber: number) {
+      this.localInCartNumber = newInCartNumber
     },
     async addItemToCart() {
-      this.isItemInCart = true
-
       if (!isCartExist(this.cartId)) {
         try {
           this.appStatus.startLoading()
@@ -91,7 +106,12 @@ export default {
 
             if (addingItemResult.statusCode === 200) {
               console.log('добавлено')
+              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+
               this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.setLocalInCartNumber(
+                getProductQuantity(addingItemResult.body.lineItems, this.productId)
+              )
               this.cartsStore.setCurrentCart(addingItemResult.body)
             } else {
               this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
@@ -118,6 +138,10 @@ export default {
 
             if (addingItemResult.statusCode === 200) {
               console.log('добавлено')
+              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+              this.setLocalInCartNumber(
+                getProductQuantity(addingItemResult.body.lineItems, this.productId)
+              )
               this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
               this.cartsStore.setCurrentCart(addingItemResult.body)
             } else {
@@ -133,8 +157,8 @@ export default {
         }
       }
     },
-    changeItemCount(itemCount: number): void {
-      if (itemCount) {
+    async changeItemCountHandler(action: string): void {
+      if (action === 'add') {
         this.addItemToCart()
       } else {
         const cartStore = useCartsStore()
@@ -143,14 +167,25 @@ export default {
         if (cartId) {
           try {
             this.appStatus.startLoading()
-            deleteProductFromCart(cartId, this.lineItemId, this.cartVersion)
+            const deletingProductResult = await deleteProductFromCart(
+              cartId,
+              this.localLineItemId,
+              this.cartVersion
+            )
+
+            if (deletingProductResult.statusCode === 200) {
+              this.cartsStore.setCurrentCart(deletingProductResult.body)
+              this.setLocalInCartNumber(
+                getProductQuantity(deletingProductResult.body.lineItems, this.productId)
+              )
+            }
+            /*deleteProductFromCart(cartId, this.localLineItemId, this.cartVersion)
               .then((res) => {
                 console.log(res)
               })
               .catch((e) => {
                 console.log(e)
-              })
-            this.isItemInCart = false
+              })*/
           } catch (error) {
             this.$emit('productCardEvents', 'не удалось удалить товар из корзины1')
           } finally {
@@ -184,10 +219,6 @@ export default {
       return getCartID()
     }
   }
-
-  /*mounted() {
-    this.cartId = getCartID()
-  }*/
 }
 </script>
 

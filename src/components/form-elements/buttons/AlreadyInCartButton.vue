@@ -11,29 +11,28 @@ export default {
   name: 'AlreadyInCartButton',
 
   props: {
-    productId: String
+    productId: String,
+    itemCount: Number
   },
 
-  data() {
-    return {
-      itemCount: 1
-    }
-  },
+  // data() {
+  //   return {
+  //     itemCount: 1
+  //   }
+  // },
 
   methods: {
     addItem() {
-      this.itemCount += 1
-      console.log(`productId ${this.productId} count ${this.itemCount}`)
-      this.$emit('changeItemCount', this.itemCount)
+      /*this.itemCount += 1*/
+      this.$emit('changeItemCount', 'add')
     },
     deleteItem() {
-      if (this.itemCount <= 1) {
+      /*if (this.itemCount <= 1) {
         this.itemCount = 0
       } else {
         this.itemCount -= 1
-      }
-      console.log(`productId ${this.productId} count ${this.itemCount}`)
-      this.$emit('changeItemCount', this.itemCount)
+      }*/
+      this.$emit('changeItemCount', 'delete')
     }
   }
 }

@@ -30,7 +30,8 @@ export default {
       isAlertShow: false,
       alertText: '',
       user: useUserStore(),
-      appStatus: useAppStatusStore()
+      appStatus: useAppStatusStore(),
+      apiRoot: useApiRootStore()
     }
   },
 
@@ -48,8 +49,7 @@ export default {
   },
 
   mounted() {
-    const apiRoot = useApiRootStore()
-    apiRoot.start()
+    this.apiRoot.start()
   },
 
   computed: {
