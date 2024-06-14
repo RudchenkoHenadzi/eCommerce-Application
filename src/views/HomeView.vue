@@ -3,10 +3,10 @@
     <h1 class="main-page__title">Главная страница</h1>
     <AlreadyInCartButton />
     <div class="switch">
-      <p>Сменить валюту</p>
-      <button @click="changeCurrency('GBP')">GBP</button>
-      <button @click="changeCurrency('USD')">USD</button>
-      <button @click="changeCurrency('EUR')">EUR</button>
+      <p>Сменить страну</p>
+      <button @click="changeCountry('GB')">GB</button>
+      <button @click="changeCountry('US')">US</button>
+      <button @click="changeCountry('DE')">DE</button>
     </div>
   </div>
 </template>
@@ -25,7 +25,12 @@ export default {
   },
     changeCurrency(currencyCode: TCurrencyType) {
       this.appSettings.setNewCurrency(currencyCode)
+  methods: {
     },
+    changeCountry(countryCode: TCountryType) {
+      this.appSettings.selectCountry(countryCode)
+    },
+  },
 }
 </script>
 
