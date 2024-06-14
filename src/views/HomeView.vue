@@ -1,9 +1,7 @@
 <template>
   <div class="main-page">
     <h1 class="main-page__title">Главная страница</h1>
-    <button @click="createNewCartWithCurrency()">Создать корзину</button>
     <button @click="getUserCart()">Проверить корзины</button>
-    <button @click="getUserId()">Проверить id покупателя</button>
     <div class="switch">
       <p>Сменить страну</p>
       <button @click="changeCountry('GB')">GB</button>
@@ -14,9 +12,6 @@
 </template>
 
 <script lang="ts">
-import createNewCart from '@/services/apiMethods/cart/createNewCart'
-import { useUserStore } from '@/stores/User'
-import getUserCustomerId from '@/services/apiMethods/user/getUserCustomerId'
 import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
 import type { TCountryType } from '@/types/appSettingsTypes'
 import { useAppSettingsStore } from '@/stores/AppSettingsStore'
@@ -25,24 +20,12 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      customerId: '',
       appSettings: useAppSettingsStore()
     }
   },
   methods: {
     getUserCart() {
       getUserCarts().then(console.log).catch(console.error)
-    },
-    createNewCartWithCurrency: createNewCart,
-    getUserId() {
-      const user = useUserStore()
-      const email = user.email
-      getUserCustomerId(email)
-        .then((res) => {
-          console.log(res.body.results[0].id)
-          this.customerId = res.body.results[0].id
-        })
-        .catch(console.error)
     },
     changeCountry(countryCode: TCountryType) {
       this.appSettings.selectCountry(countryCode)

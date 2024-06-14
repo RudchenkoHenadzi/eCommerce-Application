@@ -63,7 +63,6 @@ export default {
       user: useUserStore(),
       cartsStore: useCartsStore(),
       isItemInCart: false,
-      cartId: '',
       lineItemId: ''
     }
   },
@@ -164,12 +163,15 @@ export default {
     },
     cartVersion() {
       return this.cartsStore.currentCart ? this.cartsStore.currentCart.version : 0
+    },
+    cartId() {
+      return getCartID()
     }
-  },
-
-  mounted() {
-    this.cartId = getCartID()
   }
+
+  /*mounted() {
+    this.cartId = getCartID()
+  }*/
 }
 </script>
 
