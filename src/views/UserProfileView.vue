@@ -82,33 +82,35 @@ export default {
   },
 
   methods: {
-    getUserData() {
+    async getUserData() {
       try {
         this.appStatus.startLoading()
-        getUserData().then((response) => {
-          if (response.statusCode === 200 || response.statusCode === 201) {
-            this.email = response.body.email
-            this.userStore.setUserMail(this.email)
-            this.firstName = response.body.firstName || ''
-            this.userStore.setUserFirstName(this.firstName)
-            this.lastName = response.body.lastName || ''
-            this.userStore.setUserLastName(this.lastName)
-            this.birthDate = response.body.dateOfBirth || ''
-            this.userStore.setUserBirthDate(this.birthDate)
-            this.version = response.body.version
-            this.userStore.setUserVersion(this.version)
-            this.addresses = response.body.addresses || []
-            this.addressesStore.addAddress(this.addresses)
-            this.shippingAddressIds = response.body.shippingAddressIds || []
-            this.addressesStore.addId('shipping', this.shippingAddressIds)
-            this.billingAddressIds = response.body.billingAddressIds || []
-            this.addressesStore.addId('billing', this.billingAddressIds)
-            this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds)
-            this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds)
-            this.defaultShippingAddressId = response.body.defaultShippingAddressId || ''
-            this.defaultBillingAddressId = response.body.defaultBillingAddressId || ''
-          }
-        })
+        const gettingUserDataResult = await getUserData()
+
+        if (gettingUserDataResult.statusCode === 200) {
+          this.email = gettingUserDataResult.body.email
+          this.userStore.setUserMail(this.email)
+          this.firstName = gettingUserDataResult.body.firstName || ''
+          this.userStore.setUserFirstName(this.firstName)
+          this.lastName = gettingUserDataResult.body.lastName || ''
+          this.userStore.setUserLastName(this.lastName)
+          this.birthDate = gettingUserDataResult.body.dateOfBirth || ''
+          this.userStore.setUserBirthDate(this.birthDate)
+          this.version = gettingUserDataResult.body.version
+          this.userStore.setUserVersion(this.version)
+          this.addresses = gettingUserDataResult.body.addresses || []
+          this.addressesStore.addAddress(this.addresses)
+          this.shippingAddressIds = gettingUserDataResult.body.shippingAddressIds || []
+          this.addressesStore.addId('shipping', this.shippingAddressIds)
+          this.billingAddressIds = gettingUserDataResult.body.billingAddressIds || []
+          this.addressesStore.addId('billing', this.billingAddressIds)
+          this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds)
+          this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds)
+          this.defaultShippingAddressId = gettingUserDataResult.body.defaultShippingAddressId || ''
+          this.defaultBillingAddressId = gettingUserDataResult.body.defaultBillingAddressId || ''
+        } else {
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+        }
       } catch (e) {
         this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
       } finally {

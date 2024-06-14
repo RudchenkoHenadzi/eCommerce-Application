@@ -179,13 +179,6 @@ export default {
                 getProductQuantity(deletingProductResult.body.lineItems, this.productId)
               )
             }
-            /*deleteProductFromCart(cartId, this.localLineItemId, this.cartVersion)
-              .then((res) => {
-                console.log(res)
-              })
-              .catch((e) => {
-                console.log(e)
-              })*/
           } catch (error) {
             this.$emit('productCardEvents', 'не удалось удалить товар из корзины1')
           } finally {
