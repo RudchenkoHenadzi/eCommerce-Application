@@ -36,6 +36,7 @@ import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
 import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
 import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
 import { useCartsStore } from '@/stores/Carts'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'CatalogView',
@@ -47,6 +48,7 @@ export default {
       products: new Array<Product>(),
       appSettings: useAppSettingsStore(),
       cartStore: useCartsStore(),
+      appStatus: useAppStatusStore(),
       pageNumber: 0,
       totalItems: 0,
       isProductsLoading: false,
@@ -56,7 +58,7 @@ export default {
 
   methods: {
     async getProducts() {
-      this.isProductsLoading = true
+      this.appStatus.startLoading()
       try {
         const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
           this.pageNumber
@@ -72,11 +74,12 @@ export default {
       } catch (error) {
         this.$emit('commonError')
       } finally {
-        this.isProductsLoading = false
+        this.appStatus.stopLoading()
       }
     },
     async getUserCart() {
       try {
+        this.appStatus.startLoading()
         const response = await getUserCarts()
 
         if (response.statusCode === 200 || response.statusCode === 201) {
@@ -89,6 +92,8 @@ export default {
       } catch (error) {
         console.log(error)
         this.$emit('commonError')
+      } finally {
+        this.appStatus.stopLoading()
       }
     },
     setUserCurrentCart(cart?: Cart) {

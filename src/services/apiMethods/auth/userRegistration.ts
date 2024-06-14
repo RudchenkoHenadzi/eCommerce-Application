@@ -39,7 +39,8 @@ export default async function userRegistration(
     )
 
     const registrationResult = await apiRoot
-      .customers()
+      .me()
+      .signup()
       .post({
         body: customerDraft
       })

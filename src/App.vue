@@ -6,6 +6,9 @@
   <Transition>
     <AlertMessage v-if="isAlertShow" :key="Date.now()" :text="alertText" @closeAlert="closeAlert" />
   </Transition>
+  <div class="loader-layout" v-if="isLoading">
+    <MyLoader fill="#d8d8e6" />
+  </div>
 </template>
 
 <script lang="ts">
@@ -14,9 +17,11 @@ import TheHeader from '@/components/layouts/TheHeader.vue'
 import { useApiRootStore } from '@/stores/ApiRootStore'
 import AlertMessage from '@/components/alerts/AlertMessage.vue'
 import { useUserStore } from '@/stores/User'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
+import MyLoader from '@/Icons/MyLoader.vue'
 
 export default {
-  components: { AlertMessage, TheHeader, RouterView },
+  components: { MyLoader, AlertMessage, TheHeader, RouterView },
 
   name: 'App',
 
@@ -24,7 +29,8 @@ export default {
     return {
       isAlertShow: false,
       alertText: '',
-      user: useUserStore()
+      user: useUserStore(),
+      appStatus: useAppStatusStore()
     }
   },
 
@@ -44,8 +50,22 @@ export default {
   mounted() {
     const apiRoot = useApiRootStore()
     apiRoot.start()
+  },
+
+  computed: {
+    isLoading() {
+      return this.appStatus.isDataLoading
+    }
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.loader-layout {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+</style>

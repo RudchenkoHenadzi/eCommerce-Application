@@ -31,7 +31,7 @@
       @changeItemCount="changeItemCount"
       :productId="productId"
     />
-    <button v-else class="about__btn button-purple catalog-card-button" @click="addItemHandler">
+    <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
     </button>
   </div>
@@ -49,6 +49,7 @@ import { useUserStore } from '@/stores/User'
 import { getLineItemId } from '@/helpers/extractData/getLineItemId'
 import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
 import { useCartsStore } from '@/stores/Carts'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 export default {
   name: 'ProductCard',
 
@@ -62,66 +63,74 @@ export default {
       appSettings: useAppSettingsStore(),
       user: useUserStore(),
       cartsStore: useCartsStore(),
+      appStatus: useAppStatusStore(),
       isItemInCart: false,
       lineItemId: ''
     }
   },
 
   methods: {
-    addItemHandler() {
-      this.addItemToCart()
-    },
     setLineItemId(lineItemId: string) {
       this.lineItemId = lineItemId
     },
-    addItemToCart() {
+    async addItemToCart() {
       this.isItemInCart = true
-      try {
-        if (!isCartExist(this.cartId)) {
-          createNewCart()
-            .then((result) => {
-              if (result.statusCode === 201) {
-                this.cartsStore.setCurrentCart(result.body)
 
-                addProductToCart(result.body.id, this.productId, this.cartVersion).then((res) => {
-                  if (res.statusCode === 200) {
-                    console.log('добавлено')
-                    this.setLineItemId(getLineItemId(res.body.lineItems, this.productId))
-                    this.cartsStore.setCurrentCart(res.body)
-                  } else {
-                    this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
-                  }
-                })
-              } else {
-                this.$emit('productCardEvents', 'Не удалось создать корзину')
-              }
-            })
-            .catch((error) => {
-              if (error instanceof Error) {
-                this.$emit('productCardEvents', error.message)
-              } else {
-                this.$emit('productCardEvents', 'commonError')
-              }
-            })
-        } else {
-          const cartId = this.cartsStore.currentCart ? this.cartsStore.currentCart.id : ''
+      if (!isCartExist(this.cartId)) {
+        try {
+          this.appStatus.startLoading()
+          const cartCreationResult = await createNewCart()
 
-          if (cartId) {
-            addProductToCart(cartId, this.productId, this.cartVersion).then((res) => {
-              if (res.statusCode === 200) {
-                console.log('добавлено')
-                this.setLineItemId(getLineItemId(res.body.lineItems, this.productId))
-                this.cartsStore.setCurrentCart(res.body)
-              } else {
-                this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
-              }
-            })
+          if (cartCreationResult.statusCode === 200) {
+            this.cartsStore.setCurrentCart(cartCreationResult.body)
+            const addingItemResult = await addProductToCart(
+              cartCreationResult.body.id,
+              this.productId,
+              cartCreationResult.body.version
+            )
+
+            if (addingItemResult.statusCode === 200) {
+              console.log('добавлено')
+              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.cartsStore.setCurrentCart(addingItemResult.body)
+            } else {
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+            }
           } else {
-            this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.2')
+            this.$emit(
+              'productCardEvents',
+              'Товар не удалось добавить в корзину. Не была создана корзина.'
+            )
           }
+        } catch (e) {
+          this.$emit('productCardEvents', 'Что-то пошло не так.')
+        } finally {
+          this.appStatus.stopLoading()
         }
-      } catch (e) {
-        console.log(e)
+      } else {
+        try {
+          this.appStatus.startLoading()
+          const cartId = this.cartsStore.currentCart?.id
+          const cartVersion = this.cartsStore.currentCart?.version
+
+          if (cartId && cartVersion) {
+            const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion)
+
+            if (addingItemResult.statusCode === 200) {
+              console.log('добавлено')
+              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.cartsStore.setCurrentCart(addingItemResult.body)
+            } else {
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+            }
+          } else {
+            this.$emit('productCardEvents', 'Что-то пошло не так.')
+          }
+        } catch (e) {
+          this.$emit('productCardEvents', 'Что-то пошло не так.')
+        } finally {
+          this.appStatus.stopLoading()
+        }
       }
     },
     changeItemCount(itemCount: number): void {
@@ -132,14 +141,21 @@ export default {
         const cartId = cartStore.userCurrentCart ? cartStore.userCurrentCart.id : ''
 
         if (cartId) {
-          deleteProductFromCart(cartId, this.lineItemId, this.cartVersion)
-            .then((res) => {
-              console.log(res)
-            })
-            .catch((e) => {
-              console.log(e)
-            })
-          this.isItemInCart = false
+          try {
+            this.appStatus.startLoading()
+            deleteProductFromCart(cartId, this.lineItemId, this.cartVersion)
+              .then((res) => {
+                console.log(res)
+              })
+              .catch((e) => {
+                console.log(e)
+              })
+            this.isItemInCart = false
+          } catch (error) {
+            this.$emit('productCardEvents', 'не удалось удалить товар из корзины1')
+          } finally {
+            this.appStatus.stopLoading()
+          }
         } else {
           this.$emit('productCardEvents', 'не удалось удалить товар из корзины')
         }

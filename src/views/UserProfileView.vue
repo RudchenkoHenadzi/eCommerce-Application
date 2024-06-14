@@ -50,6 +50,7 @@ import { useUserStore } from '@/stores/User'
 import AddressBlock from '@/components/blocks/AddressBlock.vue'
 import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue'
 import { useAddressesStore } from '@/stores/AddressesStore'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'UserProfileView',
@@ -75,13 +76,15 @@ export default {
       isBillingAddressesViewSelected: false,
       viewName: EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO as TUserProfileEventNames,
       userStore: useUserStore(),
-      addressesStore: useAddressesStore()
+      addressesStore: useAddressesStore(),
+      appStatus: useAppStatusStore()
     }
   },
 
   methods: {
     getUserData() {
       try {
+        this.appStatus.startLoading()
         getUserData().then((response) => {
           if (response.statusCode === 200 || response.statusCode === 201) {
             this.email = response.body.email
@@ -108,6 +111,8 @@ export default {
         })
       } catch (e) {
         this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+      } finally {
+        this.appStatus.stopLoading()
       }
     },
     switchViewHandler(viewName: TUserProfileEventNames) {

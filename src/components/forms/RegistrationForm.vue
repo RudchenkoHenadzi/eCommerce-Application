@@ -105,6 +105,7 @@ import InputApartment from '@/components/form-elements/text-inputs/InputApartmen
 import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
 import userRegistration from '@/services/apiMethods/auth/userRegistration'
 import { useUserStore } from '@/stores/User'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'RegistrationForm',
@@ -157,7 +158,8 @@ export default {
         isBillingAddressDefault: false,
         isShippingAddressDefault: false,
         areBothAddressesSame: false
-      }
+      },
+      appStatus: useAppStatusStore()
     }
   },
 
@@ -166,6 +168,7 @@ export default {
       const result = await this.v$.$validate()
 
       if (result) {
+        this.appStatus.startLoading()
         try {
           const registrationResult = await userRegistration(
             this.registrationForm.email,
@@ -199,6 +202,8 @@ export default {
           } else {
             this.$emit('registrationEvents', 'commonError')
           }
+        } finally {
+          this.appStatus.stopLoading()
         }
       } else {
         this.$emit('registrationEvents', 'errorInvalidInput')

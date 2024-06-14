@@ -18,6 +18,7 @@ import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
 import { useUserStore } from '@/stores/User'
 import { isUserNotFound } from '@/helpers/dataCheck/loginCheck'
 import { TIMEOUT_REDIRECT } from '@/constants/constants'
+import { useAppStatusStore } from '@/stores/AppStatusStore'
 
 export default {
   name: 'LoginForm',
@@ -32,12 +33,14 @@ export default {
       loginForm: {
         email: '',
         password: ''
-      }
+      },
+      appStatus: useAppStatusStore()
     }
   },
 
   methods: {
     async submitLoginForm() {
+      this.appStatus.startLoading()
       try {
         const doesUserExist = await checkUserExist(this.loginForm.email)
         if (doesUserExist) {
@@ -68,6 +71,8 @@ export default {
         }
       } catch (error: unknown) {
         this.$emit('loginEvents', 'commonError')
+      } finally {
+        this.appStatus.stopLoading()
       }
     }
   }
