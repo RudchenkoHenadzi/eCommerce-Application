@@ -52,6 +52,5 @@ export interface ICustomerDraft {
 }
 
 export interface IUserCartIdItem {
-  id: string,
-  version: number,
+  id: string
 }

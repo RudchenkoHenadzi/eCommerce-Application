@@ -44,21 +44,20 @@ const EVENT_TYPE_NAMES = {
 } as const
 type TUserProfileEventKeys = keyof typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW
 
-const COUNTRY_SWITCH_SCHEMA: Record<TCountryType, { currency: TCurrencyType, lang: TLangType }> = {
-  'GB': {
-    'currency': 'GBP',
-    'lang': 'en-GB'
+const COUNTRY_SWITCH_SCHEMA: Record<TCountryType, { currency: TCurrencyType; lang: TLangType }> = {
+  GB: {
+    currency: 'GBP',
+    lang: 'en-GB'
   },
-  'US': {
-    'currency': 'USD',
-    'lang': 'en-US'
+  US: {
+    currency: 'USD',
+    lang: 'en-US'
   },
-  'DE': {
-    'currency': 'EUR',
-    'lang': 'de-DE'
-  },
+  DE: {
+    currency: 'EUR',
+    lang: 'de-DE'
+  }
 }
-
 
 export type TUserProfileEventNames =
   (typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW)[TUserProfileEventKeys]

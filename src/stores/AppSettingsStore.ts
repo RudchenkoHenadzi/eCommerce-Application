@@ -1,16 +1,12 @@
 import { defineStore } from 'pinia'
-import {
-  type TCountryType,
-  type TCurrencyType,
-  type TLangType
-} from '@/types/appSettingsTypes'
+import { type TCountryType, type TCurrencyType, type TLangType } from '@/types/appSettingsTypes'
 import {
   APP_CURRENCIES,
-  APP_LANGUAGES, DEFAULT_COUNTRY,
+  APP_LANGUAGES,
+  DEFAULT_COUNTRY,
   DEFAULT_CURRENCY,
   DEFAULT_LANG
 } from '@/constants/projectConfigs'
-import getCountryFromLang from '@/helpers/extractData/getCountryFromLang'
 import { COUNTRY_SWITCH_SCHEMA } from '@/constants/constants'
 
 export const useAppSettingsStore = defineStore('appSettings', {
@@ -18,7 +14,7 @@ export const useAppSettingsStore = defineStore('appSettings', {
     appLang: TLangType
     appLanguages: TLangType[]
     appCurrency: TCurrencyType
-    appCurrencies: TCurrencyType[],
+    appCurrencies: TCurrencyType[]
     appCountry: TCountryType
   } => ({
     appLang: DEFAULT_LANG,
@@ -32,7 +28,7 @@ export const useAppSettingsStore = defineStore('appSettings', {
     languages: (state) => state.appLanguages,
     currency: (state) => state.appCurrency,
     currencies: (state) => state.appCurrencies,
-    country: (state) => state.appCountry,
+    country: (state) => state.appCountry
   },
   actions: {
     setNewLang(newLang: TLangType) {
@@ -46,7 +42,7 @@ export const useAppSettingsStore = defineStore('appSettings', {
     },
     selectCountry(newCountry: TCountryType) {
       this.setNewCountry(newCountry)
-      const {currency, lang} = COUNTRY_SWITCH_SCHEMA[newCountry]
+      const { currency, lang } = COUNTRY_SWITCH_SCHEMA[newCountry]
       this.setNewLang(lang)
       this.setNewCurrency(currency)
     }

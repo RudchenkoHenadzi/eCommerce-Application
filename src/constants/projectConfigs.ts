@@ -16,7 +16,7 @@ const APP_LANGUAGES: TLangType[] = ['de-DE', 'en-US', 'en-GB']
 const DEFAULT_CURRENCY: TCurrencyType = 'USD'
 const APP_CURRENCIES: TCurrencyType[] = ['USD', 'GBP', 'EUR']
 const DEFAULT_COUNTRY: TCountryType = 'US'
-const APP_COUNTRIES: TCountryType[]  = ['US', 'GB', 'DE']
+const APP_COUNTRIES: TCountryType[] = ['US', 'GB', 'DE']
 const AGE_RESTRICTION = 13
 const PRODUCTS_LIMIT_PER_LOAD = 20
 

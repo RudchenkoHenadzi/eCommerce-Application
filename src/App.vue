@@ -44,7 +44,6 @@ export default {
   mounted() {
     const apiRoot = useApiRootStore()
     apiRoot.start()
-    this.user.getUserCarts()
   }
 }
 </script>

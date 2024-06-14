@@ -1,10 +1,8 @@
-import { useUserStore } from '@/stores/User'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
+import { useCartsStore } from '@/stores/Carts'
 
 export function getCartID() {
-  const user = useUserStore()
-  const appSetting = useAppSettingsStore()
-  return user.userCartIds[appSetting.currency].id
+  const cartsStore = useCartsStore()
+  return cartsStore.currentCart ? cartsStore.currentCart.id : ''
 }
 
 export function isCartExist(cartId: string) {

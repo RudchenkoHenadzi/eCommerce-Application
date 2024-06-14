@@ -22,6 +22,7 @@
 <script lang="ts">
 import getProducts from '@/services/apiMethods/products/getProducts'
 import type {
+  Cart,
   ClientResponse,
   Product,
   ProductPagedQueryResponse
@@ -31,19 +32,25 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore'
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
 import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
 import filterProducts from '@/helpers/extractData/filterProducts'
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
+import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
+import { useCartsStore } from '@/stores/Carts'
 
 export default {
   name: 'CatalogView',
 
   components: { ProductCard },
 
-  data() {
+  data(): ICatalogViewData {
     return {
       products: new Array<Product>(),
       appSettings: useAppSettingsStore(),
+      cartStore: useCartsStore(),
       pageNumber: 0,
       totalItems: 0,
-      isProductsLoading: false
+      isProductsLoading: false,
+      userCurrentCart: undefined
     }
   },
 
@@ -67,6 +74,27 @@ export default {
       } finally {
         this.isProductsLoading = false
       }
+    },
+    async getUserCart() {
+      try {
+        const response = await getUserCarts()
+
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          console.log(response.body.results)
+          const userCart = getUserCurrentCart(response.body.results)
+          this.setUserCurrentCart(userCart)
+        } else {
+          this.$emit('commonError')
+        }
+      } catch (error) {
+        console.log(error)
+        this.$emit('commonError')
+      }
+    },
+    setUserCurrentCart(cart?: Cart) {
+      const cartsStore = useCartsStore()
+      cartsStore.setCurrentCart(cart)
+      this.userCurrentCart = cart
     },
     getPrices(product: Product) {
       const prices = product.masterData.current.masterVariant.prices
@@ -199,6 +227,7 @@ export default {
 
   mounted() {
     this.getProducts()
+    this.getUserCart()
     const options = {
       rootMargin: '0px',
       threshold: 1.0

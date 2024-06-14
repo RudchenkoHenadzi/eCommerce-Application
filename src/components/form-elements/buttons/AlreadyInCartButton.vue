@@ -29,7 +29,6 @@ export default {
     deleteItem() {
       if (this.itemCount <= 1) {
         this.itemCount = 0
-
       } else {
         this.itemCount -= 1
       }

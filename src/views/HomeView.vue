@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts">
-
-import createNewCartWithCurrency from '@/services/apiMethods/cart/createNewCartWithCurrency'
+import createNewCart from '@/services/apiMethods/cart/createNewCart'
 import { useUserStore } from '@/stores/User'
 import getUserCustomerId from '@/services/apiMethods/user/getUserCustomerId'
 import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
@@ -34,19 +33,21 @@ export default {
     getUserCart() {
       getUserCarts().then(console.log).catch(console.error)
     },
-    createNewCartWithCurrency,
+    createNewCartWithCurrency: createNewCart,
     getUserId() {
       const user = useUserStore()
       const email = user.email
-      getUserCustomerId(email).then((res) => {
-        console.log(res.body.results[0].id)
-        this.customerId = res.body.results[0].id
-      }).catch(console.error)
+      getUserCustomerId(email)
+        .then((res) => {
+          console.log(res.body.results[0].id)
+          this.customerId = res.body.results[0].id
+        })
+        .catch(console.error)
     },
     changeCountry(countryCode: TCountryType) {
       this.appSettings.selectCountry(countryCode)
-    },
-  },
+    }
+  }
 }
 </script>
 
