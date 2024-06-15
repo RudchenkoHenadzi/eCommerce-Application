@@ -15,3 +15,10 @@ export interface IAppSettingsGetters {
   currencies: TCurrencyType[];
   country: TCountryType;
 }
+
+export interface IAppSettingsActions {
+  setNewLang: (newLang: TLangType) => void;
+  setNewCurrency: (newCurrency: TCurrencyType) => void;
+  setNewCountry: (newCountry: TCountryType) => void;
+  selectCountry: (newCountry: TCountryType) => void;
+}

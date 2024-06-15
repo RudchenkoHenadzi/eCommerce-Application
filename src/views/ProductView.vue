@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { getProductIdFromParams } from '@/helpers/extractData/getProductIdFromParams';
-import { getProductById } from '@/services/apiMethods/products/getProductById';
+import { fetchProductById } from '@/services/apiMethods/products/fetchProductById';
 import type { Price, Product } from '@commercetools/platform-sdk';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import type { Store } from 'pinia';
@@ -35,7 +35,13 @@ import type {
   IAppStatusState
 } from '@/stores/types/appStatusTypes';
 import { useAppSettingsStore } from '@/stores/AppSettingsStore';
-import type { IAppSettingsGetters, IAppSettingsState } from '@/stores/types/appSettingsTypes';
+import type {
+  IAppSettingsActions,
+  IAppSettingsGetters,
+  IAppSettingsState
+} from '@/stores/types/appSettingsTypes';
+import PricesBlock from '@/components/blocks/PricesBlock.vue';
+import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 import {
   extractDiscountedProductPrice,
   extractProductAttributes,
@@ -45,8 +51,6 @@ import {
   extractProductPrices,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
-import PricesBlock from '@/components/blocks/PricesBlock.vue';
-import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 
 export default {
   name: 'ProductView',
@@ -55,7 +59,7 @@ export default {
 
   data(): {
     appStatus: Store<'appStatus', IAppStatusState, IAppStatusGetters, IAppStatusActions>;
-    appSettings: Store<'appSettings', IAppSettingsState, IAppSettingsGetters, {}>;
+    appSettings: Store<'appSettings', IAppSettingsState, IAppSettingsGetters, IAppSettingsActions>;
     productId: string;
     product: undefined | Product;
   } {
@@ -72,7 +76,7 @@ export default {
       if (productId) {
         try {
           this.appStatus.startLoading();
-          const productResult = await getProductById(productId);
+          const productResult = await fetchProductById(productId);
 
           if (productResult.statusCode === 200 || productResult.statusCode === 201) {
             this.product = productResult.body;

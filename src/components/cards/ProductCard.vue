@@ -56,9 +56,13 @@ import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromC
 import { useCartsStore } from '@/stores/Carts';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import { getProductQuantity } from '@/helpers/extractData/getProductQuantity';
+import { extractLineItemIdFromCart } from '@/helpers/extractData/extractProductDataFromCart';
+import PricesBlock from '@/components/blocks/PricesBlock.vue';
+import type { Price, Product } from '@commercetools/platform-sdk';
+import type { PropType } from 'vue';
+import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 import {
   extractDiscountedProductPrice,
-  extractLineItemId,
   extractProductAttributes,
   extractProductCentAmount,
   extractProductId,
@@ -66,10 +70,6 @@ import {
   extractProductPrices,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
-import PricesBlock from '@/components/blocks/PricesBlock.vue';
-import type { Price, Product } from '@commercetools/platform-sdk';
-import type { PropType } from 'vue';
-import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 
 export default {
   name: 'ProductCard',
@@ -122,7 +122,7 @@ export default {
             if (addingItemResult.statusCode === 200) {
               this.$emit('changeItemsNumberInCart', addingItemResult.body);
 
-              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body));
+              this.setLineItemId(extractLineItemIdFromCart(this.productId, addingItemResult.body));
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               );
@@ -155,7 +155,7 @@ export default {
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               );
-              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body));
+              this.setLineItemId(extractLineItemIdFromCart(this.productId, addingItemResult.body));
               this.cartsStore.setCurrentCart(addingItemResult.body);
             } else {
               this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.');

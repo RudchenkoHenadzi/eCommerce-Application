@@ -32,9 +32,9 @@ import type { ICatalogViewData } from '@/components/types/catalogViewTypes';
 import { useCartsStore } from '@/stores/Carts';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
-  extractInCartNumber,
-  extractLineItemId
-} from '@/helpers/extractData/extractProductDataFromProduct';
+  extractProductQuantityFromCart,
+  extractLineItemIdFromCart
+} from '@/helpers/extractData/extractProductDataFromCart';
 
 export default {
   name: 'CatalogView',
@@ -76,13 +76,13 @@ export default {
     },
     getInCartNumber(product: Product) {
       if (this.userCurrentCart) {
-        return extractInCartNumber(product, this.userCurrentCart);
+        return extractProductQuantityFromCart(product, this.userCurrentCart);
       }
       return 0;
     },
     getLineItemId(product: Product) {
       if (this.userCurrentCart) {
-        return extractLineItemId(product.id, this.userCurrentCart);
+        return extractLineItemIdFromCart(product.id, this.userCurrentCart);
       }
       return '';
     },

@@ -1,29 +1,6 @@
-import type { Cart, Price, Product } from '@commercetools/platform-sdk';
+import type { Price, Product } from '@commercetools/platform-sdk';
 import type { TCurrencyType, TLangType } from '@/types/appSettingsTypes';
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform';
-
-export function extractInCartNumber(product: Product, cart: Cart) {
-  const items = cart.lineItems;
-
-  if (items) {
-    const lineItem = items.find((item) => item.productId === product.id);
-
-    if (lineItem) {
-      return lineItem.quantity;
-    }
-    return 0;
-  }
-  return 0;
-}
-
-export function extractLineItemId(productId: string, cart: Cart) {
-  if (cart.lineItems.length !== 0) {
-    const currentLineItem = cart.lineItems.find((lineItem) => lineItem.productId === productId);
-    return currentLineItem ? currentLineItem.id : '';
-  } else {
-    return '';
-  }
-}
 
 export function extractProductPrices(
   product: Product,
