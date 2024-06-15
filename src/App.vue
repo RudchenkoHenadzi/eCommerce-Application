@@ -19,6 +19,9 @@ import AlertMessage from '@/components/alerts/AlertMessage.vue';
 import { useUserStore } from '@/stores/User';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import MyLoader from '@/Icons/MyLoader.vue';
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
+import { useCartsStore } from '@/stores/Carts';
 
 export default {
   components: { MyLoader, AlertMessage, TheHeader, RouterView },
@@ -31,7 +34,8 @@ export default {
       alertText: '',
       user: useUserStore(),
       appStatus: useAppStatusStore(),
-      apiRoot: useApiRootStore()
+      apiRoot: useApiRootStore(),
+      cartsStore: useCartsStore()
     };
   },
 
@@ -45,11 +49,29 @@ export default {
     },
     closeAlert() {
       this.isAlertShow = false;
-    }
+    },
+    async getUserCart() {
+      try {
+        this.appStatus.startLoading();
+        const response = await getUserCarts();
+
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          const userCart = getUserCurrentCart(response.body.results);
+          this.cartsStore.setCurrentCart(userCart);
+        } else {
+          this.$emit('commonError');
+        }
+      } catch (error) {
+        this.$emit('commonError');
+      } finally {
+        this.appStatus.stopLoading();
+      }
+    },
   },
 
   mounted() {
     this.apiRoot.start();
+    this.getUserCart();
   },
 
   computed: {

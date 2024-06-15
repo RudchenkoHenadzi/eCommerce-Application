@@ -19,6 +19,9 @@ import { useUserStore } from '@/stores/User';
 import { isUserNotFound } from '@/helpers/dataCheck/loginCheck';
 import { TIMEOUT_REDIRECT } from '@/constants/constants';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
+import { useCartsStore } from '@/stores/Carts';
 
 export default {
   name: 'LoginForm',
@@ -34,7 +37,9 @@ export default {
         email: '',
         password: ''
       },
-      appStatus: useAppStatusStore()
+      appStatus: useAppStatusStore(),
+      cartsStore: useCartsStore(),
+      user: useUserStore(),
     };
   },
 
@@ -48,9 +53,9 @@ export default {
             const loginResult = await userLogin(this.loginForm.email, this.loginForm.password);
             if (loginResult.statusCode === 200) {
               this.$emit('loginEvents', 'successLogin');
-              const user = useUserStore();
-              user.login();
-              user.setUserMail(this.loginForm.email);
+              this.getUserCart();
+              this.user.login();
+              this.user.setUserMail(this.loginForm.email);
               setTimeout(() => {
                 this.$router.push('/');
               }, TIMEOUT_REDIRECT);
@@ -74,7 +79,24 @@ export default {
       } finally {
         this.appStatus.stopLoading();
       }
-    }
+    },
+    async getUserCart() {
+      try {
+        this.appStatus.startLoading();
+        const response = await getUserCarts();
+
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          const userCart = getUserCurrentCart(response.body.results);
+          this.cartsStore.setCurrentCart(userCart);
+        } else {
+          this.$emit('commonError');
+        }
+      } catch (error) {
+        this.$emit('commonError');
+      } finally {
+        this.appStatus.stopLoading();
+      }
+    },
   }
 };
 </script>
