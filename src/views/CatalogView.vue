@@ -35,8 +35,7 @@ import { useCartsStore } from '@/stores/Carts';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
   extractInCartNumber,
-  extractLineItemId,
-  extractSrc
+  extractLineItemId
 } from '@/helpers/extractData/extractProductDataFromProduct';
 
 export default {

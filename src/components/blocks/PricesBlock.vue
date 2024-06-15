@@ -35,5 +35,15 @@ export default {
     color: $color-gray-600;
     text-decoration: line-through;
   }
+
+  &__actual {
+    font-weight: bold;
+  }
+}
+
+.standard {
+  &__price {
+    font-weight: bold;
+  }
 }
 </style>

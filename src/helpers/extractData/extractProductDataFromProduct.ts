@@ -41,19 +41,6 @@ export function extractProductPrices(
   return selectedPrice;
 }
 
-export function extractProductPricesFromPrices(
-  prices: Price[],
-  currentCurrencyCode: TCurrencyType
-) {
-  let selectedPrice = {};
-  prices.forEach((priceData) => {
-    if (priceData.value.currencyCode === currentCurrencyCode) {
-      selectedPrice = priceData;
-    }
-  });
-  return selectedPrice;
-}
-
 export function extractProductCentAmount(priceData: Price) {
   return priceData.value.centAmount;
 }

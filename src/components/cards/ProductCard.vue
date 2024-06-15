@@ -14,11 +14,7 @@
   </div>
   <div class="product-card__about about">
     <div class="about__name">{{ productName }}</div>
-    <ul class="about__attributes attributes">
-      <li class="attributes__item" v-for="attribute in attributes" :key="attribute.name">
-        {{ attribute.label }}
-      </li>
-    </ul>
+    <ProductAttributes :attributes="attributes" onlyFirstAttributeVisible="true" />
     <PricesBlock
       :discountedPrice="discountedPrice"
       :currencyCode="currency"
@@ -57,7 +53,6 @@ import {
   extractLineItemId,
   extractProductAttributes,
   extractProductCentAmount,
-  extractProductDescription,
   extractProductId,
   extractProductName,
   extractProductPrices,
@@ -66,11 +61,13 @@ import {
 import PricesBlock from '@/components/blocks/PricesBlock.vue';
 import type { Price, Product } from '@commercetools/platform-sdk';
 import type { PropType } from 'vue';
+import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 
 export default {
   name: 'ProductCard',
 
-  components: { PricesBlock, AlreadyInCartButton, ArrowLeft, CompareIcon },
+  components: { ProductAttributes, PricesBlock, AlreadyInCartButton, ArrowLeft, CompareIcon },
+
   props: {
     product: Object as PropType<Product>,
     inCartNumber: Number,
@@ -305,6 +302,7 @@ export default {
 .about {
   display: grid;
   grid-template-rows: 20px 1fr 20px 50px;
+  align-content: center;
   gap: 10px;
   padding: 20px 24px;
   background: #f0f1f5;

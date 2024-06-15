@@ -8,6 +8,11 @@
 
       <div class="info__content content">
         <div class="content__description">{{ productDescription }}</div>
+
+        <div class="content__attributes">
+          <ProductAttributes :attributes="attributes" />
+        </div>
+
         <PricesBlock
           :discountedPrice="discountedPrice"
           :currencyCode="currencyCode"
@@ -33,18 +38,20 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import type { IAppSettingsGetters, IAppSettingsState } from '@/stores/types/appSettingsTypes';
 import {
   extractDiscountedProductPrice,
+  extractProductAttributes,
   extractProductCentAmount,
-  extractProductCurrencyCode,
   extractProductDescription,
   extractProductName,
   extractProductPrices,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
 import PricesBlock from '@/components/blocks/PricesBlock.vue';
+import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 
 export default {
   name: 'ProductView',
-  components: { PricesBlock },
+
+  components: { PricesBlock, ProductAttributes },
 
   data(): {
     appStatus: Store<'appStatus', IAppStatusState, IAppStatusGetters, IAppStatusActions>;
@@ -83,20 +90,7 @@ export default {
 
   mounted() {
     this.productId = getProductIdFromParams(this.$route.params);
-    this.getProductInfo(this.productId).then(() => {
-      if (this.product) {
-        console.log(`Product name is ${extractProductName(this.product, this.lang)}`);
-        console.log(`Product description: ${extractProductDescription(this.product, this.lang)}`);
-        console.log(`Product image src: ${extractSrc(this.product)}`);
-        const priceData = extractProductPrices(this.product, this.currencyCode);
-
-        if (Object.keys(priceData).length !== 0) {
-          console.log(`Product prices are:`);
-          console.log(extractProductCentAmount(priceData as Price));
-          console.log(extractProductCurrencyCode(priceData as Price));
-        }
-      }
-    });
+    this.getProductInfo(this.productId);
   },
 
   computed: {
@@ -127,6 +121,9 @@ export default {
       return Object.keys(this.productPriceData).length !== 0
         ? extractDiscountedProductPrice(this.productPriceData as Price)
         : 0;
+    },
+    attributes() {
+      return this.product ? extractProductAttributes(this.product, this.lang) : {};
     }
   }
 };
@@ -160,8 +157,19 @@ export default {
 }
 
 .content {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100%;
   &__description {
-    margin: 15px 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__attributes {
+    margin: 25px 0 15px;
   }
 }
 
