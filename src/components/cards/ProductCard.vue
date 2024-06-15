@@ -47,11 +47,11 @@ import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist'
 import addProductToCart from '@/services/apiMethods/cart/addProductToCart'
 import createNewCart from '@/services/apiMethods/cart/createNewCart'
 import { useUserStore } from '@/stores/User'
-import { getLineItemId } from '@/helpers/extractData/getLineItemId'
 import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
 import { useCartsStore } from '@/stores/Carts'
 import { useAppStatusStore } from '@/stores/AppStatusStore'
 import { getProductQuantity } from '@/helpers/extractData/getProductQuantity'
+import { extractLineItemId } from '@/helpers/extractData/extractProductDataFromProduct'
 export default {
   name: 'ProductCard',
 
@@ -107,7 +107,7 @@ export default {
             if (addingItemResult.statusCode === 200) {
               this.$emit('changeItemsNumberInCart', addingItemResult.body)
 
-              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body))
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               )
@@ -140,7 +140,7 @@ export default {
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               )
-              this.setLineItemId(getLineItemId(addingItemResult.body.lineItems, this.productId))
+              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body))
               this.cartsStore.setCurrentCart(addingItemResult.body)
             } else {
               this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')

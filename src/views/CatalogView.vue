@@ -6,7 +6,7 @@
         <ProductCard
           :productName="product.masterData.current.name[lang]"
           :description="getDescription(product)"
-          :src="getSrc(product)"
+          :src="extractSrc(product)"
           :attributes="getAttributes(product)"
           :prices="getPrices(product)"
           :productId="product.id"
@@ -39,7 +39,12 @@ import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
 import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
 import { useCartsStore } from '@/stores/Carts'
 import { useAppStatusStore } from '@/stores/AppStatusStore'
-import { getLineItemId } from '@/helpers/extractData/getLineItemId'
+import {
+  extractProductAttributes,
+  extractInCartNumber,
+  extractLineItemId, extractProductDescription,
+  extractProductPrices, extractSrc
+} from '@/helpers/extractData/extractProductDataFromProduct'
 
 export default {
   name: 'CatalogView',
@@ -60,6 +65,7 @@ export default {
   },
 
   methods: {
+    extractSrc,
     async getProducts() {
       this.appStatus.startLoading()
       try {
@@ -103,139 +109,25 @@ export default {
       this.userCurrentCart = cart
     },
     getInCartNumber(product: Product) {
-      const items = this.userCurrentCart ? this.userCurrentCart.lineItems : ''
-
-      if (items) {
-        const lineItem = items.find((item) => item.productId === product.id)
-
-        if (lineItem) {
-          return lineItem.quantity
-        }
-        return 0
+      if (this.userCurrentCart) {
+        return extractInCartNumber(product, this.userCurrentCart)
       }
       return 0
     },
     getLineItemId(product: Product) {
       if (this.userCurrentCart) {
-        return getLineItemId(this.userCurrentCart.lineItems, product.id)
+        return extractLineItemId(product.id, this.userCurrentCart)
       }
-      return
+      return ''
     },
     getPrices(product: Product) {
-      const prices = product.masterData.current.masterVariant.prices
-      let selectedPrice = {}
-      if (prices) {
-        prices.forEach((priceData) => {
-          if (priceData.value.currencyCode === this.currency) {
-            selectedPrice = priceData
-          }
-        })
-      }
-      return selectedPrice
-    },
-    getSrc(product: Product) {
-      return product.masterData.current.masterVariant.images
-        ? product.masterData.current.masterVariant.images[0]?.url
-        : ''
+      return extractProductPrices(product, this.currency)
     },
     getDescription(product: Product) {
-      return product.masterData.current.description
-        ? product.masterData.current.description[this.lang]
-        : ''
+      return extractProductDescription(product, this.lang)
     },
     getAttributes(product: Product) {
-      const rawAttributes = product.masterData.current.masterVariant.attributes
-      if (rawAttributes) {
-        return rawAttributes.reduce((acc: Record<string, string>[], attribute) => {
-          if (attribute.name === 'productspec') {
-            let label = []
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-                .split('-')
-                .filter((val: string) => val.trim() !== '')
-                .map((val: string) => val.trim())
-            } else if (attribute.value) {
-              label = attribute.value[this.lang]
-                .split('-')
-                .filter((val: string) => val.trim() !== '')
-                .map((val: string) => firstLetterUppercase(val.trim()))
-            }
-            label.forEach((labelItem: string) => {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}-${labelItem}` || '',
-                label: labelItem || ''
-              }
-              acc.push(formattedAttr)
-            })
-          } else if (attribute.name === 'color-filter') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'finish') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'finishlabel') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'color') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else {
-            acc.push({})
-          }
-          return acc.filter((value) => Object.keys(value).length > 0)
-        }, [])
-      } else {
-        return []
-      }
+      return extractProductAttributes(product, this.lang)
     },
     loadProducts() {
       this.pageNumber += 1
