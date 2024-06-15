@@ -13,6 +13,7 @@ import TheNavigation from '@/components/menu/TheNavigation.vue';
 import { useUserStore } from '@/stores/User';
 import userLogout from '@/services/apiMethods/auth/userLogout';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
+import { useCartsStore } from '@/stores/Carts';
 
 export default {
   name: 'TheHeader',
@@ -29,7 +30,9 @@ export default {
 
   data() {
     return {
-      appStatus: useAppStatusStore()
+      appStatus: useAppStatusStore(),
+      userApp: useUserStore(),
+      cartsStore: useCartsStore()
     };
   },
 
@@ -37,9 +40,9 @@ export default {
     logout() {
       this.appStatus.startLoading();
       userLogout();
-      const userApp = useUserStore();
-      userApp.logout();
-      userApp.removeUserMail();
+      this.cartsStore.deleteCurrentCart();
+      this.userApp.logout();
+      this.userApp.removeUserMail();
 
       this.$router.push('/');
       this.appStatus.stopLoading();

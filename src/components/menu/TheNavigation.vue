@@ -11,7 +11,10 @@
         <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/cart-shopping">Корзина</RouterLink>
+        <RouterLink class="navigation__link" to="/cart-shopping"
+          >Корзина
+          <span v-if="cartsStore.productCount">{{ cartsStore.productCount }}</span></RouterLink
+        >
       </li>
       <li class="navigation__item" v-if="isLoggedIn">
         <RouterLink class="navigation__link" to="/user">Пользователь</RouterLink>
@@ -28,13 +31,15 @@
 
 <script lang="ts">
 import { useUserStore } from '../../stores/User';
+import { useCartsStore } from '@/stores/Carts';
 
 export default {
   name: 'TheNavigation',
 
   data() {
     return {
-      userStore: useUserStore()
+      userStore: useUserStore(),
+      cartsStore: useCartsStore()
     };
   },
 
@@ -71,6 +76,18 @@ export default {
     @extend %clear-a;
     &:hover {
       color: $color-purple;
+    }
+
+    & span {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3px;
+      height: 20px;
+      width: 20px;
+      border-radius: 100%;
+      background-color: $color-purple;
+      color: $color-white;
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="already-in-cart-btn button-purple catalog-card-button">
     <button class="already-in-cart-btn__btn" @click="addItem">+</button>
-    <p>{{ itemCount }}</p>
+    <p>{{ quantity }}</p>
     <button class="already-in-cart-btn__btn" @click="deleteItem">-</button>
   </div>
 </template>
@@ -12,7 +12,7 @@ export default {
 
   props: {
     productId: String,
-    itemCount: Number
+    quantity: Number
   },
 
   methods: {

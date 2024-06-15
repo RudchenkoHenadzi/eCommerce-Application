@@ -28,15 +28,13 @@ import ProductCard from '@/components/cards/ProductCard.vue';
 import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs';
 import filterProducts from '@/helpers/extractData/filterProducts';
-import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
-import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
 import type { ICatalogViewData } from '@/components/types/catalogViewTypes';
 import { useCartsStore } from '@/stores/Carts';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
-  extractInCartNumber,
-  extractLineItemId
-} from '@/helpers/extractData/extractProductDataFromProduct';
+  extractProductQuantityFromCart,
+  extractLineItemIdFromCart
+} from '@/helpers/extractData/extractProductDataFromCart';
 
 export default {
   name: 'CatalogView',
@@ -47,12 +45,11 @@ export default {
     return {
       products: new Array<Product>(),
       appSettings: useAppSettingsStore(),
-      cartStore: useCartsStore(),
+      cartsStore: useCartsStore(),
       appStatus: useAppStatusStore(),
       pageNumber: 0,
       totalItems: 0,
-      isProductsLoading: false,
-      userCurrentCart: undefined
+      isProductsLoading: false
     };
   },
 
@@ -77,37 +74,15 @@ export default {
         this.appStatus.stopLoading();
       }
     },
-    async getUserCart() {
-      try {
-        this.appStatus.startLoading();
-        const response = await getUserCarts();
-
-        if (response.statusCode === 200 || response.statusCode === 201) {
-          const userCart = getUserCurrentCart(response.body.results);
-          this.setUserCurrentCart(userCart);
-        } else {
-          this.$emit('commonError');
-        }
-      } catch (error) {
-        this.$emit('commonError');
-      } finally {
-        this.appStatus.stopLoading();
-      }
-    },
-    setUserCurrentCart(cart?: Cart) {
-      const cartsStore = useCartsStore();
-      cartsStore.setCurrentCart(cart);
-      this.userCurrentCart = cart;
-    },
     getInCartNumber(product: Product) {
       if (this.userCurrentCart) {
-        return extractInCartNumber(product, this.userCurrentCart);
+        return extractProductQuantityFromCart(product, this.userCurrentCart);
       }
       return 0;
     },
     getLineItemId(product: Product) {
       if (this.userCurrentCart) {
-        return extractLineItemId(product.id, this.userCurrentCart);
+        return extractLineItemIdFromCart(product.id, this.userCurrentCart);
       }
       return '';
     },
@@ -126,7 +101,6 @@ export default {
 
   mounted() {
     this.getProducts();
-    this.getUserCart();
     const options = {
       rootMargin: '0px',
       threshold: 1.0
@@ -144,6 +118,9 @@ export default {
     },
     totalPages() {
       return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD);
+    },
+    userCurrentCart(): Cart | undefined {
+      return this.cartsStore.currentCart;
     }
   }
 };

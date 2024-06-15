@@ -3,7 +3,8 @@ import { useApiRootStore } from '@/stores/ApiRootStore';
 export default async function deleteProductFromCart(
   cartId: string,
   lineItemId: string,
-  cartVersion: number
+  cartVersion: number,
+  quantity: number = 1
 ) {
   const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
@@ -17,7 +18,7 @@ export default async function deleteProductFromCart(
           {
             action: 'removeLineItem',
             lineItemId: lineItemId,
-            quantity: 1
+            quantity: quantity
           }
         ]
       }
