@@ -166,7 +166,7 @@ export default {
   props: {
     fill: String
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

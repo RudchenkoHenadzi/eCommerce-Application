@@ -1,5 +1,5 @@
-import { ClientBuilder, type HttpMiddlewareOptions } from '@commercetools/sdk-client-v2'
-import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
+import { ClientBuilder, type HttpMiddlewareOptions } from '@commercetools/sdk-client-v2';
+import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
 
 export default function createClientForPasswordFlow(
   credentialsFlowOptions: PasswordAuthMiddlewareOptions,
@@ -8,5 +8,5 @@ export default function createClientForPasswordFlow(
   return new ClientBuilder()
     .withPasswordFlow(credentialsFlowOptions)
     .withHttpMiddleware(httpMiddlewareOptions)
-    .build()
+    .build();
 }

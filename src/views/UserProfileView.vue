@@ -33,24 +33,24 @@
 </template>
 
 <script lang="ts">
-import ProfileNavigation from '@/components/menu/ProfileNavigation.vue'
-import UserDataBlock from '@/components/blocks/UserDataBlock.vue'
-import { getUserData } from '@/services/apiMethods/user/getUserData'
-import type { Address } from '@commercetools/platform-sdk'
-import { extractAddress } from '@/helpers/extractData/extractAddress'
-import { MESSAGE_TEXTS } from '@/constants/texts'
+import ProfileNavigation from '@/components/menu/ProfileNavigation.vue';
+import UserDataBlock from '@/components/blocks/UserDataBlock.vue';
+import { getUserData } from '@/services/apiMethods/user/getUserData';
+import type { Address } from '@commercetools/platform-sdk';
+import { extractAddress } from '@/helpers/extractData/extractAddress';
+import { MESSAGE_TEXTS } from '@/constants/texts';
 import {
   TIMEOUT_ERROR_MESSAGE,
   TIMEOUT_SHORT_MESSAGE,
   type TUserProfileEventNames,
   EVENT_TYPE_NAMES,
   TIMEOUT_REDIRECT
-} from '@/constants/constants'
-import { useUserStore } from '@/stores/User'
-import AddressBlock from '@/components/blocks/AddressBlock.vue'
-import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue'
-import { useAddressesStore } from '@/stores/AddressesStore'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+} from '@/constants/constants';
+import { useUserStore } from '@/stores/User';
+import AddressBlock from '@/components/blocks/AddressBlock.vue';
+import ChangePasswordBlock from '@/components/blocks/ChangePasswordBlock.vue';
+import { useAddressesStore } from '@/stores/AddressesStore';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'UserProfileView',
@@ -78,47 +78,47 @@ export default {
       userStore: useUserStore(),
       addressesStore: useAddressesStore(),
       appStatus: useAppStatusStore()
-    }
+    };
   },
 
   methods: {
     async getUserData() {
       try {
-        this.appStatus.startLoading()
-        const gettingUserDataResult = await getUserData()
+        this.appStatus.startLoading();
+        const gettingUserDataResult = await getUserData();
 
         if (gettingUserDataResult.statusCode === 200) {
-          this.email = gettingUserDataResult.body.email
-          this.userStore.setUserMail(this.email)
-          this.firstName = gettingUserDataResult.body.firstName || ''
-          this.userStore.setUserFirstName(this.firstName)
-          this.lastName = gettingUserDataResult.body.lastName || ''
-          this.userStore.setUserLastName(this.lastName)
-          this.birthDate = gettingUserDataResult.body.dateOfBirth || ''
-          this.userStore.setUserBirthDate(this.birthDate)
-          this.version = gettingUserDataResult.body.version
-          this.userStore.setUserVersion(this.version)
-          this.addresses = gettingUserDataResult.body.addresses || []
-          this.addressesStore.addAddress(this.addresses)
-          this.shippingAddressIds = gettingUserDataResult.body.shippingAddressIds || []
-          this.addressesStore.addId('shipping', this.shippingAddressIds)
-          this.billingAddressIds = gettingUserDataResult.body.billingAddressIds || []
-          this.addressesStore.addId('billing', this.billingAddressIds)
-          this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds)
-          this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds)
-          this.defaultShippingAddressId = gettingUserDataResult.body.defaultShippingAddressId || ''
-          this.defaultBillingAddressId = gettingUserDataResult.body.defaultBillingAddressId || ''
+          this.email = gettingUserDataResult.body.email;
+          this.userStore.setUserMail(this.email);
+          this.firstName = gettingUserDataResult.body.firstName || '';
+          this.userStore.setUserFirstName(this.firstName);
+          this.lastName = gettingUserDataResult.body.lastName || '';
+          this.userStore.setUserLastName(this.lastName);
+          this.birthDate = gettingUserDataResult.body.dateOfBirth || '';
+          this.userStore.setUserBirthDate(this.birthDate);
+          this.version = gettingUserDataResult.body.version;
+          this.userStore.setUserVersion(this.version);
+          this.addresses = gettingUserDataResult.body.addresses || [];
+          this.addressesStore.addAddress(this.addresses);
+          this.shippingAddressIds = gettingUserDataResult.body.shippingAddressIds || [];
+          this.addressesStore.addId('shipping', this.shippingAddressIds);
+          this.billingAddressIds = gettingUserDataResult.body.billingAddressIds || [];
+          this.addressesStore.addId('billing', this.billingAddressIds);
+          this.shippingAddresses = extractAddress(this.addresses, this.shippingAddressIds);
+          this.billingAddresses = extractAddress(this.addresses, this.billingAddressIds);
+          this.defaultShippingAddressId = gettingUserDataResult.body.defaultShippingAddressId || '';
+          this.defaultBillingAddressId = gettingUserDataResult.body.defaultBillingAddressId || '';
         } else {
-          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
         }
       } catch (e) {
-        this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+        this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
       } finally {
-        this.appStatus.stopLoading()
+        this.appStatus.stopLoading();
       }
     },
     switchViewHandler(viewName: TUserProfileEventNames) {
-      this.viewName = viewName
+      this.viewName = viewName;
     },
     changeUserDataEventHandler(eventType: string) {
       switch (eventType) {
@@ -127,26 +127,26 @@ export default {
             'showAlert',
             MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
             TIMEOUT_SHORT_MESSAGE
-          )
-          break
+          );
+          break;
         }
         case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA: {
           this.$emit(
             'showAlert',
             MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
             TIMEOUT_ERROR_MESSAGE
-          )
-          break
+          );
+          break;
         }
         default: {
-          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
         }
       }
       this.$emit(
         'showAlert',
         MESSAGE_TEXTS.PROFILE.CHANGE_USER_DATA.successUpdateData,
         TIMEOUT_SHORT_MESSAGE
-      )
+      );
     },
     changePasswordEventsHandler(eventType: string) {
       switch (eventType) {
@@ -155,66 +155,66 @@ export default {
             'showAlert',
             MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.successChange,
             TIMEOUT_SHORT_MESSAGE
-          )
+          );
           setTimeout(() => {
-            this.viewName = EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO
-          }, TIMEOUT_REDIRECT)
-          break
+            this.viewName = EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO;
+          }, TIMEOUT_REDIRECT);
+          break;
         }
         case EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT: {
-          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.errorInvalidInput, TIMEOUT_ERROR_MESSAGE)
-          break
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.errorInvalidInput, TIMEOUT_ERROR_MESSAGE);
+          break;
         }
         case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.THE_SAME_PASSWORDS: {
           this.$emit(
             'showAlert',
             MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.theSamePasswords,
             TIMEOUT_ERROR_MESSAGE
-          )
-          break
+          );
+          break;
         }
         case EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD: {
           this.$emit(
             'showAlert',
             MESSAGE_TEXTS.PROFILE.CHANGE_PASSWORD.wrongPassword,
             TIMEOUT_SHORT_MESSAGE
-          )
-          break
+          );
+          break;
         }
         default: {
-          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
         }
       }
     },
     changeDefaultAddressHandler(addressType: string, id: string, isDefault: boolean) {
-      let addressesBunch: string[] = []
+      let addressesBunch: string[] = [];
       if (addressType === 'shipping') {
-        addressesBunch = this.shippingAddressIds
+        addressesBunch = this.shippingAddressIds;
       } else {
-        addressesBunch = this.billingAddressIds
+        addressesBunch = this.billingAddressIds;
       }
       if (isDefault) {
-        addressesBunch.push(id)
-        return addressesBunch
+        addressesBunch.push(id);
+        return addressesBunch;
       } else {
-        return [...addressesBunch.filter((addressId: string) => addressId !== id)]
+        return [...addressesBunch.filter((addressId: string) => addressId !== id)];
       }
     },
     commonErrorHandler() {
-      this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+      this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
     }
   },
 
   mounted() {
-    this.getUserData()
+    this.getUserData();
   },
 
   computed: {
     USER_PROFILE_EVENTS() {
-      return EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW
+      return EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

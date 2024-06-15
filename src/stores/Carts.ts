@@ -1,7 +1,7 @@
-import { defineStore, type StoreDefinition } from 'pinia'
-import type { Cart } from '@commercetools/platform-sdk'
-import { userCartIds } from '@/helpers/setUp/setUpUserCartsToStore'
-import type { ICartsActions, ICartsGetters, ICartsState } from '@/stores/types/cartTypes'
+import { defineStore, type StoreDefinition } from 'pinia';
+import type { Cart } from '@commercetools/platform-sdk';
+import { userCartIds } from '@/helpers/setUp/setUpUserCartsToStore';
+import type { ICartsActions, ICartsGetters, ICartsState } from '@/stores/types/cartTypes';
 
 export const useCartsStore: StoreDefinition<'carts', ICartsState, ICartsGetters, ICartsActions> =
   defineStore('carts', {
@@ -14,7 +14,7 @@ export const useCartsStore: StoreDefinition<'carts', ICartsState, ICartsGetters,
     },
     actions: {
       setCurrentCart(cart: Cart | undefined) {
-        this.userCurrentCart = cart
+        this.userCurrentCart = cart;
       }
     }
-  })
+  });

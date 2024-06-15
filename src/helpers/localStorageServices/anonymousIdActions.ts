@@ -1,7 +1,7 @@
 export function getAnonymousId() {
-  return localStorage.getItem('ecommerce-anonymousId')
+  return localStorage.getItem('ecommerce-anonymousId');
 }
 
 export function setAnonymousId(id: string) {
-  localStorage.setItem('ecommerce-anonymousId', id)
+  localStorage.setItem('ecommerce-anonymousId', id);
 }

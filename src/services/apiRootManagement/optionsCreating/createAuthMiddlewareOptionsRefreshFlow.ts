@@ -1,6 +1,6 @@
-import MyTokenStore from '@/stores/tokenStore'
-import PROJECT_CONFIG from '@/constants/projectConfigs'
-const { projectKey, authURL, clientID, secret, scopes } = PROJECT_CONFIG
+import MyTokenStore from '@/stores/tokenStore';
+import PROJECT_CONFIG from '@/constants/projectConfigs';
+const { projectKey, authURL, clientID, secret, scopes } = PROJECT_CONFIG;
 
 export default function createAuthMiddlewareOptionsRefreshFlow(refreshToken: string) {
   return {
@@ -14,5 +14,5 @@ export default function createAuthMiddlewareOptionsRefreshFlow(refreshToken: str
     refreshToken: refreshToken,
     tokenCache: new MyTokenStore(),
     fetch
-  }
+  };
 }

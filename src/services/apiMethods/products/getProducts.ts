@@ -1,11 +1,11 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import type { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk'
-import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import type { ClientResponse, ProductPagedQueryResponse } from '@commercetools/platform-sdk';
+import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs';
 
 export default async function getProducts(
   pageNumber?: number
 ): Promise<ClientResponse<ProductPagedQueryResponse>> {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
 
   try {
     return await apiRoot
@@ -16,13 +16,13 @@ export default async function getProducts(
           offset: pageNumber || 0
         }
       })
-      .execute()
+      .execute();
   } catch (error) {
     if (error instanceof Error) {
-      const keyMessage = error.message.split(':')[0]
-      throw new Error(keyMessage)
+      const keyMessage = error.message.split(':')[0];
+      throw new Error(keyMessage);
     } else {
-      throw new Error('commonError')
+      throw new Error('commonError');
     }
   }
 }

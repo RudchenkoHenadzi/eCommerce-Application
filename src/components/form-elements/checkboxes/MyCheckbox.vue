@@ -27,12 +27,12 @@ export default {
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.checked
-        this.$emit('update:modelValue', value)
+        const value = event.target.checked;
+        this.$emit('update:modelValue', value);
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

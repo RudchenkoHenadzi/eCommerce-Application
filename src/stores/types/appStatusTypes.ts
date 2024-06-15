@@ -1,12 +1,12 @@
 export interface IAppStatusState {
-  indicatorStatus: boolean
+  indicatorStatus: boolean;
 }
 
 export interface IAppStatusGetters {
-  isDataLoading: boolean
+  isDataLoading: boolean;
 }
 
 export interface IAppStatusActions {
-  startLoading: () => void
-  stopLoading: () => void
+  startLoading: () => void;
+  stopLoading: () => void;
 }

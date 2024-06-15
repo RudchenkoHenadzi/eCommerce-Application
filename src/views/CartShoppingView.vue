@@ -7,7 +7,7 @@
 <script lang="ts">
 export default {
   name: 'CartShoppingView'
-}
+};
 </script>
 
 <style lang="scss" scoped>

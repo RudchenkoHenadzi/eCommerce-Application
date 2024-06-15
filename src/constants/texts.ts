@@ -1,7 +1,7 @@
 const ERROR_TEXTS = {
   MALFORMED_PARAMETER: 'Malformed parameter', //: 'Неверный параметр запроса',
   DUPLICATED_DATA: 'There is already an existing customer with the provided email.'
-}
+};
 
 const MESSAGE_TEXTS = {
   COMMON: {
@@ -29,6 +29,6 @@ const MESSAGE_TEXTS = {
       theSamePasswords: 'Старый пароль совпадает с новым.'
     }
   }
-}
+};
 
-export { MESSAGE_TEXTS, ERROR_TEXTS }
+export { MESSAGE_TEXTS, ERROR_TEXTS };

@@ -11,9 +11,6 @@
         <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/product">Продукт</RouterLink>
-      </li>
-      <li class="navigation__item">
         <RouterLink class="navigation__link" to="/cart-shopping">Корзина</RouterLink>
       </li>
       <li class="navigation__item" v-if="isLoggedIn">
@@ -30,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { useUserStore } from '../../stores/User'
+import { useUserStore } from '../../stores/User';
 
 export default {
   name: 'TheNavigation',
@@ -38,15 +35,15 @@ export default {
   data() {
     return {
       userStore: useUserStore()
-    }
+    };
   },
 
   computed: {
     isLoggedIn() {
-      return this.userStore.isLoggedIn
+      return this.userStore.isLoggedIn;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

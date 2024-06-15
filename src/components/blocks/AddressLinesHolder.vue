@@ -21,9 +21,9 @@
 </template>
 
 <script lang="ts">
-import TrashIcon from '@/Icons/TrashIcon.vue'
-import PencilIcon from '@/Icons/PencilIcon.vue'
-import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
+import TrashIcon from '@/Icons/TrashIcon.vue';
+import PencilIcon from '@/Icons/PencilIcon.vue';
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants';
 
 export default {
   name: 'AddressLinesHolder',
@@ -46,7 +46,7 @@ export default {
         default: this.isAddressDefault,
         'address-lines': true
       }
-    }
+    };
   },
 
   methods: {
@@ -55,10 +55,10 @@ export default {
         EVENT_NAMES.MANAGE_ADDRESSES,
         EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT,
         this.id
-      )
+      );
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

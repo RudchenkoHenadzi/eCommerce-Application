@@ -13,7 +13,7 @@
 <script lang="ts">
 export default {
   name: 'PencilIcon'
-}
+};
 </script>
 
 <style scoped lang="scss">

@@ -15,7 +15,7 @@
 <script lang="ts">
 export default {
   name: 'PlusIcon'
-}
+};
 </script>
 
 <style scoped lang="scss"></style>

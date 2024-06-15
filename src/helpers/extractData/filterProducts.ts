@@ -1,21 +1,21 @@
-import type { Product } from '@commercetools/platform-sdk'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
+import type { Product } from '@commercetools/platform-sdk';
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 
 export default function filterProducts(products: Product[]): Product[] {
-  const appSettings = useAppSettingsStore()
-  const currencyCode = appSettings.currency
+  const appSettings = useAppSettingsStore();
+  const currencyCode = appSettings.currency;
   return [...products].filter((product) => {
     if (product.masterData.current.masterVariant.prices) {
-      const currencies = []
+      const currencies = [];
       product.masterData.current.masterVariant.prices.forEach((price) => {
         if (price.value.currencyCode === currencyCode) {
-          currencies.push(price)
+          currencies.push(price);
         }
-      })
+      });
 
       if (currencies.length > 0) {
-        return product
+        return product;
       }
     }
-  })
+  });
 }

@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import InputName from '@/components/form-elements/text-inputs/InputName.vue'
-import InputLastName from '@/components/form-elements/text-inputs/InputLastName.vue'
-import InputDate from '@/components/form-elements/text-inputs/InputDate.vue'
-import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
-import DoneIcon from '@/Icons/DoneIcon.vue'
-import { useUserStore } from '@/stores/User'
+import InputName from '@/components/form-elements/text-inputs/InputName.vue';
+import InputLastName from '@/components/form-elements/text-inputs/InputLastName.vue';
+import InputDate from '@/components/form-elements/text-inputs/InputDate.vue';
+import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue';
+import DoneIcon from '@/Icons/DoneIcon.vue';
+import { useUserStore } from '@/stores/User';
 
 export default {
   name: 'EditUserDataForm',
@@ -28,57 +28,57 @@ export default {
       lastName: '',
       birthDate: '',
       email: ''
-    }
+    };
   },
 
   methods: {
     switchEditMode() {
-      this.$emit('editModeOff', this.firstName, this.lastName, this.birthDate, this.email)
+      this.$emit('editModeOff', this.firstName, this.lastName, this.birthDate, this.email);
     }
   },
 
   mounted() {
-    this.firstName = this.userStore.firstName
-    this.lastName = this.userStore.lastName
-    this.birthDate = this.userStore.birthDate
-    this.email = this.userStore.email
+    this.firstName = this.userStore.firstName;
+    this.lastName = this.userStore.lastName;
+    this.birthDate = this.userStore.birthDate;
+    this.email = this.userStore.email;
   },
 
   computed: {
     userFirstName: {
       get(): string {
-        return this.firstName
+        return this.firstName;
       },
       set(newFirstName: string) {
-        this.firstName = newFirstName
+        this.firstName = newFirstName;
       }
     },
     userLastName: {
       get(): string {
-        return this.lastName
+        return this.lastName;
       },
       set(newLastName: string) {
-        this.lastName = newLastName
+        this.lastName = newLastName;
       }
     },
     userBirthDate: {
       get(): string {
-        return this.birthDate
+        return this.birthDate;
       },
       set(newBirthDate: string) {
-        this.birthDate = newBirthDate
+        this.birthDate = newBirthDate;
       }
     },
     userEmail: {
       get(): string {
-        return this.email
+        return this.email;
       },
       set(newEmail: string) {
-        this.email = newEmail
+        this.email = newEmail;
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

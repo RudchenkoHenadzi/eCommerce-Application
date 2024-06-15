@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement'
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import apiRootManagement from '@/services/apiRootManagement/ApiRootManagement';
 
 export default function userLogout() {
-  const apiRootStore = useApiRootStore()
-  apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow())
+  const apiRootStore = useApiRootStore();
+  apiRootStore.setNewApiRoot(apiRootManagement.createAnonymousSessionFlow());
 }

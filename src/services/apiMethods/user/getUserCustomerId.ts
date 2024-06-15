@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export default function getUserCustomerId(email: string) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .customers()
     .get({
@@ -9,5 +9,5 @@ export default function getUserCustomerId(email: string) {
         where: `email="${email}"`
       }
     })
-    .execute()
+    .execute();
 }

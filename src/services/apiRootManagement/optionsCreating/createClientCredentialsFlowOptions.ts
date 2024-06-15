@@ -1,7 +1,7 @@
-import MyTokenStore from '@/stores/tokenStore'
-import PROJECT_CONFIG from '@/constants/projectConfigs'
-import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk'
-const { projectKey, authURL, clientID, secret, scopes } = PROJECT_CONFIG
+import MyTokenStore from '@/stores/tokenStore';
+import PROJECT_CONFIG from '@/constants/projectConfigs';
+import type { PasswordAuthMiddlewareOptions } from '@commercetools/sdk-client-v2/dist/declarations/src/types/sdk';
+const { projectKey, authURL, clientID, secret, scopes } = PROJECT_CONFIG;
 
 export default function createClientCredentialsFlowOptions(
   email: string,
@@ -21,5 +21,5 @@ export default function createClientCredentialsFlowOptions(
     scopes: scopes,
     tokenCache: new MyTokenStore(),
     fetch
-  }
+  };
 }

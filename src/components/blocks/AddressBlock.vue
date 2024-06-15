@@ -42,15 +42,15 @@
 </template>
 
 <script lang="ts">
-import AddressLinesHolder from '@/components/blocks/AddressLinesHolder.vue'
-import type { Address } from '@commercetools/platform-sdk'
-import AddElementCard from '@/components/cards/AddElementCard.vue'
-import AddressForm from '@/components/forms/AddressForm.vue'
-import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
-import { useUserStore } from '@/stores/User'
-import { editAddress } from '@/services/apiMethods/user/editAddress'
-import { addNewAddress } from '@/services/apiMethods/user/addNewAddress'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+import AddressLinesHolder from '@/components/blocks/AddressLinesHolder.vue';
+import type { Address } from '@commercetools/platform-sdk';
+import AddElementCard from '@/components/cards/AddElementCard.vue';
+import AddressForm from '@/components/forms/AddressForm.vue';
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants';
+import { useUserStore } from '@/stores/User';
+import { editAddress } from '@/services/apiMethods/user/editAddress';
+import { addNewAddress } from '@/services/apiMethods/user/addNewAddress';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'AddressBlock',
@@ -75,7 +75,7 @@ export default {
       isAddressAddModeOn: false,
       newAddressId: String(Date.now()),
       appStatus: useAppStatusStore()
-    }
+    };
   },
 
   methods: {
@@ -88,12 +88,12 @@ export default {
       postCode?: string
     ) {
       if (eventType === EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT) {
-        this.isAddressEditModeOn = true
-        this.isAddressAddModeOn = false
+        this.isAddressEditModeOn = true;
+        this.isAddressAddModeOn = false;
       } else {
         if (city && street && building && apartment && postCode)
           try {
-            this.appStatus.startLoading()
+            this.appStatus.startLoading();
             const result = await addNewAddress(
               this.version,
               city,
@@ -101,14 +101,14 @@ export default {
               building,
               apartment,
               postCode
-            )
+            );
             if (result.statusCode === 200 || result.statusCode === 201) {
-              this.isAddressAddModeOn = false
+              this.isAddressAddModeOn = false;
             }
           } catch (error) {
-            this.$emit('commonError')
+            this.$emit('commonError');
           } finally {
-            this.appStatus.stopLoading()
+            this.appStatus.stopLoading();
           }
       }
     },
@@ -121,12 +121,12 @@ export default {
       postCode?: string
     ) {
       if (eventType === EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT) {
-        this.isAddressEditModeOn = true
-        this.isAddressAddModeOn = false
+        this.isAddressEditModeOn = true;
+        this.isAddressAddModeOn = false;
       } else {
         if (city && street && building && apartment && postCode) {
           try {
-            this.appStatus.startLoading()
+            this.appStatus.startLoading();
             const result = await editAddress(
               this.version,
               '',
@@ -135,35 +135,35 @@ export default {
               building,
               apartment,
               postCode
-            )
+            );
             if (result.statusCode === 200 || result.statusCode === 201) {
-              this.isAddressEditModeOn = false
+              this.isAddressEditModeOn = false;
             }
           } catch (error) {
-            this.$emit('commonError')
+            this.$emit('commonError');
           } finally {
-            this.appStatus.stopLoading()
+            this.appStatus.stopLoading();
           }
         }
       }
     },
     changeDefaultAddressHandler(id: string, isDefault: string) {
-      this.$emit('changeDefaultAddress', id, isDefault)
+      this.$emit('changeDefaultAddress', id, isDefault);
     },
     cancelChangesHandler() {
-      this.isAddressEditModeOn = false
+      this.isAddressEditModeOn = false;
     }
   },
 
   computed: {
     EVENT_NAMES() {
-      return EVENT_NAMES
+      return EVENT_NAMES;
     },
     version() {
-      return this.userStore.version
+      return this.userStore.version;
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

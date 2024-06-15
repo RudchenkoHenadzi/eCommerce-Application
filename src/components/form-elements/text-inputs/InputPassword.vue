@@ -37,16 +37,16 @@
 </template>
 
 <script lang="ts">
-import useValidate from '@vuelidate/core'
-import { required, helpers, minLength } from '@vuelidate/validators'
+import useValidate from '@vuelidate/core';
+import { required, helpers, minLength } from '@vuelidate/validators';
 import {
   hasUpperCaseLetters,
   hasLowerCaseLetters,
   hasDigit,
   hasSpecialSymbol
-} from '@/helpers/validation/passwordValidation'
-import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
-import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
+} from '@/helpers/validation/passwordValidation';
+import EyeIconSVG from '@/Icons/EyeIconSVG.vue';
+import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue';
 
 export default {
   name: 'InputPassword',
@@ -67,13 +67,13 @@ export default {
   setup() {
     return {
       v$: useValidate()
-    }
+    };
   },
 
   data() {
     return {
       inputType: 'password'
-    }
+    };
   },
 
   validations: {
@@ -102,10 +102,10 @@ export default {
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.value
-        this.$emit('update:modelValue', value)
+        const value = event.target.value;
+        this.$emit('update:modelValue', value);
       }
     }
   }
-}
+};
 </script>

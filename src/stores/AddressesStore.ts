@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import type { Address } from '@commercetools/platform-sdk'
-import type { IAddressesStore, TAddressType } from '@/stores/types/addressesTypes'
-import { toRaw } from 'vue'
+import { defineStore } from 'pinia';
+import type { Address } from '@commercetools/platform-sdk';
+import type { IAddressesStore, TAddressType } from '@/stores/types/addressesTypes';
+import { toRaw } from 'vue';
 
 export const useAddressesStore = defineStore('addresses', {
   state: (): IAddressesStore => ({
@@ -19,9 +19,9 @@ export const useAddressesStore = defineStore('addresses', {
   actions: {
     addAddress(address: Address | Address[]) {
       if (Array.isArray(address)) {
-        toRaw(this.userAddresses).concat(address)
+        toRaw(this.userAddresses).concat(address);
       } else {
-        this.userAddresses.push(address)
+        this.userAddresses.push(address);
       }
     },
     removeAddress(addressToDelete: Address | Address[]) {
@@ -29,26 +29,26 @@ export const useAddressesStore = defineStore('addresses', {
         addressToDelete.forEach((address) => {
           this.userAddresses = this.userAddresses.filter(
             (userAddress) => userAddress.id !== address.id
-          )
-        })
+          );
+        });
       } else {
         this.userAddresses = this.userAddresses.filter(
           (address) => address.id !== addressToDelete.id
-        )
+        );
       }
     },
     addId(addressType: TAddressType, id: string | string[]) {
       if (addressType === 'shipping') {
         if (Array.isArray(id)) {
-          this.userShippingAddressIds.concat(id)
+          this.userShippingAddressIds.concat(id);
         } else {
-          this.userShippingAddressIds.push(id)
+          this.userShippingAddressIds.push(id);
         }
       } else {
         if (Array.isArray(id)) {
-          this.userBillingAddressIds.concat(id)
+          this.userBillingAddressIds.concat(id);
         } else {
-          this.userBillingAddressIds.push(id)
+          this.userBillingAddressIds.push(id);
         }
       }
     },
@@ -58,28 +58,28 @@ export const useAddressesStore = defineStore('addresses', {
           id.forEach((addressId) => {
             this.userShippingAddressIds = this.userShippingAddressIds.filter(
               (shippingAddressId) => shippingAddressId !== addressId
-            )
-          })
+            );
+          });
         } else {
-          this.userShippingAddressIds.filter((shippingAddressId) => shippingAddressId !== id)
+          this.userShippingAddressIds.filter((shippingAddressId) => shippingAddressId !== id);
         }
       } else {
         if (Array.isArray(id)) {
           id.forEach((addressId) => {
             this.userBillingAddressIds = this.userBillingAddressIds.filter(
               (billingAddressId) => billingAddressId !== addressId
-            )
-          })
+            );
+          });
         } else {
-          this.userBillingAddressIds.filter((billingAddressId) => billingAddressId !== id)
+          this.userBillingAddressIds.filter((billingAddressId) => billingAddressId !== id);
         }
       }
     },
     selectAddress(address: Address) {
-      this.selectedUserAddress = address
+      this.selectedUserAddress = address;
     },
     resetSelectedAddress() {
-      this.selectedUserAddress = null
+      this.selectedUserAddress = null;
     }
   }
-})
+});

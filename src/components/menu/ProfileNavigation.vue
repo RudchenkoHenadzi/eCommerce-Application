@@ -14,26 +14,26 @@
 </template>
 
 <script lang="ts">
-import { EVENT_TYPE_NAMES } from '@/constants/constants'
+import { EVENT_TYPE_NAMES } from '@/constants/constants';
 
 export default {
   name: 'ProfileNavigation',
 
   methods: {
     goToUserInfo() {
-      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.USER_INFO);
     },
     goToUserBillingAddresses() {
-      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.BILLING_ADDRESSES)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.BILLING_ADDRESSES);
     },
     goToUserShippingAddresses() {
-      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.SHIPPING_ADDRESSES)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.SHIPPING_ADDRESSES);
     },
     goToPasswordChange() {
-      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.PASSWORD_CHANGE)
+      this.$emit('switchView', EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW.PASSWORD_CHANGE);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
