@@ -1,10 +1,10 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/dataCheck/loginCheck'
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import { isLoginRequestSuccess, isUserNotFound } from '@/helpers/dataCheck/loginCheck';
 
 export default async function userLogin(email: string, password: string) {
-  const apiRootStore = useApiRootStore()
-  const apiRoot = apiRootStore.apiRoot
-  apiRootStore.createAuthApiRoot(email, password)
+  const apiRootStore = useApiRootStore();
+  const apiRoot = apiRootStore.apiRoot;
+  apiRootStore.createAuthApiRoot(email, password);
   try {
     const result = await apiRoot
       .me()
@@ -12,18 +12,18 @@ export default async function userLogin(email: string, password: string) {
       .post({
         body: { email, password }
       })
-      .execute()
+      .execute();
 
     if (!isLoginRequestSuccess) {
-      apiRootStore.createAnonymousApiRoot()
+      apiRootStore.createAnonymousApiRoot();
     }
-    return result
+    return result;
   } catch (e: unknown) {
-    apiRootStore.createAnonymousApiRoot()
+    apiRootStore.createAnonymousApiRoot();
     if (isUserNotFound(e)) {
-      throw new Error('userNotExist')
+      throw new Error('userNotExist');
     } else {
-      throw new Error('commonError')
+      throw new Error('commonError');
     }
   }
 }

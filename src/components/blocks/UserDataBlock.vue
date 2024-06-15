@@ -23,13 +23,13 @@
 </template>
 
 <script lang="ts">
-import EditUserDataForm from '@/components/forms/EditUserDataForm.vue'
-import ReadUserDataBlock from '@/components/blocks/ReadUserDataBlock.vue'
-import { updateUserData } from '@/services/apiMethods/user/updateUserData'
-import { useUserStore } from '@/stores/User'
-import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
-import { ERROR_TEXTS } from '@/constants/texts'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+import EditUserDataForm from '@/components/forms/EditUserDataForm.vue';
+import ReadUserDataBlock from '@/components/blocks/ReadUserDataBlock.vue';
+import { updateUserData } from '@/services/apiMethods/user/updateUserData';
+import { useUserStore } from '@/stores/User';
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants';
+import { ERROR_TEXTS } from '@/constants/texts';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'UserDataBlock',
@@ -48,7 +48,7 @@ export default {
       isEditModeOn: false,
       userStore: useUserStore(),
       appStatus: useAppStatusStore()
-    }
+    };
   },
 
   methods: {
@@ -58,61 +58,61 @@ export default {
       birthDate: string,
       email: string
     ) {
-      this.isEditModeOn = false
+      this.isEditModeOn = false;
 
       try {
-        this.appStatus.startLoading()
+        this.appStatus.startLoading();
         const updatingResult = await updateUserData(
           this.version,
           firstName,
           lastName,
           birthDate,
           email
-        )
+        );
 
         if (updatingResult.statusCode === 200) {
-          this.userStore.setUserFirstName(firstName)
-          this.userStore.setUserLastName(lastName)
-          this.userStore.setUserBirthDate(birthDate)
-          this.userStore.setUserMail(email)
-          this.userStore.setUserVersion(response.body.version)
+          this.userStore.setUserFirstName(firstName);
+          this.userStore.setUserLastName(lastName);
+          this.userStore.setUserBirthDate(birthDate);
+          this.userStore.setUserMail(email);
+          this.userStore.setUserVersion(response.body.version);
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.SUCCESS
-          )
+          );
         } else {
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA
-          )
+          );
         }
       } catch (e) {
         if (error.message === ERROR_TEXTS.DUPLICATED_DATA) {
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA
-          )
+          );
         } else {
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.ERROR
-          )
+          );
         }
       } finally {
-        this.appStatus.stopLoading()
+        this.appStatus.stopLoading();
       }
     },
     editModeOnHandler() {
-      this.isEditModeOn = true
+      this.isEditModeOn = true;
     }
   },
 
   computed: {
     version() {
-      return this.userStore.version
+      return this.userStore.version;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

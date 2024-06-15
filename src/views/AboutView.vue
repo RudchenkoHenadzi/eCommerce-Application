@@ -7,7 +7,7 @@
 <script lang="ts">
 export default {
   name: 'AboutView'
-}
+};
 </script>
 
 <style lang="scss" scoped>

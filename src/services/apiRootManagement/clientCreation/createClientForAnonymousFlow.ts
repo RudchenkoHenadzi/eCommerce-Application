@@ -2,9 +2,9 @@ import {
   type AnonymousAuthMiddlewareOptions,
   ClientBuilder,
   type HttpMiddlewareOptions
-} from '@commercetools/sdk-client-v2'
-import PROJECT_CONFIG from '@/constants/projectConfigs'
-const { projectKey } = PROJECT_CONFIG
+} from '@commercetools/sdk-client-v2';
+import PROJECT_CONFIG from '@/constants/projectConfigs';
+const { projectKey } = PROJECT_CONFIG;
 
 export default function createClientForAnonymousFlow(
   credentialsFlowOptions: AnonymousAuthMiddlewareOptions,
@@ -14,5 +14,5 @@ export default function createClientForAnonymousFlow(
     .withProjectKey(projectKey)
     .withAnonymousSessionFlow(credentialsFlowOptions)
     .withHttpMiddleware(httpMiddlewareOptions)
-    .build()
+    .build();
 }

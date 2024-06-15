@@ -1,9 +1,9 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 
 export default function createNewCart() {
-  const apiRoot = useApiRootStore().apiRoot
-  const appSettings = useAppSettingsStore()
+  const apiRoot = useApiRootStore().apiRoot;
+  const appSettings = useAppSettingsStore();
   return apiRoot
     .me()
     .carts()
@@ -13,5 +13,5 @@ export default function createNewCart() {
         country: appSettings.country
       }
     })
-    .execute()
+    .execute();
 }

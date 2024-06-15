@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useAppStatusStore = defineStore('appStatus', {
   state: (): {
-    indicatorStatus: boolean
+    indicatorStatus: boolean;
   } => ({
     indicatorStatus: false
   }),
@@ -11,10 +11,10 @@ export const useAppStatusStore = defineStore('appStatus', {
   },
   actions: {
     startLoading() {
-      this.indicatorStatus = true
+      this.indicatorStatus = true;
     },
     stopLoading() {
-      this.indicatorStatus = false
+      this.indicatorStatus = false;
     }
   }
-})
+});

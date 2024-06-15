@@ -12,26 +12,26 @@
 </template>
 
 <script lang="ts">
-import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
-import type { TCountryType } from '@/types/appSettingsTypes'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
+import type { TCountryType } from '@/types/appSettingsTypes';
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 
 export default {
   name: 'HomeView',
   data() {
     return {
       appSettings: useAppSettingsStore()
-    }
+    };
   },
   methods: {
     getUserCart() {
-      getUserCarts().then(console.log).catch(console.error)
+      getUserCarts().then(console.log).catch(console.error);
     },
     changeCountry(countryCode: TCountryType) {
-      this.appSettings.selectCountry(countryCode)
+      this.appSettings.selectCountry(countryCode);
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

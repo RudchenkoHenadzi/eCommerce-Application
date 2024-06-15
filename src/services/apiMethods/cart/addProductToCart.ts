@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export default async function addProductToCart(cartId: string, productId: string, version: number) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
 
   return apiRoot
     .me()
@@ -19,5 +19,5 @@ export default async function addProductToCart(cartId: string, productId: string
         ]
       }
     })
-    .execute()
+    .execute();
 }

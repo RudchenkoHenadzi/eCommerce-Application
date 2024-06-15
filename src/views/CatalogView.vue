@@ -4,15 +4,10 @@
     <div class="products">
       <div class="product-card" v-for="product in products" :key="product.id">
         <ProductCard
-          :productName="product.masterData.current.name[lang]"
-          :description="getDescription(product)"
-          :src="extractSrc(product)"
-          :attributes="getAttributes(product)"
-          :prices="getPrices(product)"
-          :productId="product.id"
-          label-name=""
+          :product="product"
           :inCartNumber="getInCartNumber(product)"
           :lineItemId="getLineItemId(product)"
+          labelName=""
         />
       </div>
     </div>
@@ -22,29 +17,26 @@
 </template>
 
 <script lang="ts">
-import getProducts from '@/services/apiMethods/products/getProducts'
+import getProducts from '@/services/apiMethods/products/getProducts';
 import type {
   Cart,
   ClientResponse,
   Product,
   ProductPagedQueryResponse
-} from '@commercetools/platform-sdk'
-import ProductCard from '@/components/cards/ProductCard.vue'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
-import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
-import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
-import filterProducts from '@/helpers/extractData/filterProducts'
-import getUserCarts from '@/services/apiMethods/cart/getUserCarts'
-import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart'
-import type { ICatalogViewData } from '@/components/types/catalogViewTypes'
-import { useCartsStore } from '@/stores/Carts'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+} from '@commercetools/platform-sdk';
+import ProductCard from '@/components/cards/ProductCard.vue';
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
+import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs';
+import filterProducts from '@/helpers/extractData/filterProducts';
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
+import type { ICatalogViewData } from '@/components/types/catalogViewTypes';
+import { useCartsStore } from '@/stores/Carts';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
-  extractProductAttributes,
   extractInCartNumber,
-  extractLineItemId, extractProductDescription,
-  extractProductPrices, extractSrc
-} from '@/helpers/extractData/extractProductDataFromProduct'
+  extractLineItemId
+} from '@/helpers/extractData/extractProductDataFromProduct';
 
 export default {
   name: 'CatalogView',
@@ -61,110 +53,100 @@ export default {
       totalItems: 0,
       isProductsLoading: false,
       userCurrentCart: undefined
-    }
+    };
   },
 
   methods: {
-    extractSrc,
     async getProducts() {
-      this.appStatus.startLoading()
+      this.appStatus.startLoading();
       try {
         const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
           this.pageNumber
-        )
+        );
 
         if (this.products.length < 1) {
-          this.products = filterProducts(products.body.results)
+          this.products = filterProducts(products.body.results);
         } else {
-          this.products = [...this.products, ...filterProducts(products.body.results)]
+          this.products = [...this.products, ...filterProducts(products.body.results)];
         }
 
-        this.totalItems = products.body.total || this.products.length
+        this.totalItems = products.body.total || this.products.length;
       } catch (error) {
-        this.$emit('commonError')
+        this.$emit('commonError');
       } finally {
-        this.appStatus.stopLoading()
+        this.appStatus.stopLoading();
       }
     },
     async getUserCart() {
       try {
-        this.appStatus.startLoading()
-        const response = await getUserCarts()
+        this.appStatus.startLoading();
+        const response = await getUserCarts();
 
         if (response.statusCode === 200 || response.statusCode === 201) {
-          const userCart = getUserCurrentCart(response.body.results)
-          this.setUserCurrentCart(userCart)
+          const userCart = getUserCurrentCart(response.body.results);
+          this.setUserCurrentCart(userCart);
         } else {
-          this.$emit('commonError')
+          this.$emit('commonError');
         }
       } catch (error) {
-        this.$emit('commonError')
+        this.$emit('commonError');
       } finally {
-        this.appStatus.stopLoading()
+        this.appStatus.stopLoading();
       }
     },
     setUserCurrentCart(cart?: Cart) {
-      const cartsStore = useCartsStore()
-      cartsStore.setCurrentCart(cart)
-      this.userCurrentCart = cart
+      const cartsStore = useCartsStore();
+      cartsStore.setCurrentCart(cart);
+      this.userCurrentCart = cart;
     },
     getInCartNumber(product: Product) {
       if (this.userCurrentCart) {
-        return extractInCartNumber(product, this.userCurrentCart)
+        return extractInCartNumber(product, this.userCurrentCart);
       }
-      return 0
+      return 0;
     },
     getLineItemId(product: Product) {
       if (this.userCurrentCart) {
-        return extractLineItemId(product.id, this.userCurrentCart)
+        return extractLineItemId(product.id, this.userCurrentCart);
       }
-      return ''
-    },
-    getPrices(product: Product) {
-      return extractProductPrices(product, this.currency)
-    },
-    getDescription(product: Product) {
-      return extractProductDescription(product, this.lang)
-    },
-    getAttributes(product: Product) {
-      return extractProductAttributes(product, this.lang)
+      return '';
     },
     loadProducts() {
-      this.pageNumber += 1
+      this.pageNumber += 1;
       if (this.pageNumber <= this.totalPages) {
-        this.getProducts()
+        this.getProducts();
       }
     },
     intersectionHandler(entries: IntersectionObserverEntry[]) {
       if (entries[0].isIntersecting) {
-        this.loadProducts()
+        this.loadProducts();
       }
     }
   },
 
   mounted() {
-    this.getProducts()
-    this.getUserCart()
+    this.getProducts();
+    this.getUserCart();
     const options = {
       rootMargin: '0px',
       threshold: 1.0
-    }
-    const observer = new IntersectionObserver(this.intersectionHandler, options)
-    observer.observe(this.$refs.observer as Element)
+    };
+    const observer = new IntersectionObserver(this.intersectionHandler, options);
+    observer.observe(this.$refs.observer as Element);
   },
 
   computed: {
     lang() {
-      return this.appSettings.lang
+      return this.appSettings.lang;
     },
     currency() {
-      return this.appSettings.currency
+      return this.appSettings.currency;
     },
     totalPages() {
-      return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD)
+      return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

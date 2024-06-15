@@ -1,11 +1,11 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export default async function deleteProductFromCart(
   cartId: string,
   lineItemId: string,
   cartVersion: number
 ) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .carts()
@@ -22,5 +22,5 @@ export default async function deleteProductFromCart(
         ]
       }
     })
-    .execute()
+    .execute();
 }

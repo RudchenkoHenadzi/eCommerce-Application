@@ -1,4 +1,4 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export function updateUserData(
   version: number,
@@ -7,7 +7,7 @@ export function updateUserData(
   birthDate: string,
   email: string
 ) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .post({
@@ -33,5 +33,5 @@ export function updateUserData(
         ]
       }
     })
-    .execute()
+    .execute();
 }

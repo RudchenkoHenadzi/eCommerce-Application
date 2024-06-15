@@ -1,6 +1,6 @@
 <template>
   <div class="product-card__slider slider">
-    <img :src="src" :alt="productName" class="slider__img" />
+    <img :src="extractSrc(product as Product)" :alt="productName" class="slider__img" />
     <button class="slider__label" v-if="labelName">{{ labelName }}</button>
     <CompareIcon class="slider__compare-btn" />
     <div class="slider__controls controls">
@@ -14,18 +14,12 @@
   </div>
   <div class="product-card__about about">
     <div class="about__name">{{ productName }}</div>
-    <ul class="about__attributes attributes">
-      <li class="attributes__item" v-for="attribute in attributes" :key="attribute.name">
-        {{ attribute.label }}
-      </li>
-    </ul>
-    <div class="about__discount discount" v-if="discountedPrice">
-      <div class="discount__full-price">{{ price }} {{ currency }}</div>
-      <div class="discount__actual-price">{{ discountedPrice }} {{ currency }}</div>
-    </div>
-    <div class="about__full-price-only full-price-only" v-else>
-      <div class="full-price-only__price">{{ price }} {{ currency }}</div>
-    </div>
+    <ProductAttributes :attributes="attributes" onlyFirstAttributeVisible="true" />
+    <PricesBlock
+      :discountedPrice="discountedPrice"
+      :currencyCode="currency"
+      :productCentAmount="price"
+    />
     <AlreadyInCartButton
       v-if="localInCartNumber !== 0"
       @changeItemCount="changeItemCountHandler"
@@ -35,39 +29,51 @@
     <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
     </button>
+    <RouterLink :to="`/product/${productId}`" class="about__more button-purple catalog-card-button"
+      >Подробнее</RouterLink
+    >
   </div>
 </template>
 
 <script lang="ts">
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
-import CompareIcon from '@/Icons/CompareIcon.vue'
-import ArrowLeft from '@/Icons/ArrowLeft.vue'
-import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue'
-import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist'
-import addProductToCart from '@/services/apiMethods/cart/addProductToCart'
-import createNewCart from '@/services/apiMethods/cart/createNewCart'
-import { useUserStore } from '@/stores/User'
-import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart'
-import { useCartsStore } from '@/stores/Carts'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
-import { getProductQuantity } from '@/helpers/extractData/getProductQuantity'
-import { extractLineItemId } from '@/helpers/extractData/extractProductDataFromProduct'
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
+import CompareIcon from '@/Icons/CompareIcon.vue';
+import ArrowLeft from '@/Icons/ArrowLeft.vue';
+import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue';
+import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist';
+import addProductToCart from '@/services/apiMethods/cart/addProductToCart';
+import createNewCart from '@/services/apiMethods/cart/createNewCart';
+import { useUserStore } from '@/stores/User';
+import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart';
+import { useCartsStore } from '@/stores/Carts';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
+import { getProductQuantity } from '@/helpers/extractData/getProductQuantity';
+import {
+  extractDiscountedProductPrice,
+  extractLineItemId,
+  extractProductAttributes,
+  extractProductCentAmount,
+  extractProductId,
+  extractProductName,
+  extractProductPrices,
+  extractSrc
+} from '@/helpers/extractData/extractProductDataFromProduct';
+import PricesBlock from '@/components/blocks/PricesBlock.vue';
+import type { Price, Product } from '@commercetools/platform-sdk';
+import type { PropType } from 'vue';
+import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
+
 export default {
   name: 'ProductCard',
 
-  components: { AlreadyInCartButton, ArrowLeft, CompareIcon },
+  components: { ProductAttributes, PricesBlock, AlreadyInCartButton, ArrowLeft, CompareIcon },
 
-  props: [
-    'productName',
-    'description',
-    'src',
-    'attributes',
-    'prices',
-    'labelName',
-    'productId',
-    'inCartNumber',
-    'lineItemId'
-  ],
+  props: {
+    product: Object as PropType<Product>,
+    inCartNumber: Number,
+    lineItemId: String,
+    labelName: String
+  },
 
   emits: ['changeItemsNumberInCart', 'productCardEvents'],
 
@@ -80,110 +86,111 @@ export default {
       appStatus: useAppStatusStore(),
       localLineItemId: this.lineItemId,
       localInCartNumber: this.inCartNumber
-    }
+    };
   },
 
   methods: {
+    extractSrc,
     setLineItemId(lineItemId: string) {
-      this.localLineItemId = lineItemId
+      this.localLineItemId = lineItemId;
     },
     setLocalInCartNumber(newInCartNumber: number) {
-      this.localInCartNumber = newInCartNumber
+      this.localInCartNumber = newInCartNumber;
     },
     async addItemToCart() {
       if (!isCartExist(this.cartId)) {
         try {
-          this.appStatus.startLoading()
-          const cartCreationResult = await createNewCart()
+          this.appStatus.startLoading();
+          const cartCreationResult = await createNewCart();
 
           if (cartCreationResult.statusCode === 200) {
-            this.cartsStore.setCurrentCart(cartCreationResult.body)
+            this.cartsStore.setCurrentCart(cartCreationResult.body);
             const addingItemResult = await addProductToCart(
               cartCreationResult.body.id,
               this.productId,
               cartCreationResult.body.version
-            )
+            );
 
             if (addingItemResult.statusCode === 200) {
-              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+              this.$emit('changeItemsNumberInCart', addingItemResult.body);
 
-              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body))
+              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body));
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
-              )
-              this.cartsStore.setCurrentCart(addingItemResult.body)
+              );
+              this.cartsStore.setCurrentCart(addingItemResult.body);
             } else {
-              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.');
             }
           } else {
             this.$emit(
               'productCardEvents',
               'Товар не удалось добавить в корзину. Не была создана корзина.'
-            )
+            );
           }
         } catch (e) {
-          this.$emit('productCardEvents', 'Что-то пошло не так.')
+          this.$emit('productCardEvents', 'Что-то пошло не так.');
         } finally {
-          this.appStatus.stopLoading()
+          this.appStatus.stopLoading();
         }
       } else {
         try {
-          this.appStatus.startLoading()
-          const cartId = this.cartsStore.currentCart?.id
-          const cartVersion = this.cartsStore.currentCart?.version
+          this.appStatus.startLoading();
+          const cartId = this.cartsStore.currentCart?.id;
+          const cartVersion = this.cartsStore.currentCart?.version;
 
           if (cartId && cartVersion) {
-            const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion)
+            const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion);
 
             if (addingItemResult.statusCode === 200) {
-              this.$emit('changeItemsNumberInCart', addingItemResult.body)
+              this.$emit('changeItemsNumberInCart', addingItemResult.body);
               this.setLocalInCartNumber(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
-              )
-              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body))
-              this.cartsStore.setCurrentCart(addingItemResult.body)
+              );
+              this.setLineItemId(extractLineItemId(this.productId, addingItemResult.body));
+              this.cartsStore.setCurrentCart(addingItemResult.body);
             } else {
-              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.')
+              this.$emit('productCardEvents', 'Товар не удалось добавить в корзину.');
             }
           } else {
-            this.$emit('productCardEvents', 'Что-то пошло не так.')
+            this.$emit('productCardEvents', 'Что-то пошло не так.');
           }
         } catch (e) {
-          this.$emit('productCardEvents', 'Что-то пошло не так.')
+          this.$emit('productCardEvents', 'Что-то пошло не так.');
         } finally {
-          this.appStatus.stopLoading()
+          this.appStatus.stopLoading();
         }
       }
     },
-    async changeItemCountHandler(action: string): void {
+    async changeItemCountHandler(action: string) {
       if (action === 'add') {
-        this.addItemToCart()
+        await this.addItemToCart();
       } else {
-        const cartStore = useCartsStore()
-        const cartId = cartStore.userCurrentCart ? cartStore.userCurrentCart.id : ''
+        const cartStore = useCartsStore();
+        const cartId = cartStore.userCurrentCart ? cartStore.userCurrentCart.id : '';
 
         if (cartId) {
           try {
-            this.appStatus.startLoading()
+            this.appStatus.startLoading();
             const deletingProductResult = await deleteProductFromCart(
               cartId,
-              this.localLineItemId,
+              this.localLineItemId || '',
               this.cartVersion
-            )
+            );
 
             if (deletingProductResult.statusCode === 200) {
-              this.cartsStore.setCurrentCart(deletingProductResult.body)
+              this.cartsStore.setCurrentCart(deletingProductResult.body);
               this.setLocalInCartNumber(
                 getProductQuantity(deletingProductResult.body.lineItems, this.productId)
-              )
+              );
             }
           } catch (error) {
-            this.$emit('productCardEvents', 'не удалось удалить товар из корзины1')
+            this.$emit('productCardEvents', 'не удалось удалить товар из корзины1');
           } finally {
-            this.appStatus.stopLoading()
+            this.appStatus.stopLoading();
           }
         } else {
-          this.$emit('productCardEvents', 'не удалось удалить товар из корзины')
+          this.$emit('productCardEvents', 'не удалось удалить товар из корзины');
         }
       }
     }
@@ -191,30 +198,46 @@ export default {
 
   computed: {
     currency() {
-      return this.appSettingsStore.currency
+      return this.appSettingsStore.currency;
+    },
+    lang() {
+      return this.appSettings.lang;
+    },
+    currentPriceData() {
+      return extractProductPrices(this.product as Product, this.currency);
     },
     price() {
-      return this.prices.value.centAmount
+      return Object.keys(this.currentPriceData).length !== 0
+        ? extractProductCentAmount(this.currentPriceData as Price)
+        : 0;
     },
     discountedPrice() {
-      if (this.prices.discounted) {
-        return this.prices.discounted.value.centAmount
-      } else {
-        return undefined
-      }
+      return Object.keys(this.currentPriceData).length !== 0
+        ? extractDiscountedProductPrice(this.currentPriceData as Price)
+        : 0;
     },
     cartVersion() {
-      return this.cartsStore.currentCart ? this.cartsStore.currentCart.version : 0
+      return this.cartsStore.currentCart ? this.cartsStore.currentCart.version : 0;
     },
     cartId() {
-      return getCartID()
+      return getCartID();
+    },
+    attributes() {
+      return extractProductAttributes(this.product as Product, this.lang);
+    },
+    productId() {
+      return extractProductId(this.product as Product);
+    },
+    productName() {
+      return extractProductName(this.product as Product, this.lang);
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
 @import '@/assets/styles/variables.scss';
+
 .slider {
   position: relative;
 
@@ -279,6 +302,7 @@ export default {
 .about {
   display: grid;
   grid-template-rows: 20px 1fr 20px 50px;
+  align-content: center;
   gap: 10px;
   padding: 20px 24px;
   background: #f0f1f5;
@@ -294,6 +318,13 @@ export default {
 
   &__btn {
     width: 90%;
+  }
+
+  &__more {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
   }
 }
 

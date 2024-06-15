@@ -1,10 +1,10 @@
-import { useCartsStore } from '@/stores/Carts'
+import { useCartsStore } from '@/stores/Carts';
 
 export function getCartID() {
-  const cartsStore = useCartsStore()
-  return cartsStore.currentCart ? cartsStore.currentCart.id : ''
+  const cartsStore = useCartsStore();
+  return cartsStore.currentCart ? cartsStore.currentCart.id : '';
 }
 
 export function isCartExist(cartId: string) {
-  return cartId !== ''
+  return cartId !== '';
 }

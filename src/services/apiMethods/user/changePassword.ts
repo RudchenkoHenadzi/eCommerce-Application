@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export function changePassword(version: number, currentPassword: string, newPassword: string) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .password()
@@ -12,5 +12,5 @@ export function changePassword(version: number, currentPassword: string, newPass
         newPassword: newPassword
       }
     })
-    .execute()
+    .execute();
 }

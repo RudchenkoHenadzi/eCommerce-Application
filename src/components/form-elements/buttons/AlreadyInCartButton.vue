@@ -17,13 +17,13 @@ export default {
 
   methods: {
     addItem() {
-      this.$emit('changeItemCount', 'add')
+      this.$emit('changeItemCount', 'add');
     },
     deleteItem() {
-      this.$emit('changeItemCount', 'delete')
+      this.$emit('changeItemCount', 'delete');
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

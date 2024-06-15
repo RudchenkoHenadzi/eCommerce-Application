@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export default function getUserCarts() {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .carts()
@@ -10,5 +10,5 @@ export default function getUserCarts() {
         limit: 500
       }
     })
-    .execute()
+    .execute();
 }

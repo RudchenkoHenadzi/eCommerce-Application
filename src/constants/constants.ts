@@ -1,15 +1,15 @@
-import type { TCountryType, TCurrencyType, TLangType } from '@/types/appSettingsTypes'
+import type { TCountryType, TCurrencyType, TLangType } from '@/types/appSettingsTypes';
 
-const TIMEOUT_SHORT_MESSAGE = 2000
-const TIMEOUT_ERROR_MESSAGE = 2000
-const TIMEOUT_REDIRECT = 2100
+const TIMEOUT_SHORT_MESSAGE = 2000;
+const TIMEOUT_ERROR_MESSAGE = 2000;
+const TIMEOUT_REDIRECT = 2100;
 
 const EVENT_NAMES = {
   VIEW_CHANGE: 'viewChangeEvents',
   CHANGE_USER_DATA: 'changeUserDataEvents',
   CHANGE_PASSWORD: 'changePasswordEvents',
   MANAGE_ADDRESSES: 'manageAddresses'
-}
+};
 
 const EVENT_TYPE_NAMES = {
   COMMON_EVENTS: {
@@ -41,8 +41,8 @@ const EVENT_TYPE_NAMES = {
     }
   },
   AUTH_EVENTS: {}
-} as const
-type TUserProfileEventKeys = keyof typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW
+} as const;
+type TUserProfileEventKeys = keyof typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW;
 
 const COUNTRY_SWITCH_SCHEMA: Record<TCountryType, { currency: TCurrencyType; lang: TLangType }> = {
   GB: {
@@ -57,10 +57,10 @@ const COUNTRY_SWITCH_SCHEMA: Record<TCountryType, { currency: TCurrencyType; lan
     currency: 'EUR',
     lang: 'de-DE'
   }
-}
+};
 
 export type TUserProfileEventNames =
-  (typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW)[TUserProfileEventKeys]
+  (typeof EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_VIEW)[TUserProfileEventKeys];
 
 export {
   TIMEOUT_SHORT_MESSAGE,
@@ -69,4 +69,4 @@ export {
   EVENT_TYPE_NAMES,
   EVENT_NAMES,
   COUNTRY_SWITCH_SCHEMA
-}
+};

@@ -9,10 +9,10 @@
 </template>
 
 <script lang="ts">
-import TheNavigation from '@/components/menu/TheNavigation.vue'
-import { useUserStore } from '@/stores/User'
-import userLogout from '@/services/apiMethods/auth/userLogout'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+import TheNavigation from '@/components/menu/TheNavigation.vue';
+import { useUserStore } from '@/stores/User';
+import userLogout from '@/services/apiMethods/auth/userLogout';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'TheHeader',
@@ -20,7 +20,7 @@ export default {
   setup() {
     return {
       store: useUserStore()
-    }
+    };
   },
 
   components: {
@@ -30,22 +30,22 @@ export default {
   data() {
     return {
       appStatus: useAppStatusStore()
-    }
+    };
   },
 
   methods: {
     logout() {
-      this.appStatus.startLoading()
-      userLogout()
-      const userApp = useUserStore()
-      userApp.logout()
-      userApp.removeUserMail()
+      this.appStatus.startLoading();
+      userLogout();
+      const userApp = useUserStore();
+      userApp.logout();
+      userApp.removeUserMail();
 
-      this.$router.push('/')
-      this.appStatus.stopLoading()
+      this.$router.push('/');
+      this.appStatus.stopLoading();
     }
   }
-}
+};
 </script>
 
 <style lang="scss">

@@ -1,7 +1,7 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export function deleteCart(cartId: string, cartVersion: number) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .carts()
@@ -11,5 +11,5 @@ export function deleteCart(cartId: string, cartVersion: number) {
         version: cartVersion
       }
     })
-    .execute()
+    .execute();
 }

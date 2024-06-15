@@ -11,14 +11,14 @@
 </template>
 
 <script lang="ts">
-import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
-import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
-import userLogin from '@/services/apiMethods/auth/userLogin'
-import checkUserExist from '@/services/apiMethods/auth/checkUserExist'
-import { useUserStore } from '@/stores/User'
-import { isUserNotFound } from '@/helpers/dataCheck/loginCheck'
-import { TIMEOUT_REDIRECT } from '@/constants/constants'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
+import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue';
+import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue';
+import userLogin from '@/services/apiMethods/auth/userLogin';
+import checkUserExist from '@/services/apiMethods/auth/checkUserExist';
+import { useUserStore } from '@/stores/User';
+import { isUserNotFound } from '@/helpers/dataCheck/loginCheck';
+import { TIMEOUT_REDIRECT } from '@/constants/constants';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'LoginForm',
@@ -35,48 +35,48 @@ export default {
         password: ''
       },
       appStatus: useAppStatusStore()
-    }
+    };
   },
 
   methods: {
     async submitLoginForm() {
-      this.appStatus.startLoading()
+      this.appStatus.startLoading();
       try {
-        const doesUserExist = await checkUserExist(this.loginForm.email)
+        const doesUserExist = await checkUserExist(this.loginForm.email);
         if (doesUserExist) {
           try {
-            const loginResult = await userLogin(this.loginForm.email, this.loginForm.password)
+            const loginResult = await userLogin(this.loginForm.email, this.loginForm.password);
             if (loginResult.statusCode === 200) {
-              this.$emit('loginEvents', 'successLogin')
-              const user = useUserStore()
-              user.login()
-              user.setUserMail(this.loginForm.email)
+              this.$emit('loginEvents', 'successLogin');
+              const user = useUserStore();
+              user.login();
+              user.setUserMail(this.loginForm.email);
               setTimeout(() => {
-                this.$router.push('/')
-              }, TIMEOUT_REDIRECT)
+                this.$router.push('/');
+              }, TIMEOUT_REDIRECT);
             } else if (loginResult.statusCode === 400) {
-              this.$emit('loginEvents', 'invalidPassword')
+              this.$emit('loginEvents', 'invalidPassword');
             } else {
-              this.$emit('loginEvents', 'commonError')
+              this.$emit('loginEvents', 'commonError');
             }
           } catch (e) {
             if (isUserNotFound(e)) {
-              this.$emit('loginEvents', 'userNotExist')
+              this.$emit('loginEvents', 'userNotExist');
             } else {
-              this.$emit('loginEvents', 'commonError')
+              this.$emit('loginEvents', 'commonError');
             }
           }
         } else {
-          this.$emit('loginEvents', 'userNotExist')
+          this.$emit('loginEvents', 'userNotExist');
         }
       } catch (error: unknown) {
-        this.$emit('loginEvents', 'commonError')
+        this.$emit('loginEvents', 'commonError');
       } finally {
-        this.appStatus.stopLoading()
+        this.appStatus.stopLoading();
       }
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

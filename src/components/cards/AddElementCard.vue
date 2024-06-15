@@ -6,8 +6,8 @@
 </template>
 
 <script lang="ts">
-import PlusIcon from '@/Icons/PlusIcon.vue'
-import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
+import PlusIcon from '@/Icons/PlusIcon.vue';
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants';
 
 export default {
   name: 'AddElementCard',
@@ -23,10 +23,10 @@ export default {
       this.$emit(
         EVENT_NAMES.MANAGE_ADDRESSES,
         EVENT_TYPE_NAMES.PROFILE_EVENTS.MANAGE_ADDRESSES.CHANGE_VIEW_TO_EDIT
-      )
+      );
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

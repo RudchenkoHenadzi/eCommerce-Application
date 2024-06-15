@@ -1,10 +1,10 @@
-import type { Address } from '@commercetools/platform-sdk'
+import type { Address } from '@commercetools/platform-sdk';
 
 export interface IAddressesStore {
-  userAddresses: Address[]
-  userShippingAddressIds: string[]
-  userBillingAddressIds: string[]
-  selectedUserAddress: null | Address
+  userAddresses: Address[];
+  userShippingAddressIds: string[];
+  userBillingAddressIds: string[];
+  selectedUserAddress: null | Address;
 }
 
-export type TAddressType = 'shipping' | 'billing'
+export type TAddressType = 'shipping' | 'billing';

@@ -1,14 +1,14 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import AboutView from '@/views/AboutView.vue'
-import CartShoppingView from '../views/CartShoppingView.vue'
-import { useUserStore } from '@/stores/User'
-import NotFoundView from '@/views/NotFoundView.vue'
-import RegistrationView from '@/views/RegistrationView.vue'
-import UserProfileView from '@/views/UserProfileView.vue'
-import LoginView from '@/views/LoginView.vue'
-import ProductView from '@/views/ProductView.vue'
-import CatalogView from '@/views/CatalogView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '@/views/HomeView.vue';
+import AboutView from '@/views/AboutView.vue';
+import CartShoppingView from '../views/CartShoppingView.vue';
+import { useUserStore } from '@/stores/User';
+import NotFoundView from '@/views/NotFoundView.vue';
+import RegistrationView from '@/views/RegistrationView.vue';
+import UserProfileView from '@/views/UserProfileView.vue';
+import LoginView from '@/views/LoginView.vue';
+import ProductView from '@/views/ProductView.vue';
+import CatalogView from '@/views/CatalogView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,7 +34,7 @@ const router = createRouter({
       component: CatalogView
     },
     {
-      path: '/product',
+      path: '/product/:id',
       name: 'product',
       component: ProductView
     },
@@ -59,20 +59,20 @@ const router = createRouter({
       component: NotFoundView
     }
   ]
-})
+});
 
 router.beforeEach((to) => {
-  const appUser = useUserStore()
+  const appUser = useUserStore();
   if (
     (appUser.isLoggedIn && to.name == 'authorization') ||
     (appUser.isLoggedIn && to.name == 'registration')
   ) {
-    return '/'
+    return '/';
   }
 
   if (!appUser.isLoggedIn && to.name == 'user') {
-    return '/'
+    return '/';
   }
-})
+});
 
-export default router
+export default router;

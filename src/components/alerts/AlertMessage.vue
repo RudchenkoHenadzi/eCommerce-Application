@@ -17,10 +17,10 @@ export default {
 
   methods: {
     closeAlert() {
-      this.$emit('closeAlert')
+      this.$emit('closeAlert');
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

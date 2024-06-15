@@ -32,10 +32,10 @@
 </template>
 
 <script lang="ts">
-import useValidate from '@vuelidate/core'
-import { helpers, required, sameAs } from '@vuelidate/validators'
-import EyeIconSVG from '@/Icons/EyeIconSVG.vue'
-import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue'
+import useValidate from '@vuelidate/core';
+import { helpers, required, sameAs } from '@vuelidate/validators';
+import EyeIconSVG from '@/Icons/EyeIconSVG.vue';
+import EyeCrossedIconSVG from '@/Icons/EyeCrossedIconSVG.vue';
 
 export default {
   name: 'InputConfirmPassword',
@@ -57,13 +57,13 @@ export default {
   setup() {
     return {
       v$: useValidate()
-    }
+    };
   },
 
   data() {
     return {
       inputType: 'password'
-    }
+    };
   },
 
   validations() {
@@ -72,16 +72,16 @@ export default {
         sameAs: helpers.withMessage('Пароли должны совпадать', sameAs(this.passwordToCompare)),
         required: helpers.withMessage('Повторите новый пароль', required)
       }
-    }
+    };
   },
 
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.value
-        this.$emit('update:modelValue', value)
+        const value = event.target.value;
+        this.$emit('update:modelValue', value);
       }
     }
   }
-}
+};
 </script>

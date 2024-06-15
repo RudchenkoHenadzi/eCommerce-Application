@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
-import { RouterView } from 'vue-router'
-import TheHeader from '@/components/layouts/TheHeader.vue'
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import AlertMessage from '@/components/alerts/AlertMessage.vue'
-import { useUserStore } from '@/stores/User'
-import { useAppStatusStore } from '@/stores/AppStatusStore'
-import MyLoader from '@/Icons/MyLoader.vue'
+import { RouterView } from 'vue-router';
+import TheHeader from '@/components/layouts/TheHeader.vue';
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import AlertMessage from '@/components/alerts/AlertMessage.vue';
+import { useUserStore } from '@/stores/User';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
+import MyLoader from '@/Icons/MyLoader.vue';
 
 export default {
   components: { MyLoader, AlertMessage, TheHeader, RouterView },
@@ -32,32 +32,32 @@ export default {
       user: useUserStore(),
       appStatus: useAppStatusStore(),
       apiRoot: useApiRootStore()
-    }
+    };
   },
 
   methods: {
     showAlert(text: string, delay: number) {
-      this.alertText = text
-      this.isAlertShow = true
+      this.alertText = text;
+      this.isAlertShow = true;
       setTimeout(() => {
-        this.isAlertShow = false
-      }, delay)
+        this.isAlertShow = false;
+      }, delay);
     },
     closeAlert() {
-      this.isAlertShow = false
+      this.isAlertShow = false;
     }
   },
 
   mounted() {
-    this.apiRoot.start()
+    this.apiRoot.start();
   },
 
   computed: {
     isLoading() {
-      return this.appStatus.isDataLoading
+      return this.appStatus.isDataLoading;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
