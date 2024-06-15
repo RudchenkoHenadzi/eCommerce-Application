@@ -20,12 +20,17 @@
       :currencyCode="currency"
       :productCentAmount="price"
     />
-    <AlreadyInCartButton
-      v-if="localInCartNumber !== 0"
-      @changeItemCount="changeItemCountHandler"
-      :productId="productId"
-      :item-count="localInCartNumber"
-    />
+
+    <div v-if="localInCartNumber !== 0" class="about__manage">
+      <AlreadyInCartButton
+        @changeItemCount="changeItemCountHandler"
+        :productId="productId"
+        :item-count="localInCartNumber"
+      />
+      <button class="about__delete-btn button-purple catalog-card-button" @click="deleteItemFromCart(inCartNumber)">
+        Удалить из корзины
+      </button>
+    </div>
     <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
     </button>
@@ -103,7 +108,7 @@ export default {
           this.appStatus.startLoading();
           const cartCreationResult = await createNewCart();
 
-          if (cartCreationResult.statusCode === 200) {
+          if (cartCreationResult.statusCode === 200 || cartCreationResult.statusCode === 201) {
             this.cartsStore.setCurrentCart(cartCreationResult.body);
             const addingItemResult = await addProductToCart(
               cartCreationResult.body.id,
@@ -162,36 +167,38 @@ export default {
         }
       }
     },
+    async deleteItemFromCart(quantity: number = 1) {
+      const cartId = this.cartsStore.userCurrentCart ? this.cartsStore.userCurrentCart.id : '';
+      if (cartId) {
+        try {
+          this.appStatus.startLoading();
+          const deletingProductResult = await deleteProductFromCart(
+            cartId,
+            this.localLineItemId || '',
+            this.cartVersion,
+            quantity
+          );
+
+          if (deletingProductResult.statusCode === 200) {
+            this.cartsStore.setCurrentCart(deletingProductResult.body);
+            this.setLocalInCartNumber(
+              getProductQuantity(deletingProductResult.body.lineItems, this.productId)
+            );
+          }
+        } catch (error) {
+          this.$emit('productCardEvents', 'не удалось удалить товар из корзины1');
+        } finally {
+          this.appStatus.stopLoading();
+        }
+      } else {
+        this.$emit('productCardEvents', 'не удалось удалить товар из корзины');
+      }
+    },
     async changeItemCountHandler(action: string) {
       if (action === 'add') {
         await this.addItemToCart();
       } else {
-        const cartStore = useCartsStore();
-        const cartId = cartStore.userCurrentCart ? cartStore.userCurrentCart.id : '';
-
-        if (cartId) {
-          try {
-            this.appStatus.startLoading();
-            const deletingProductResult = await deleteProductFromCart(
-              cartId,
-              this.localLineItemId || '',
-              this.cartVersion
-            );
-
-            if (deletingProductResult.statusCode === 200) {
-              this.cartsStore.setCurrentCart(deletingProductResult.body);
-              this.setLocalInCartNumber(
-                getProductQuantity(deletingProductResult.body.lineItems, this.productId)
-              );
-            }
-          } catch (error) {
-            this.$emit('productCardEvents', 'не удалось удалить товар из корзины1');
-          } finally {
-            this.appStatus.stopLoading();
-          }
-        } else {
-          this.$emit('productCardEvents', 'не удалось удалить товар из корзины');
-        }
+        await this.deleteItemFromCart()
       }
     }
   },
@@ -317,14 +324,30 @@ export default {
   }
 
   &__btn {
-    width: 90%;
+    width: 100%;
   }
 
   &__more {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
     text-decoration: none;
+  }
+
+  &__manage {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+    gap: 3px;
+
+    & > * {
+      width: 100%;
+    }
+  }
+
+  &__delete-btn {
+    padding: 5px;
+    font-size: 0.7em;
   }
 }
 
