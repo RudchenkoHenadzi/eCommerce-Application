@@ -40,7 +40,7 @@ export default {
     logout() {
       this.appStatus.startLoading();
       userLogout();
-      this.cartsStore.deleteCurrentCart()
+      this.cartsStore.deleteCurrentCart();
       this.userApp.logout();
       this.userApp.removeUserMail();
 

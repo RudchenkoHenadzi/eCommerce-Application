@@ -188,7 +188,7 @@ export default {
             this.registrationForm.billingAddress
           );
           if (registrationResult.statusCode === 201) {
-            this.getUserCart()
+            await this.getUserCart();
             this.user.login();
             this.user.setUserMail(this.registrationForm.email);
             this.$emit('registrationEvents', 'registrationSuccess');
@@ -230,7 +230,7 @@ export default {
       } finally {
         this.appStatus.stopLoading();
       }
-    },
+    }
   },
 
   computed: {

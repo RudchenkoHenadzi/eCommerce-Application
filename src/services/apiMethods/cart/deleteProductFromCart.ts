@@ -4,7 +4,7 @@ export default async function deleteProductFromCart(
   cartId: string,
   lineItemId: string,
   cartVersion: number,
-  quantity: number = 1,
+  quantity: number = 1
 ) {
   const apiRoot = useApiRootStore().apiRoot;
   return apiRoot

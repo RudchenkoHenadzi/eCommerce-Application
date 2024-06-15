@@ -66,7 +66,7 @@ export default {
       } finally {
         this.appStatus.stopLoading();
       }
-    },
+    }
   },
 
   mounted() {

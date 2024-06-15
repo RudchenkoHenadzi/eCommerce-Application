@@ -8,22 +8,22 @@ export const useCartsStore: StoreDefinition<'carts', ICartsState, ICartsGetters,
     state: (): ICartsState => ({
       userCurrentCart: undefined,
       userCartIds: userCartIds,
-      cartProductCount: 0,
+      cartProductCount: 0
     }),
     getters: {
       currentCart: (state: ICartsState) => state.userCurrentCart,
-      productCount: (state: ICartsState) => state.cartProductCount,
+      productCount: (state: ICartsState) => state.cartProductCount
     },
     actions: {
       setCurrentCart(cart: Cart | undefined) {
         this.userCurrentCart = cart;
-        this.updateProductCount()
+        this.updateProductCount();
       },
       deleteCurrentCart() {
-        this.setCurrentCart(undefined)
+        this.setCurrentCart(undefined);
       },
       updateProductCount() {
-        this.cartProductCount = this.currentCart ? this.currentCart.lineItems.length : 0
-      },
+        this.cartProductCount = this.currentCart ? this.currentCart.lineItems.length : 0;
+      }
     }
   });

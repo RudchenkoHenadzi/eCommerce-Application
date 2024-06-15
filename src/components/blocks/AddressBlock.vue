@@ -71,10 +71,10 @@ export default {
   data() {
     return {
       userStore: useUserStore(),
+      appStatus: useAppStatusStore(),
       isAddressEditModeOn: false,
       isAddressAddModeOn: false,
-      newAddressId: String(Date.now()),
-      appStatus: useAppStatusStore()
+      newAddressId: String(Date.now())
     };
   },
 

@@ -1,5 +1,5 @@
 <template>
-  <div :class="wrapperClasses">
+  <div :class="blockClasses">
     <div class="address-lines__marker"></div>
     <div class="address-lines__content content">
       <div class="content__country"><span>Страна:</span> {{ country }}</div>
@@ -42,7 +42,7 @@ export default {
 
   data() {
     return {
-      wrapperClasses: {
+      blockClasses: {
         default: this.isAddressDefault,
         'address-lines': true
       }

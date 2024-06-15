@@ -49,7 +49,7 @@ export default {
       appStatus: useAppStatusStore(),
       pageNumber: 0,
       totalItems: 0,
-      isProductsLoading: false,
+      isProductsLoading: false
     };
   },
 
@@ -120,7 +120,7 @@ export default {
       return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD);
     },
     userCurrentCart(): Cart | undefined {
-      return this.cartsStore.currentCart
+      return this.cartsStore.currentCart;
     }
   }
 };

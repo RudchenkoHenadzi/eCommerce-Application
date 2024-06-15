@@ -75,7 +75,7 @@ export default {
           this.userStore.setUserLastName(lastName);
           this.userStore.setUserBirthDate(birthDate);
           this.userStore.setUserMail(email);
-          this.userStore.setUserVersion(response.body.version);
+          this.userStore.setUserVersion(updatingResult.body.version);
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.SUCCESS

@@ -39,7 +39,7 @@ export default {
       },
       appStatus: useAppStatusStore(),
       cartsStore: useCartsStore(),
-      user: useUserStore(),
+      user: useUserStore()
     };
   },
 
@@ -96,7 +96,7 @@ export default {
       } finally {
         this.appStatus.stopLoading();
       }
-    },
+    }
   }
 };
 </script>

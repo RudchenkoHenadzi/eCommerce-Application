@@ -27,7 +27,10 @@
         :productId="productId"
         :item-count="localInCartNumber"
       />
-      <button class="about__delete-btn button-purple catalog-card-button" @click="deleteItemFromCart(inCartNumber)">
+      <button
+        class="about__delete-btn button-purple catalog-card-button"
+        @click="deleteItemFromCart(inCartNumber)"
+      >
         Удалить из корзины
       </button>
     </div>
@@ -198,7 +201,7 @@ export default {
       if (action === 'add') {
         await this.addItemToCart();
       } else {
-        await this.deleteItemFromCart()
+        await this.deleteItemFromCart();
       }
     }
   },
