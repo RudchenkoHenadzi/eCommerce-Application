@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
+import { AppStatusStoreId } from '@/stores/types/appStatusTypes';
 
-export const useAppStatusStore = defineStore('appStatus', {
+export const useAppStatusStore = defineStore(AppStatusStoreId, {
   state: (): {
     indicatorStatus: boolean;
   } => ({

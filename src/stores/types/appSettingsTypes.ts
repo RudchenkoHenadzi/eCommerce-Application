@@ -1,5 +1,9 @@
 import type { TCountryType, TCurrencyType, TLangType } from '@/types/appSettingsTypes';
 
+export const AppSettingsStoreId = 'appSettings';
+
+export type TAppSettingsStoreId = typeof AppSettingsStoreId;
+
 export interface IAppSettingsState {
   appLang: TLangType;
   appLanguages: TLangType[];

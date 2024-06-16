@@ -21,19 +21,14 @@
       :productCentAmount="price"
     />
 
-    <div v-if="localInCartNumber !== 0" class="about__manage">
-      <AlreadyInCartButton
-        @changeItemCount="changeItemCountHandler"
-        :productId="productId"
-        :item-count="localInCartNumber"
-      />
-      <button
-        class="about__delete-btn button-purple catalog-card-button"
-        @click="deleteItemFromCart(inCartNumber)"
-      >
-        Удалить из корзины
-      </button>
-    </div>
+    <ProductManagementButtons
+      v-if="localQuantity !== 0"
+      :productId="productId"
+      :quantity="localQuantity"
+      @deleteItemFromCart="deleteItemFromCartHandler(localQuantity)"
+      @changeQuantity="changeQuantityHandler"
+    />
+
     <button v-else class="about__btn button-purple catalog-card-button" @click="addItemToCart">
       В корзину
     </button>
@@ -47,12 +42,10 @@
 import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import CompareIcon from '@/Icons/CompareIcon.vue';
 import ArrowLeft from '@/Icons/ArrowLeft.vue';
-import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue';
 import { getCartID, isCartExist } from '@/helpers/dataCheck/isCartExist';
 import addProductToCart from '@/services/apiMethods/cart/addProductToCart';
 import createNewCart from '@/services/apiMethods/cart/createNewCart';
 import { useUserStore } from '@/stores/User';
-import deleteProductFromCart from '@/services/apiMethods/cart/deleteProductFromCart';
 import { useCartsStore } from '@/stores/Carts';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import { getProductQuantity } from '@/helpers/extractData/getProductQuantity';
@@ -70,20 +63,22 @@ import {
   extractProductPrices,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
+import ProductManagementButtons from '@/components/blocks/ProductManagementButtons.vue';
+import { deleteItemFromCart } from '@/services/services/cartServices/cartServices';
 
 export default {
   name: 'ProductCard',
 
-  components: { ProductAttributes, PricesBlock, AlreadyInCartButton, ArrowLeft, CompareIcon },
+  components: { ProductManagementButtons, ProductAttributes, PricesBlock, ArrowLeft, CompareIcon },
 
   props: {
     product: Object as PropType<Product>,
-    inCartNumber: Number,
+    quantity: Number,
     lineItemId: String,
     labelName: String
   },
 
-  emits: ['changeItemsNumberInCart', 'productCardEvents'],
+  emits: ['changeProductQuantity', 'productCardEvents'],
 
   data() {
     return {
@@ -93,7 +88,7 @@ export default {
       cartsStore: useCartsStore(),
       appStatus: useAppStatusStore(),
       localLineItemId: this.lineItemId,
-      localInCartNumber: this.inCartNumber
+      localQuantity: this.quantity
     };
   },
 
@@ -102,8 +97,8 @@ export default {
     setLineItemId(lineItemId: string) {
       this.localLineItemId = lineItemId;
     },
-    setLocalInCartNumber(newInCartNumber: number) {
-      this.localInCartNumber = newInCartNumber;
+    setLocalQuantity(newInCartNumber: number) {
+      this.localQuantity = newInCartNumber;
     },
     async addItemToCart() {
       if (!isCartExist(this.cartId)) {
@@ -120,10 +115,10 @@ export default {
             );
 
             if (addingItemResult.statusCode === 200) {
-              this.$emit('changeItemsNumberInCart', addingItemResult.body);
+              this.$emit('changeProductQuantity', addingItemResult.body);
 
               this.setLineItemId(extractLineItemIdFromCart(this.productId, addingItemResult.body));
-              this.setLocalInCartNumber(
+              this.setLocalQuantity(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               );
               this.cartsStore.setCurrentCart(addingItemResult.body);
@@ -151,8 +146,8 @@ export default {
             const addingItemResult = await addProductToCart(cartId, this.productId, cartVersion);
 
             if (addingItemResult.statusCode === 200) {
-              this.$emit('changeItemsNumberInCart', addingItemResult.body);
-              this.setLocalInCartNumber(
+              this.$emit('changeProductQuantity', addingItemResult.body);
+              this.setLocalQuantity(
                 getProductQuantity(addingItemResult.body.lineItems, this.productId)
               );
               this.setLineItemId(extractLineItemIdFromCart(this.productId, addingItemResult.body));
@@ -170,38 +165,24 @@ export default {
         }
       }
     },
-    async deleteItemFromCart(quantity: number = 1) {
-      const cartId = this.cartsStore.userCurrentCart ? this.cartsStore.userCurrentCart.id : '';
-      if (cartId) {
-        try {
-          this.appStatus.startLoading();
-          const deletingProductResult = await deleteProductFromCart(
-            cartId,
-            this.localLineItemId || '',
-            this.cartVersion,
-            quantity
-          );
-
-          if (deletingProductResult.statusCode === 200) {
-            this.cartsStore.setCurrentCart(deletingProductResult.body);
-            this.setLocalInCartNumber(
-              getProductQuantity(deletingProductResult.body.lineItems, this.productId)
-            );
-          }
-        } catch (error) {
-          this.$emit('productCardEvents', 'не удалось удалить товар из корзины1');
-        } finally {
-          this.appStatus.stopLoading();
-        }
-      } else {
-        this.$emit('productCardEvents', 'не удалось удалить товар из корзины');
+    async deleteItemFromCartHandler(quantity: number = 1) {
+      try {
+        await deleteItemFromCart(
+          quantity,
+          this.localLineItemId || '',
+          this.cartVersion,
+          this.productId,
+          this.setLocalQuantity
+        );
+      } catch (e) {
+        this.$emit('productCardEvents', 'не удалось удалить товар из корзины3');
       }
     },
-    async changeItemCountHandler(action: string) {
+    async changeQuantityHandler(action: string) {
       if (action === 'add') {
         await this.addItemToCart();
       } else {
-        await this.deleteItemFromCart();
+        await this.deleteItemFromCartHandler();
       }
     }
   },
@@ -336,21 +317,6 @@ export default {
     align-items: center;
     width: 100%;
     text-decoration: none;
-  }
-
-  &__manage {
-    display: grid;
-    grid-template-columns: 5fr 1fr;
-    gap: 3px;
-
-    & > * {
-      width: 100%;
-    }
-  }
-
-  &__delete-btn {
-    padding: 5px;
-    font-size: 0.7em;
   }
 }
 

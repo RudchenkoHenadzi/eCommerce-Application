@@ -1,10 +1,14 @@
 import { defineStore } from 'pinia';
 import type { Address } from '@commercetools/platform-sdk';
-import type { IAddressesStore, TAddressType } from '@/stores/types/addressesTypes';
+import {
+  AddressesStoreId,
+  type IAddressesState,
+  type TAddressType
+} from '@/stores/types/addressesTypes';
 import { toRaw } from 'vue';
 
-export const useAddressesStore = defineStore('addresses', {
-  state: (): IAddressesStore => ({
+export const useAddressesStore = defineStore(AddressesStoreId, {
+  state: (): IAddressesState => ({
     userAddresses: new Array<Address>(),
     userShippingAddressIds: new Array<string>(),
     userBillingAddressIds: new Array<string>(),

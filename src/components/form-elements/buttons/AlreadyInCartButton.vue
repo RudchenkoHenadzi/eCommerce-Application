@@ -17,10 +17,10 @@ export default {
 
   methods: {
     addItem() {
-      this.$emit('changeItemCount', 'add');
+      this.$emit('changeQuantity', 'add');
     },
     deleteItem() {
-      this.$emit('changeItemCount', 'delete');
+      this.$emit('changeQuantity', 'delete');
     }
   }
 };

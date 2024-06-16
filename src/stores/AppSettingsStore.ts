@@ -8,8 +8,9 @@ import {
   DEFAULT_LANG
 } from '@/constants/projectConfigs';
 import { COUNTRY_SWITCH_SCHEMA } from '@/constants/constants';
+import { AppSettingsStoreId } from '@/stores/types/appSettingsTypes';
 
-export const useAppSettingsStore = defineStore('appSettings', {
+export const useAppSettingsStore = defineStore(AppSettingsStoreId, {
   state: (): {
     appLang: TLangType;
     appLanguages: TLangType[];

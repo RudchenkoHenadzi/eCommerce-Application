@@ -2,6 +2,10 @@ import type { TCurrencyType } from '@/types/appSettingsTypes';
 import type { Cart } from '@commercetools/platform-sdk';
 import type { IUserCartIdItem } from '@/types/customerTypes';
 
+export const CartsStoreId = 'carts';
+
+export type TCartsStoreId = typeof CartsStoreId;
+
 export interface ICartsState {
   userCurrentCart: Cart | undefined;
   userCartIds: Record<TCurrencyType, IUserCartIdItem>;
@@ -10,7 +14,10 @@ export interface ICartsState {
 
 export interface ICartsGetters {
   currentCart: Cart | undefined;
-  productCount: Number;
+  productCount: number;
+  cartVersion: number;
+  cartId: string;
+  totalPrice: number;
 }
 
 export interface ICartsActions {
