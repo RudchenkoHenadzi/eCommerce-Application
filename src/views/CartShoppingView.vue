@@ -4,7 +4,12 @@
     <div v-for="lineItem in lineItems" class="cart__list-items" :key="lineItem.id">
       <CartLineItem :lineItem="lineItem" />
     </div>
-    <button class="cart__btn button-purple" @click="makeOrder">Оформить заказ</button>
+    <div class="cart__buttons">
+      <button class="cart__btn button-purple" @click="goToCatalog">Выбрать товары</button>
+      <button v-if="lineItems.length !== 0" class="cart__btn button-purple" @click="makeOrder">
+        Оформить заказ
+      </button>
+    </div>
   </div>
 </template>
 
@@ -28,6 +33,9 @@ export default {
   methods: {
     makeOrder() {
       this.$emit('showAlert', 'заказ сделан, спасибо', TIMEOUT_SHORT_MESSAGE);
+    },
+    goToCatalog() {
+      this.$router.push('/catalog');
     }
   },
 
@@ -43,6 +51,14 @@ export default {
 .cart {
   padding: 20px;
   text-align: center;
+
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    gap: 5px;
+  }
 
   &__btn {
     padding: 5px 0;
