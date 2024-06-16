@@ -5,7 +5,7 @@
       <div class="product-card" v-for="product in products" :key="product.id">
         <ProductCard
           :product="product"
-          :inCartNumber="getInCartNumber(product)"
+          :quantity="getQuantity(product)"
           :lineItemId="getLineItemId(product)"
           labelName=""
         />
@@ -74,7 +74,7 @@ export default {
         this.appStatus.stopLoading();
       }
     },
-    getInCartNumber(product: Product) {
+    getQuantity(product: Product) {
       if (this.userCurrentCart) {
         return extractProductQuantityFromCart(product, this.userCurrentCart);
       }

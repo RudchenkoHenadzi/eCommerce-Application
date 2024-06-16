@@ -5,55 +5,59 @@
     </figure>
     <div class="line-item__name">{{ itemName }}</div>
     <div class="line-item__manage">
-      <AlreadyInCartButton :productId="productId" :quantity="quantity" />
+      <ProductManagementButtons
+        :productId="productId"
+        :quantity="quantity"
+        @deleteItemFromCart="deleteItemFromCartHandler(quantity)"
+        @changeQuantity="changeQuantityHandler"
+      />
     </div>
-    <div class="line-item__total">
-      {{ productTotalPrice }}
-    </div>
+    <!-- TODO discountedPrice - для корзины со скидкой, функционал пока не реализован-->
+    <PricesBlock
+      :discountedPrice="0"
+      :productCentAmount="productTotalPrice"
+      :currencyCode="currencyCode"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import type { LineItem, Product } from '@commercetools/platform-sdk';
+import type { LineItem } from '@commercetools/platform-sdk';
 import { useAppSettingsStore } from '@/stores/AppSettingsStore';
-import AlreadyInCartButton from '@/components/form-elements/buttons/AlreadyInCartButton.vue';
 import { fetchProductById } from '@/services/apiMethods/products/fetchProductById';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
   extractProductName,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
-import type { Store } from 'pinia';
-import type {
-  IAppStatusActions,
-  IAppStatusGetters,
-  IAppStatusState
-} from '@/stores/types/appStatusTypes';
-import type {
-  IAppSettingsActions,
-  IAppSettingsGetters,
-  IAppSettingsState
-} from '@/stores/types/appSettingsTypes';
-import { extractTotalPriceFromLineItem } from '@/helpers/extractData/extractProductDataFromLineItems';
+import {
+  extractLineItemIdFromLineItems,
+  extractProductQuantityFromLineItems,
+  extractTotalPriceFromLineItem
+} from '@/helpers/extractData/extractProductDataFromLineItems';
+import ProductManagementButtons from '@/components/blocks/ProductManagementButtons.vue';
+import { addItemToCart, deleteItemFromCart } from '@/services/services/cartServices/cartServices';
+import { useCartsStore } from '@/stores/Carts';
+import PricesBlock from '@/components/blocks/PricesBlock.vue';
+import type { ICartLineItemData } from '@/components/blocks/types/cartLineItemTypes';
+import { TIMEOUT_ERROR_MESSAGE } from '@/constants/constants';
 
 export default {
   name: 'CartLineItem',
-  components: { AlreadyInCartButton },
+  components: { PricesBlock, ProductManagementButtons },
 
   props: {
     lineItem: Object as PropType<LineItem>
   },
 
-  data(): {
-    appStatus: Store<'appStatus', IAppStatusState, IAppStatusGetters, IAppStatusActions>;
-    appSettings: Store<'appSettings', IAppSettingsState, IAppSettingsGetters, IAppSettingsActions>;
-    product: undefined | Product;
-  } {
+  data(): ICartLineItemData {
     return {
       appSettings: useAppSettingsStore(),
       appStatus: useAppStatusStore(),
-      product: undefined
+      cartsStore: useCartsStore(),
+      product: undefined,
+      quantity: 0
     };
   },
 
@@ -66,14 +70,40 @@ export default {
 
           if (productResult.statusCode === 200 || productResult.statusCode === 201) {
             this.product = productResult.body;
+            this.setQuantity(
+              extractProductQuantityFromLineItems(this.product, [this.lineItem as LineItem])
+            );
           }
         } catch (error) {
-          this.$emit('showAlert', 'Что-то пошло не так');
+          this.$emit('showAlert', 'Что-то пошло не так', TIMEOUT_ERROR_MESSAGE);
         } finally {
           this.appStatus.stopLoading();
         }
       } else {
-        this.$emit('showAlert', 'Что-то пошло не так');
+        this.$emit('showAlert', 'Что-то пошло не так', TIMEOUT_ERROR_MESSAGE);
+      }
+    },
+    async deleteItemFromCartHandler(quantity: number = 1) {
+      try {
+        await deleteItemFromCart(
+          quantity,
+          this.lineItemId,
+          this.cartVersion,
+          this.productId,
+          this.setQuantity
+        );
+      } catch (e) {
+        this.$emit('productCardEvents', 'не удалось удалить товар из корзины4');
+      }
+    },
+    setQuantity(newQuantity: number) {
+      this.quantity = newQuantity;
+    },
+    async changeQuantityHandler(action: string) {
+      if (action === 'add') {
+        await addItemToCart(this.productId, this.setQuantity);
+      } else {
+        await this.deleteItemFromCartHandler();
       }
     }
   },
@@ -89,9 +119,6 @@ export default {
     itemName() {
       return this.lineItem ? this.lineItem.name[this.lang] : '';
     },
-    quantity() {
-      return this.lineItem ? this.lineItem.quantity : 0;
-    },
     productId() {
       return this.lineItem ? this.lineItem.productId : '';
     },
@@ -106,9 +133,31 @@ export default {
     },
     productTotalPrice() {
       return this.lineItem ? extractTotalPriceFromLineItem(this.lineItem) : 0;
+    },
+    lineItemId() {
+      return this.lineItem ? extractLineItemIdFromLineItems(this.productId, [this.lineItem]) : '';
+    },
+    cartVersion() {
+      return this.cartsStore.cartVersion;
     }
   }
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.line-item {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-content: center;
+  align-items: center;
+
+  &__image {
+    width: 100%;
+  }
+
+  &__img {
+    max-height: 150px;
+    max-width: 100%;
+  }
+}
+</style>

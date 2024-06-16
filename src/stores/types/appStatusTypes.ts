@@ -1,3 +1,7 @@
+export const AppStatusStoreId = 'appStatus';
+
+export type TAppStatusStoreId = typeof AppStatusStoreId;
+
 export interface IAppStatusState {
   indicatorStatus: boolean;
 }
