@@ -4,11 +4,13 @@
 
     <h2 class="about__subtitle">
       Мы - команда JS Wizards! Название оказалось говорящим - к концу финального таска наша команда
-      практически исчезла. It's a magic! xD
+      практически исчезла. Magic! 🪄
     </h2>
 
-    <div class="about__members" v-for="member in MEMEBERS_INFO" :key="member.id">
+    <div class="about__members">
       <TeamMemberCard
+        v-for="member in MEMEBERS_INFO"
+        :key="member.id"
         :src="getFullSrc(member.fileName)"
         :memberBio="member.bio"
         :memberName="member.name"
@@ -42,5 +44,17 @@ export default {
 .about {
   padding: 20px;
   text-align: center;
+
+  &__subtitle {
+    margin-bottom: 60px;
+    line-height: 1.5;
+  }
+
+  &__members {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 15px;
+  }
 }
 </style>

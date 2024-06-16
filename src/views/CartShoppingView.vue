@@ -28,7 +28,7 @@
 
     <button
       v-if="lineItems.length !== 0"
-      class="cart__clear-btn transparent-button"
+      class="cart__clear-btn button-transparent"
       @click="clearCart"
     >
       Очистить корзину
