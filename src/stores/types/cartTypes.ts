@@ -17,6 +17,7 @@ export interface ICartsGetters {
   productCount: number;
   cartVersion: number;
   cartId: string;
+  totalPrice: number;
 }
 
 export interface ICartsActions {

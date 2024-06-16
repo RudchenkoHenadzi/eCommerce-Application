@@ -15,7 +15,7 @@
     <!-- TODO discountedPrice - для корзины со скидкой, функционал пока не реализован-->
     <PricesBlock
       :discountedPrice="0"
-      :productCentAmount="productTotalPrice"
+      :productCentAmount="productTotalPrice * quantity"
       :currencyCode="currencyCode"
     />
   </div>

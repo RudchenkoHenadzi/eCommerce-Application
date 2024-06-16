@@ -24,7 +24,9 @@ export const useCartsStore: StoreDefinition<
     currentCart: (state: ICartsState) => state.userCurrentCart,
     productCount: (state: ICartsState) => state.cartProductCount,
     cartVersion: (state: ICartsState) => state.userCurrentCart?.version || 0,
-    cartId: (state: ICartsState) => state.userCurrentCart?.id || ''
+    cartId: (state: ICartsState) => state.userCurrentCart?.id || '',
+    totalPrice: (state: ICartsState) =>
+      state.userCurrentCart?.totalPrice ? state.userCurrentCart.totalPrice.centAmount : 0
   },
   actions: {
     setCurrentCart(cart: Cart | undefined) {
