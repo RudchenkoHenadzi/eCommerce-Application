@@ -22,6 +22,19 @@
   }
 }
 
+.transparent-button {
+  color: variables.$color-purple;
+  background: transparent;
+  border: 1px solid variables.$color-purple;
+  border-radius: 5px;
+
+  @media (hover) {
+    &:hover {
+      box-shadow: 0 0 5px 0 variables.$color-white;
+    }
+  }
+}
+
 .catalog-card-button {
   height: 50px;
   width: 90%;
