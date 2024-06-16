@@ -13,7 +13,9 @@
       <li class="navigation__item">
         <RouterLink class="navigation__link" to="/cart-shopping"
           >Корзина
-          <span v-if="cartsStore.productCount">{{ cartsStore.productCount }}</span></RouterLink
+          <span v-if="cartsStore.productCount" :key="cartsStore.currentCart?.id">{{
+            cartsStore.productCount
+          }}</span></RouterLink
         >
       </li>
       <li class="navigation__item" v-if="isLoggedIn">
