@@ -4,11 +4,17 @@
     <div v-for="lineItem in lineItems" class="cart__list-items" :key="lineItem.id">
       <CartLineItem :lineItem="lineItem" />
     </div>
-    <div class="cart__total">
+    <div v-if="lineItems.length !== 0" class="cart__total">
       Всего: <span>{{ totalPrice }} {{ currencyCode }}</span>
     </div>
+    <div v-if="lineItems.length === 0" class="cart__empty empty">
+      <div class="empty__text">Вы ничего не выбрали :(</div>
+      <img class="empty__img" src="../assets/images/empty-cart.png" alt="пустая корзина" />
+    </div>
     <div class="cart__buttons">
-      <button class="cart__btn button-purple" @click="goToCatalog">Выбрать товары</button>
+      <button class="cart__btn button-purple" @click="goToCatalog">
+        {{ lineItems.length === 0 ? 'Вернуться в каталог' : 'Выбрать товары' }}
+      </button>
       <button v-if="lineItems.length !== 0" class="cart__btn button-purple" @click="makeOrder">
         Оформить заказ
       </button>
@@ -86,6 +92,12 @@ export default {
   &__btn {
     padding: 5px 0;
     width: 40%;
+  }
+
+  .empty {
+    &__img {
+      max-width: 30%;
+    }
   }
 }
 </style>
