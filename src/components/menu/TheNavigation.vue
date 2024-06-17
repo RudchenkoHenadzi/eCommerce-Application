@@ -77,6 +77,10 @@ export default {
     padding-bottom: 10px;
     @extend %clear-ul;
     @extend %container-1100;
+
+    &:first-child {
+      margin: 0;
+    }
   }
 
   &__link {
