@@ -1,5 +1,13 @@
 <template>
   <nav class="navigation">
+    <ul class="navigation__list" v-if="!isLoggedIn">
+      <li class="navigation__item">
+        <RouterLink class="navigation__link" to="/authorization">Вход</RouterLink>
+      </li>
+      <li class="navigation__item" v-if="!isLoggedIn">
+        <RouterLink class="navigation__link" to="/registration">Регистрация</RouterLink>
+      </li>
+    </ul>
     <ul class="navigation__list">
       <li class="navigation__item">
         <RouterLink class="navigation__link" to="/">Главная</RouterLink>
@@ -9,23 +17,6 @@
       </li>
       <li class="navigation__item">
         <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
-      </li>
-      <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/cart-shopping"
-          >Корзина
-          <span v-if="cartsStore.productCount" :key="cartsStore.currentCart?.id">{{
-            cartsStore.productCount
-          }}</span></RouterLink
-        >
-      </li>
-      <li class="navigation__item" v-if="isLoggedIn">
-        <RouterLink class="navigation__link" to="/user">Пользователь</RouterLink>
-      </li>
-      <li class="navigation__item" v-if="!isLoggedIn">
-        <RouterLink class="navigation__link" to="/authorization">Вход</RouterLink>
-      </li>
-      <li class="navigation__item" v-if="!isLoggedIn">
-        <RouterLink class="navigation__link" to="/registration">Регистрация</RouterLink>
       </li>
     </ul>
   </nav>
@@ -59,8 +50,10 @@ export default {
 @import '@/assets/styles/fonts';
 
 .navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   font-weight: 500;
-  background: $color-bachground;
 
   &__list {
     display: flex;
