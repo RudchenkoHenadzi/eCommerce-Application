@@ -102,7 +102,7 @@ export default {
   mounted() {
     this.getProducts();
     const options = {
-      rootMargin: '0px',
+      rootMargin: '0px 0px 200px 0px',
       threshold: 1.0
     };
     const observer = new IntersectionObserver(this.intersectionHandler, options);
