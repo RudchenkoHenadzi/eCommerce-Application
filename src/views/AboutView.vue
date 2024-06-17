@@ -18,29 +18,57 @@
         :memberGitHubLink="member.githubLink"
       />
     </div>
+
+    <div class="about__school school">
+      <p class="school__text">
+        {{ RSSCHOOL_TEXT_FIRST_LINE }}
+      </p>
+      <AboutSchool class="school__icon" :url="COURSE_URL" />
+      <p class="school__text">{{ RSSCHOOL_TEXT_SECOND_LINE }}</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import TeamMemberCard from '@/components/cards/TeamMemberCard.vue';
-import { MEMEBERS_INFO } from '@/constants/projectConfigs';
 import { getFullSrc } from '@/helpers/transformation/getFullSrc';
+import AboutSchool from '@/components/blocks/AboutSchool.vue';
+import {
+  COURSE_URL,
+  MEMEBERS_INFO,
+  RSSCHOOL_TEXT_FIRST_LINE,
+  RSSCHOOL_TEXT_SECOND_LINE
+} from '@/constants/textContent';
 
 export default {
   name: 'AboutView',
 
-  methods: { getFullSrc },
+  components: { AboutSchool, TeamMemberCard },
+
+  methods: {
+    getFullSrc
+  },
 
   computed: {
     MEMEBERS_INFO() {
       return MEMEBERS_INFO;
+    },
+    COURSE_URL() {
+      return COURSE_URL;
+    },
+    RSSCHOOL_TEXT_FIRST_LINE() {
+      return RSSCHOOL_TEXT_FIRST_LINE;
+    },
+    RSSCHOOL_TEXT_SECOND_LINE() {
+      return RSSCHOOL_TEXT_SECOND_LINE;
     }
-  },
-  components: { TeamMemberCard }
+  }
 };
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables';
+
 .about {
   padding: 20px;
   text-align: center;
@@ -58,6 +86,23 @@ export default {
   }
 }
 
+.school {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background-image: url('@/assets/images/background.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: scroll;
+  background-size: cover;
+
+  &__text {
+    padding: 5px;
+    background-color: $color-white;
+  }
+}
 @media (max-width: 915px) {
   .about {
     &__members {
