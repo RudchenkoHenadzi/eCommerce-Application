@@ -1,5 +1,5 @@
 <template>
-  <div class="team-member">
+  <a :href="memberGitHubLink" class="team-member">
     <img class="team-member__img" :src="src" :alt="memberName" />
 
     <div class="team-member__content content">
@@ -10,7 +10,7 @@
       <div class="content__bio">{{ memberBio }}</div>
       <a :href="memberGitHubLink" class="content__github button-transparent">Ссылка на GitHub</a>
     </div>
-  </div>
+  </a>
 </template>
 
 <script lang="ts">
@@ -36,9 +36,12 @@ export default {
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
+  height: 608px;
   width: 360px;
   background-color: $color-white;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+  color: inherit;
 
   &__img {
     width: 100%;
@@ -52,6 +55,7 @@ export default {
   justify-content: space-between;
   padding: 20px;
   min-height: 200px;
+  height: 100%;
   width: 100%;
   box-sizing: border-box;
 
@@ -88,6 +92,13 @@ export default {
 
   &__github {
     padding: 10px 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .team-member {
+    height: auto;
+    width: auto;
   }
 }
 </style>

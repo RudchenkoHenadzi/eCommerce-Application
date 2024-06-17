@@ -4,7 +4,7 @@
 
     <h2 class="about__subtitle">
       Мы - команда JS Wizards! Название оказалось говорящим - к концу финального таска наша команда
-      практически исчезла. Magic! 🪄
+      практически исчезла 🪄
     </h2>
 
     <div class="about__members">
@@ -55,6 +55,15 @@ export default {
     align-items: flex-start;
     justify-content: center;
     gap: 15px;
+  }
+}
+
+@media (max-width: 915px) {
+  .about {
+    &__members {
+      flex-wrap: wrap;
+      gap: 25px;
+    }
   }
 }
 </style>
