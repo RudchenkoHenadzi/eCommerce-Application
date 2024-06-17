@@ -119,7 +119,7 @@ export default {
 
   &__total {
     margin: 0 0 30px auto;
-    width: 25%;
+    width: 40%;
     font-size: 1.5rem;
     font-weight: bold;
     line-height: 1.5rem;
