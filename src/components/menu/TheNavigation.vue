@@ -2,21 +2,29 @@
   <nav class="navigation">
     <ul class="navigation__list" v-if="!isLoggedIn">
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/authorization">Вход</RouterLink>
+        <RouterLink class="navigation__link" to="/authorization" @click="closeMobileMenu">
+          Вход
+        </RouterLink>
       </li>
       <li class="navigation__item" v-if="!isLoggedIn">
-        <RouterLink class="navigation__link" to="/registration">Регистрация</RouterLink>
+        <RouterLink class="navigation__link" to="/registration" @click="closeMobileMenu">
+          Регистрация
+        </RouterLink>
       </li>
     </ul>
     <ul class="navigation__list">
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/">Главная</RouterLink>
+        <RouterLink class="navigation__link" to="/" @click="closeMobileMenu"> Главная </RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/about">О нас</RouterLink>
+        <RouterLink class="navigation__link" to="/about" @click="closeMobileMenu">
+          О нас
+        </RouterLink>
       </li>
       <li class="navigation__item">
-        <RouterLink class="navigation__link" to="/catalog">Каталог</RouterLink>
+        <RouterLink class="navigation__link" to="/catalog" @click="closeMobileMenu">
+          Каталог
+        </RouterLink>
       </li>
     </ul>
   </nav>
@@ -34,6 +42,12 @@ export default {
       userStore: useUserStore(),
       cartsStore: useCartsStore()
     };
+  },
+
+  methods: {
+    closeMobileMenu() {
+      this.$emit('closeMobileMenu');
+    }
   },
 
   computed: {
@@ -89,5 +103,22 @@ export default {
 
 .router-link-active {
   color: $color-purple;
+}
+
+@media (max-width: 765px) {
+  .navigation {
+    &__list {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    &__item,
+    &__link {
+      color: $color-white;
+    }
+  }
 }
 </style>
