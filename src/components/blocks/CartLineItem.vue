@@ -12,11 +12,11 @@
         @changeQuantity="changeQuantityHandler"
       />
     </div>
-    <!-- TODO discountedPrice - для корзины со скидкой, функционал пока не реализован-->
     <PricesBlock
-      :discountedPrice="0"
+      :discountedPrice="discountedPrice * quantity"
       :productCentAmount="productTotalPrice * quantity"
       :currencyCode="currencyCode"
+      pricePosition="left"
     />
   </div>
 </template>
@@ -32,6 +32,7 @@ import {
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
 import {
+  extractDiscountedPriceFromLineItem,
   extractLineItemIdFromLineItems,
   extractProductQuantityFromLineItems,
   extractTotalPriceFromLineItem
@@ -133,6 +134,9 @@ export default {
     },
     productTotalPrice() {
       return this.lineItem ? extractTotalPriceFromLineItem(this.lineItem) : 0;
+    },
+    discountedPrice() {
+      return this.lineItem ? extractDiscountedPriceFromLineItem(this.lineItem) : 0;
     },
     lineItemId() {
       return this.lineItem ? extractLineItemIdFromLineItems(this.productId, [this.lineItem]) : '';

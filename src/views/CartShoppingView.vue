@@ -8,8 +8,13 @@
     >
       <CartLineItem :lineItem="lineItem" />
     </div>
-    <div v-if="lineItems.length !== 0" class="cart__total">
-      Всего: <span>{{ totalPrice }} {{ currencyCode }}</span>
+    <div v-if="lineItems.length !== 0" class="cart__prices">
+      <div v-if="fullPrice !== totalPrice" class="prices__full">
+        Без скидки: <span>{{ fullPrice }} {{ currencyCode }}</span>
+      </div>
+      <div class="prices__total">
+        Всего: <span>{{ totalPrice }} {{ currencyCode }}</span>
+      </div>
     </div>
 
     <div v-if="lineItems.length === 0" class="cart__empty empty">
@@ -45,6 +50,7 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import { deleteCart } from '@/services/apiMethods/cart/deleteCart';
 import createNewCart from '@/services/apiMethods/cart/createNewCart';
+import { countFullTotalPrice } from '@/helpers/counters';
 
 export default {
   name: 'CartShoppingView',
@@ -61,7 +67,7 @@ export default {
 
   methods: {
     makeOrder() {
-      this.$emit('showAlert', 'заказ сделан, спасибо', TIMEOUT_SHORT_MESSAGE);
+      this.$emit('showAlert', 'Заказ сделан, спасибо', TIMEOUT_SHORT_MESSAGE);
     },
     goToCatalog() {
       this.$router.push('/catalog');
@@ -107,27 +113,23 @@ export default {
     },
     totalPrice() {
       return this.cartsStore.totalPrice;
+    },
+    fullPrice() {
+      if (this.cartsStore.currentCart) {
+        return countFullTotalPrice(this.cartsStore.currentCart?.lineItems);
+      }
+      return 0;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables';
+
 .cart {
   padding: 20px;
   text-align: center;
-
-  &__total {
-    margin: 0 0 30px auto;
-    width: 40%;
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 1.5rem;
-
-    span {
-      text-decoration: underline;
-    }
-  }
 
   &__buttons {
     display: flex;
@@ -147,6 +149,33 @@ export default {
   .empty {
     &__img {
       max-width: 30%;
+    }
+  }
+}
+
+.prices {
+  margin: 0 0 30px auto;
+  width: 40%;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.5rem;
+
+  &__full {
+    padding-right: 30px;
+    height: 30px;
+    text-align: right;
+    font-size: 1rem;
+    color: $color-gray-600;
+    text-decoration: line-through;
+  }
+
+  &__total {
+    padding-right: 30px;
+    height: 30px;
+    text-align: right;
+    span {
+      font-weight: bold;
+      text-decoration: underline;
     }
   }
 }

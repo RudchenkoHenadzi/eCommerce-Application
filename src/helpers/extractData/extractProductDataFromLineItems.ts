@@ -1,4 +1,5 @@
-import type { LineItem, Product } from '@commercetools/platform-sdk';
+import type { LineItem, Price, Product } from '@commercetools/platform-sdk';
+import { extractDiscountedProductPrice } from '@/helpers/extractData/extractProductDataFromProduct';
 
 export function extractProductQuantityFromLineItems(product: Product, items: LineItem[]) {
   const lineItem = items.find((item) => item.productId === product.id);
@@ -18,4 +19,8 @@ export function extractLineItemIdFromLineItems(productId: string, lineItems: Lin
 
 export function extractTotalPriceFromLineItem(lineItem: LineItem) {
   return lineItem.price.value.centAmount;
+}
+
+export function extractDiscountedPriceFromLineItem(lineItem: LineItem) {
+  return extractDiscountedProductPrice(lineItem.price);
 }
