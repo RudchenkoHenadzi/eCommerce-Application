@@ -6,7 +6,7 @@
       class="cart__list-items"
       :key="lineItem.id"
     >
-      <CartLineItem :lineItem="lineItem" :isDiscountCodeApplied="isDiscountCodeApplied" />
+      <CartLineItem :lineItem="lineItem" :promoCodes="promoCodes" />
     </div>
 
     <div class="cart__price-management">
@@ -100,7 +100,8 @@ export default {
         promo1Message: '',
         promo2Message: ''
       },
-      isDiscountCodeApplied: false
+      isDiscountCodeApplied: false,
+      promoCodes: new Array<string>()
     };
   },
 
@@ -143,6 +144,9 @@ export default {
       const discountInfo = this.discountCodesStore.getDiscountInfoByKey(this.promos.promo1);
       this.createPromoMessage(discountInfo);
       this.isDiscountCodeApplied = Boolean(discountInfo);
+      if (!this.promoCodes.includes(this.promos.promo1)) {
+        this.promoCodes.push(this.promos.promo1);
+      }
     },
     createPromoMessage(discountInfo?: CartDiscount) {
       if (discountInfo) {

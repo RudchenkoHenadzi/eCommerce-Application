@@ -13,7 +13,7 @@
       />
     </div>
     <PricesBlock
-      :discountedPrice="discountedPrice"
+      :discountedPrice="discountedPrice === productTotalPrice ? 0 : productPriceWithPromo"
       :productCentAmount="productTotalPrice"
       :currencyCode="currencyCode"
       pricePosition="left"
@@ -28,6 +28,7 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { fetchProductById } from '@/services/apiMethods/products/fetchProductById';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
+  extractDiscountedProductPrice,
   extractProductName,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
@@ -54,7 +55,8 @@ export default {
   props: {
     lineItem: Object as PropType<LineItem>,
     additionalDiscount: Number,
-    isDiscountCodeApplied: Boolean
+    isDiscountCodeApplied: Boolean,
+    promoCodes: Array
   },
 
   data(): ICartLineItemData {
@@ -68,7 +70,6 @@ export default {
   },
 
   methods: {
-    getFinalPrice() {},
     async getProductInfo(productId: string) {
       if (productId) {
         try {
@@ -138,11 +139,33 @@ export default {
     productTotalPrice() {
       return extractFullProductPriceFromLineItem(this.lineItem);
     },
+    productActualPrice() {
+      return extractActualProductPrice(this.lineItem);
+    },
     discountedPrice(): number {
-      if (this.isDiscountCodeApplied) {
-        return extractProductPriceWithPromo(this.lineItem) * this.quantity;
+      return extractDiscountedPriceFromLineItem(this.lineItem); // плед - с двумя промокодами, остальные - с одним промокодм
+    },
+    productPriceWithPromo() {
+      if (this.promoCodes && this.promoCodes?.length !== 0) {
+        /*return extractProductPriceWithPromo(this.lineItem) * this.quantity;*/
+        let productPrice = this.productActualPrice;
+        this.promoCodes.forEach((code, index, array) => {
+          if (code === 'WARM50') {
+            if (array.includes('ALLDISCO50')) {
+              productPrice = Math.round(productPrice * 0.75 * 0.5);
+            } else {
+              productPrice = Math.round(productPrice * 0.5);
+            }
+          } else {
+            if (array.includes('WARM50')) {
+              productPrice = Math.round(productPrice * 0.75 * 0.5);
+            }
+            productPrice = Math.round(productPrice * 0.75);
+          }
+        });
+        return productPrice;
       }
-      return extractActualProductPrice(this.lineItem) * this.quantity;
+      return extractActualProductPrice(this.lineItem);
     },
     lineItemId() {
       return this.lineItem ? extractLineItemIdFromLineItems(this.productId, [this.lineItem]) : '';
