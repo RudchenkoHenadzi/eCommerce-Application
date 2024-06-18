@@ -32,7 +32,7 @@
 
     <TheNavigation class="navigation" @closeMobileMenu="closeMobileMenuHandler" />
 
-    <RouterLink class="header__cart" to="/cart-shopping">
+    <RouterLink class="header__cart" to="/cart-shopping" @click="closeMobileMenuHandler">
       <CartIcon class="cart__icon" />
       <span v-if="cartsStore.productCount" :key="cartsStore.currentCart?.id">{{
         cartsStore.productCount
@@ -89,6 +89,7 @@ export default {
     },
     closeMobileMenuHandler() {
       this.isMobileMenuOpen = false;
+      this.isMoreOpen = !this.isMoreOpen;
     }
   }
 };
@@ -183,7 +184,6 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 0;
     z-index: 10;
     display: flex;
     justify-content: center;
