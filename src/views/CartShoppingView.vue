@@ -8,13 +8,32 @@
     >
       <CartLineItem :lineItem="lineItem" />
     </div>
-    <div v-if="lineItems.length !== 0" class="cart__prices">
-      <div v-if="fullPrice !== totalPrice" class="prices__full">
-        Без скидки: <span>{{ fullPrice }} {{ currencyCode }}</span>
+
+    <div class="cart__price-management">
+      <div v-if="lineItems.length !== 0" class="cart__prices prices">
+        <div v-if="fullPrice !== totalPrice" class="prices__full">
+          Без скидки: <span>{{ fullPrice }} {{ currencyCode }}</span>
+        </div>
+        <div class="prices__total">
+          Всего: <span>{{ totalPrice }} {{ currencyCode }}</span>
+        </div>
       </div>
-      <div class="prices__total">
-        Всего: <span>{{ totalPrice }} {{ currencyCode }}</span>
-      </div>
+
+      <form class="cart__discount-codes discount-codes" @submit.prevent="applyDiscountCode">
+        <InputDiscountCode
+          blockName="discountCode"
+          v-model="promos.promo1"
+          class="discount-codes__input transparent-input"
+          @deleteCode="removeDiscount"
+        />
+        <div v-if="promos.promo1Message" class="discount-codes__message">
+          <div class="discount-codes__text">{{ promos.promo1Message }}</div>
+          <button @click="removeDiscount" class="discount-codes__delete-btn">
+            <DeleteIcon class="icon" />
+          </button>
+        </div>
+        <button type="submit" class="discount-codes__btn button-purple">Применить</button>
+      </form>
     </div>
 
     <div v-if="lineItems.length === 0" class="cart__empty empty">
@@ -44,24 +63,35 @@
 <script lang="ts">
 import { useCartsStore } from '@/stores/Carts';
 import CartLineItem from '@/components/blocks/CartLineItem.vue';
-import type { Cart, LineItem } from '@commercetools/platform-sdk';
+import type { Cart, CartDiscount, LineItem } from '@commercetools/platform-sdk';
 import { TIMEOUT_SHORT_MESSAGE } from '@/constants/constants';
 import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import { deleteCart } from '@/services/apiMethods/cart/deleteCart';
 import createNewCart from '@/services/apiMethods/cart/createNewCart';
 import { countFullTotalPrice } from '@/helpers/counters';
+import InputDiscountCode from '@/components/form-elements/text-inputs/InputDiscountCode.vue';
+import { useDiscountCodesStore } from '@/stores/DIscountCodesStore';
+import { extractDiscountName } from '@/helpers/extractData/discounts/extractDataFromCartDiscount';
+import DeleteIcon from '@/Icons/DeleteIcon.vue';
 
 export default {
   name: 'CartShoppingView',
 
-  components: { CartLineItem },
+  components: { DeleteIcon, InputDiscountCode, CartLineItem },
 
   data() {
     return {
       cartsStore: useCartsStore(),
       appSettings: useAppSettingsStore(),
-      appStatus: useAppStatusStore()
+      appStatus: useAppStatusStore(),
+      discountCodesStore: useDiscountCodesStore(),
+      promos: {
+        promo1: '',
+        promo2: '',
+        promo1Message: '',
+        promo2Message: ''
+      }
     };
   },
 
@@ -98,6 +128,22 @@ export default {
           this.appStatus.stopLoading();
         }
       }
+    },
+    applyDiscountCode() {
+      const discountInfo = this.discountCodesStore.getDiscountInfoByKey(this.promos.promo1);
+      this.createPromoMessage(discountInfo);
+    },
+    createPromoMessage(discountInfo?: CartDiscount) {
+      if (discountInfo) {
+        this.promos.promo1Message = `Промокод "${extractDiscountName(discountInfo, this.lang)}" успешно применен.`;
+      } else {
+        this.promos.promo1Message = `Промокод недействителен.`;
+      }
+    },
+    removeDiscount() {
+      this.promos.promo1 = '';
+      this.promos.promo1Message = '';
+      console.log('отправить запрос на удаление скидки');
     }
   },
 
@@ -119,6 +165,12 @@ export default {
         return countFullTotalPrice(this.cartsStore.currentCart?.lineItems);
       }
       return 0;
+    },
+    discountCodes() {
+      return this.discountCodesStore.discountCodes;
+    },
+    lang() {
+      return this.appSettings.lang;
     }
   }
 };
@@ -151,11 +203,51 @@ export default {
       max-width: 30%;
     }
   }
+
+  &__price-management {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 25px;
+  }
+}
+
+.discount-codes {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 5px 10px;
+  width: 125%;
+
+  &__input {
+    margin-bottom: 5px;
+  }
+
+  &__message {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 98%;
+  }
+
+  &__delete-btn {
+    height: 30px;
+    width: 30px;
+  }
+
+  &__btn {
+    margin: 15px auto 0;
+    height: 40px;
+    width: 40%;
+  }
 }
 
 .prices {
   margin: 0 0 30px auto;
-  width: 40%;
+  width: 85%;
   font-size: 1.5rem;
   font-weight: bold;
   line-height: 1.5rem;
@@ -178,5 +270,10 @@ export default {
       text-decoration: underline;
     }
   }
+}
+
+.icon {
+  height: 100%;
+  width: 100%;
 }
 </style>

@@ -1,6 +1,8 @@
 <template>
   <ul class="attributes">
-    <li v-if="onlyFirstAttributeVisible" class="attributes__item">{{ attributes[0].label }}</li>
+    <li v-if="onlyFirstAttributeVisible" class="attributes__item">
+      {{ attributes[0]?.label || '' }}
+    </li>
     <li v-else class="attributes__item" v-for="attribute in attributes" :key="attribute.name">
       {{ attribute.label }}
     </li>

@@ -13,7 +13,7 @@ export default async function getProducts(
       .get({
         queryArgs: {
           limit: PRODUCTS_LIMIT_PER_LOAD,
-          offset: pageNumber || 0
+          offset: pageNumber ? (pageNumber - 1) * PRODUCTS_LIMIT_PER_LOAD : 0
         }
       })
       .execute();

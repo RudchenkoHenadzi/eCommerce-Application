@@ -134,9 +134,10 @@ export default {
 }
 
 .products {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-auto-rows: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 20px;
   width: 100%;
@@ -147,6 +148,7 @@ export default {
   grid-template-rows: 47% 53%;
   justify-content: stretch;
   align-content: stretch;
+  width: 250px;
   border: 1.5px solid $color-gray-200;
   border-radius: 10px;
 }

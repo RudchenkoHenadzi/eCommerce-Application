@@ -89,7 +89,7 @@ export default {
     },
     closeMobileMenuHandler() {
       this.isMobileMenuOpen = false;
-      this.isMoreOpen = !this.isMoreOpen;
+      this.isMoreOpen = false;
     }
   }
 };

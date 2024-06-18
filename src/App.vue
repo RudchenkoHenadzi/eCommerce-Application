@@ -22,6 +22,7 @@ import MyLoader from '@/Icons/MyLoader.vue';
 import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
 import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
 import { useCartsStore } from '@/stores/Carts';
+import { useDiscountCodesStore } from '@/stores/DIscountCodesStore';
 
 export default {
   components: { MyLoader, AlertMessage, TheHeader, RouterView },
@@ -35,7 +36,9 @@ export default {
       user: useUserStore(),
       appStatus: useAppStatusStore(),
       apiRoot: useApiRootStore(),
-      cartsStore: useCartsStore()
+      cartsStore: useCartsStore(),
+      discountCodesStore: useDiscountCodesStore(),
+      discountCodes: new Array<string>()
     };
   },
 
@@ -66,12 +69,22 @@ export default {
       } finally {
         this.appStatus.stopLoading();
       }
+    },
+    async getDiscountCodes() {
+      const apiRoot = useApiRootStore().apiRoot;
+      const res = await apiRoot.cartDiscounts().get().execute();
+
+      if (res.statusCode === 200 || res.statusCode === 201) {
+        this.discountCodesStore.setAllDiscountDetails(res.body);
+        this.discountCodesStore.setAllDiscountCodes(res.body);
+      }
     }
   },
 
   mounted() {
     this.apiRoot.start();
     this.getUserCart();
+    this.getDiscountCodes();
   },
 
   computed: {
