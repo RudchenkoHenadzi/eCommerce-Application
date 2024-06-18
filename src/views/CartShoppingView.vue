@@ -6,7 +6,7 @@
       class="cart__list-items"
       :key="lineItem.id"
     >
-      <CartLineItem :lineItem="lineItem" />
+      <CartLineItem :lineItem="lineItem" :isDiscountCodeApplied="isDiscountCodeApplied" />
     </div>
 
     <div class="cart__price-management">
@@ -19,7 +19,11 @@
         </div>
       </div>
 
-      <form class="cart__discount-codes discount-codes" @submit.prevent="applyDiscountCode">
+      <form
+        v-if="lineItems.length !== 0"
+        class="cart__discount-codes discount-codes"
+        @submit.prevent="applyDiscountCode"
+      >
         <InputDiscountCode
           blockName="discountCode"
           v-model="promos.promo1"
@@ -37,7 +41,7 @@
     </div>
 
     <div v-if="lineItems.length === 0" class="cart__empty empty">
-      <div class="empty__text">Вы ничего не выбрали :(</div>
+      <div class="empty__text">Корзина пуста</div>
       <img class="empty__img" src="../assets/images/empty-cart.png" alt="пустая корзина" />
     </div>
 
@@ -69,11 +73,15 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import { deleteCart } from '@/services/apiMethods/cart/deleteCart';
 import createNewCart from '@/services/apiMethods/cart/createNewCart';
-import { countFullTotalPrice } from '@/helpers/counters';
 import InputDiscountCode from '@/components/form-elements/text-inputs/InputDiscountCode.vue';
 import { useDiscountCodesStore } from '@/stores/DIscountCodesStore';
 import { extractDiscountName } from '@/helpers/extractData/discounts/extractDataFromCartDiscount';
 import DeleteIcon from '@/Icons/DeleteIcon.vue';
+import {
+  extractAllProductsFullPriceNoPromo,
+  extractAllProductsTotalPriceWithPromo,
+  extractAllProductsTotalPriceNoPromo
+} from '@/helpers/extractData/extractProductDataFromCart';
 
 export default {
   name: 'CartShoppingView',
@@ -91,13 +99,15 @@ export default {
         promo2: '',
         promo1Message: '',
         promo2Message: ''
-      }
+      },
+      isDiscountCodeApplied: false
     };
   },
 
   methods: {
-    makeOrder() {
+    async makeOrder() {
       this.$emit('showAlert', 'Заказ сделан, спасибо', TIMEOUT_SHORT_MESSAGE);
+      await this.clearCart();
     },
     goToCatalog() {
       this.$router.push('/catalog');
@@ -132,6 +142,7 @@ export default {
     applyDiscountCode() {
       const discountInfo = this.discountCodesStore.getDiscountInfoByKey(this.promos.promo1);
       this.createPromoMessage(discountInfo);
+      this.isDiscountCodeApplied = Boolean(discountInfo);
     },
     createPromoMessage(discountInfo?: CartDiscount) {
       if (discountInfo) {
@@ -143,7 +154,7 @@ export default {
     removeDiscount() {
       this.promos.promo1 = '';
       this.promos.promo1Message = '';
-      console.log('отправить запрос на удаление скидки');
+      this.isDiscountCodeApplied = false;
     }
   },
 
@@ -158,13 +169,12 @@ export default {
       return this.appSettings.currency;
     },
     totalPrice() {
-      return this.cartsStore.totalPrice;
+      return this.isDiscountCodeApplied
+        ? extractAllProductsTotalPriceWithPromo(this.cartsStore.currentCart)
+        : extractAllProductsTotalPriceNoPromo(this.cartsStore.currentCart);
     },
     fullPrice() {
-      if (this.cartsStore.currentCart) {
-        return countFullTotalPrice(this.cartsStore.currentCart?.lineItems);
-      }
-      return 0;
+      return extractAllProductsFullPriceNoPromo(this.cartsStore.currentCart);
     },
     discountCodes() {
       return this.discountCodesStore.discountCodes;

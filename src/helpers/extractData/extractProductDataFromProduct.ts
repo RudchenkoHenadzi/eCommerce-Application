@@ -22,10 +22,6 @@ export function extractProductCentAmount(priceData: Price) {
   return priceData.value.centAmount;
 }
 
-export function extractProductCurrencyCode(priceData: Price) {
-  return priceData.value.currencyCode;
-}
-
 export function extractDiscountedProductPrice(priceData: Price) {
   if (priceData.discounted) {
     return priceData.discounted.value.centAmount;

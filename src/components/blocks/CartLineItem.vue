@@ -13,8 +13,8 @@
       />
     </div>
     <PricesBlock
-      :discountedPrice="discountedPrice * quantity"
-      :productCentAmount="productTotalPrice * quantity"
+      :discountedPrice="discountedPrice"
+      :productCentAmount="productTotalPrice"
       :currencyCode="currencyCode"
       pricePosition="left"
     />
@@ -35,7 +35,9 @@ import {
   extractDiscountedPriceFromLineItem,
   extractLineItemIdFromLineItems,
   extractProductQuantityFromLineItems,
-  extractTotalPriceFromLineItem
+  extractFullPriceFromLineItem,
+  extractActualProductPrice,
+  extractProductPriceWithPromo
 } from '@/helpers/extractData/extractProductDataFromLineItems';
 import ProductManagementButtons from '@/components/blocks/ProductManagementButtons.vue';
 import { addItemToCart, deleteItemFromCart } from '@/services/services/cartServices/cartServices';
@@ -46,10 +48,13 @@ import { TIMEOUT_ERROR_MESSAGE } from '@/constants/constants';
 
 export default {
   name: 'CartLineItem',
+
   components: { PricesBlock, ProductManagementButtons },
 
   props: {
-    lineItem: Object as PropType<LineItem>
+    lineItem: Object as PropType<LineItem>,
+    additionalDiscount: Number,
+    isDiscountCodeApplied: Boolean
   },
 
   data(): ICartLineItemData {
@@ -63,6 +68,7 @@ export default {
   },
 
   methods: {
+    getFinalPrice() {},
     async getProductInfo(productId: string) {
       if (productId) {
         try {
@@ -133,10 +139,13 @@ export default {
       return this.appSettings.currency;
     },
     productTotalPrice() {
-      return this.lineItem ? extractTotalPriceFromLineItem(this.lineItem) : 0;
+      return this.lineItem ? extractFullPriceFromLineItem(this.lineItem) : 0;
     },
-    discountedPrice() {
-      return this.lineItem ? extractDiscountedPriceFromLineItem(this.lineItem) : 0;
+    discountedPrice(): number {
+      if (this.isDiscountCodeApplied) {
+        return extractProductPriceWithPromo(this.lineItem) * this.quantity;
+      }
+      return extractActualProductPrice(this.lineItem) * this.quantity;
     },
     lineItemId() {
       return this.lineItem ? extractLineItemIdFromLineItems(this.productId, [this.lineItem]) : '';
