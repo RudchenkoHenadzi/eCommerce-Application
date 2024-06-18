@@ -13,8 +13,10 @@
       />
     </div>
     <PricesBlock
-      :discountedPrice="discountedPrice === productTotalPrice ? 0 : productPriceWithPromo"
-      :productCentAmount="productTotalPrice"
+      :discountedPrice="
+        finalDiscountPrice !== productTotalPrice ? finalDiscountPrice * quantity : 0
+      "
+      :productCentAmount="productTotalPrice * quantity"
       :currencyCode="currencyCode"
       pricePosition="left"
     />
@@ -28,17 +30,15 @@ import { useAppSettingsStore } from '@/stores/AppSettingsStore';
 import { fetchProductById } from '@/services/apiMethods/products/fetchProductById';
 import { useAppStatusStore } from '@/stores/AppStatusStore';
 import {
-  extractDiscountedProductPrice,
   extractProductName,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
 import {
-  extractDiscountedPriceFromLineItem,
   extractLineItemIdFromLineItems,
   extractProductQuantityFromLineItems,
   extractFullProductPriceFromLineItem,
   extractActualProductPrice,
-  extractProductPriceWithPromo
+  extractDiscountedPriceFromLineItem
 } from '@/helpers/extractData/extractProductDataFromLineItems';
 import ProductManagementButtons from '@/components/blocks/ProductManagementButtons.vue';
 import { addItemToCart, deleteItemFromCart } from '@/services/services/cartServices/cartServices';
@@ -144,6 +144,12 @@ export default {
     },
     discountedPrice(): number {
       return extractDiscountedPriceFromLineItem(this.lineItem); // плед - с двумя промокодами, остальные - с одним промокодм
+    },
+    finalDiscountPrice() {
+      if (this.promoCodes?.length !== 0) {
+        return this.productPriceWithPromo;
+      }
+      return this.productActualPrice;
     },
     productPriceWithPromo() {
       if (this.promoCodes && this.promoCodes?.length !== 0) {

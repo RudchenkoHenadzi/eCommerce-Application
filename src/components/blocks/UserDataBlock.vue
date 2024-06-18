@@ -86,7 +86,7 @@ export default {
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_USER_DATA.DUPLICATE_DATA
           );
         }
-      } catch (e) {
+      } catch (error) {
         if (error.message === ERROR_TEXTS.DUPLICATED_DATA) {
           this.$emit(
             EVENT_NAMES.CHANGE_USER_DATA,

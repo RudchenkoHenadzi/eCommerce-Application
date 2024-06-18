@@ -8,11 +8,11 @@
       text="Установить по-умолчанию"
     />
     <div class="form__row">
-      <InputCity class="transparent-input" v-model="city" :block-name="blockName" />
-      <InputStreet class="transparent-input" v-model="street" :block-name="blockName" />
+      <InputCity class="transparent-input" v-model="address.city" :block-name="blockName" />
+      <InputStreet class="transparent-input" v-model="address.street" :block-name="blockName" />
     </div>
     <div class="form__row">
-      <InputBuilding class="transparent-input" v-model="building" :block-name="blockName" />
+      <InputBuilding class="transparent-input" v-model="address.building" :block-name="blockName" />
       <InputApartment
         class="transparent-input"
         v-model="address.apartment"
@@ -75,7 +75,15 @@ export default {
 
   data() {
     return {
-      addressesStore: useAddressesStore()
+      addressesStore: useAddressesStore(),
+      address: {
+        city: '',
+        street: '',
+        building: '',
+        apartment: '',
+        postCode: '',
+        countryCode: ''
+      }
     };
   },
 
@@ -123,7 +131,7 @@ export default {
       }
     },
     country() {
-      return this.countryCode === 'RU' ? 'Россия' : 'Россия';
+      return this.address.countryCode === 'RU' ? 'Россия' : 'Россия';
     }
   }
 };

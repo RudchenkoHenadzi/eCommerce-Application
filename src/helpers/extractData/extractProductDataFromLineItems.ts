@@ -1,4 +1,4 @@
-import type { LineItem, Price, Product } from '@commercetools/platform-sdk';
+import type { LineItem, Product } from '@commercetools/platform-sdk';
 import { extractDiscountedProductPrice } from '@/helpers/extractData/extractProductDataFromProduct';
 
 export function extractProductQuantityFromLineItems(product: Product, items: LineItem[]) {

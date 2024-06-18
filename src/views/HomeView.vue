@@ -16,6 +16,12 @@
       <div v-for="discount in discountFullInfo" :key="discount.id" class="promo__code">
         {{ discount.key || '' }}
       </div>
+
+      <p class="promo__more">
+        Промокод WARM50 - на серый пред, который находится в самом конце каталога. Промокод
+        ALLDISCO25 - скидка на все. Промокоды можно только отдельно применять, одновременно пока не
+        осилила xD
+      </p>
     </div>
   </div>
 </template>
