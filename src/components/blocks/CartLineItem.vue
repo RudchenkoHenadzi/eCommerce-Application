@@ -3,7 +3,7 @@
     <figure class="line-item__image">
       <img :src="productImageSrc" class="line-item__img" :alt="productName" />
     </figure>
-    <div class="line-item__name">{{ itemName }}</div>
+    <div class="line-item__name">{{ productName }}</div>
     <div class="line-item__manage">
       <ProductManagementButtons
         :productId="productId"
@@ -35,7 +35,7 @@ import {
   extractDiscountedPriceFromLineItem,
   extractLineItemIdFromLineItems,
   extractProductQuantityFromLineItems,
-  extractFullPriceFromLineItem,
+  extractFullProductPriceFromLineItem,
   extractActualProductPrice,
   extractProductPriceWithPromo
 } from '@/helpers/extractData/extractProductDataFromLineItems';
@@ -123,9 +123,6 @@ export default {
     lang() {
       return this.appSettings.lang;
     },
-    itemName() {
-      return this.lineItem ? this.lineItem.name[this.lang] : '';
-    },
     productId() {
       return this.lineItem ? this.lineItem.productId : '';
     },
@@ -139,7 +136,7 @@ export default {
       return this.appSettings.currency;
     },
     productTotalPrice() {
-      return this.lineItem ? extractFullPriceFromLineItem(this.lineItem) : 0;
+      return extractFullProductPriceFromLineItem(this.lineItem);
     },
     discountedPrice(): number {
       if (this.isDiscountCodeApplied) {

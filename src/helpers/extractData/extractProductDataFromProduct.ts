@@ -2,7 +2,7 @@ import type { Price, Product } from '@commercetools/platform-sdk';
 import type { TCurrencyType, TLangType } from '@/types/appSettingsTypes';
 import { firstLetterUppercase } from '@/helpers/transformation/stringTransform';
 
-export function extractProductPrices(
+export function extractProductPricesData(
   product: Product,
   currentCurrencyCode: TCurrencyType
 ): Price | {} {
@@ -18,7 +18,7 @@ export function extractProductPrices(
   return selectedPrice;
 }
 
-export function extractProductCentAmount(priceData: Price) {
+export function extractProductFullPrice(priceData: Price) {
   return priceData.value.centAmount;
 }
 
@@ -136,7 +136,9 @@ export function extractProductAttributes(product: Product, lang: TLangType) {
 }
 
 export function extractProductName(product: Product, lang: TLangType) {
-  return product.masterData.current.name[lang];
+  return (
+    product.masterData.current.name[lang] || product.masterData.current.name[lang.split('-')[0]]
+  );
 }
 
 export function extractProductId(product: Product) {

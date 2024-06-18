@@ -1,7 +1,7 @@
 import type { Cart, Product } from '@commercetools/platform-sdk';
 import {
   extractActualProductPriceFromLineItem,
-  extractFullPriceFromLineItem,
+  extractFullProductPriceFromLineItem,
   extractLineItemIdFromLineItems,
   extractProductQuantityFromLineItems
 } from '@/helpers/extractData/extractProductDataFromLineItems';
@@ -41,7 +41,7 @@ export function extractAllProductsTotalPriceNoPromo(cart?: Cart) {
 export function extractAllProductsFullPriceNoPromo(cart?: Cart) {
   if (cart) {
     return cart.lineItems.reduce((total, lineItem) => {
-      const price = extractFullPriceFromLineItem(lineItem) * lineItem.quantity;
+      const price = extractFullProductPriceFromLineItem(lineItem) * lineItem.quantity;
       total += price;
       return total;
     }, 0);

@@ -32,7 +32,7 @@ export const useDiscountCodesStore: StoreDefinition<
       });
       return result;
     },
-    setAllDiscountCodes(rawData: CartDiscountPagedQueryResponse) {
+    setAllDiscountCodes() {
       this.cartDiscountsCodes = Object.keys(this.cartDiscountsDetails);
     },
     setAllDiscountDetails(rawData: CartDiscountPagedQueryResponse) {

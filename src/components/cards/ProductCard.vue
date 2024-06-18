@@ -57,10 +57,10 @@ import ProductAttributes from '@/components/blocks/ProductAttributes.vue';
 import {
   extractDiscountedProductPrice,
   extractProductAttributes,
-  extractProductCentAmount,
+  extractProductFullPrice,
   extractProductId,
   extractProductName,
-  extractProductPrices,
+  extractProductPricesData,
   extractSrc
 } from '@/helpers/extractData/extractProductDataFromProduct';
 import ProductManagementButtons from '@/components/blocks/ProductManagementButtons.vue';
@@ -195,11 +195,11 @@ export default {
       return this.appSettings.lang;
     },
     currentPriceData() {
-      return extractProductPrices(this.product as Product, this.currency);
+      return extractProductPricesData(this.product as Product, this.currency);
     },
     price() {
       return Object.keys(this.currentPriceData).length !== 0
-        ? extractProductCentAmount(this.currentPriceData as Price)
+        ? extractProductFullPrice(this.currentPriceData as Price)
         : 0;
     },
     discountedPrice() {

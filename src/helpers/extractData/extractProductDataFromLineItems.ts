@@ -17,25 +17,34 @@ export function extractLineItemIdFromLineItems(productId: string, lineItems: Lin
   return currentLineItem ? currentLineItem.id : '';
 }
 
-export function extractFullPriceFromLineItem(lineItem: LineItem) {
-  return lineItem.price.value.centAmount;
+export function extractFullProductPriceFromLineItem(lineItem?: LineItem) {
+  if (lineItem) {
+    return lineItem.price.value.centAmount;
+  }
+  return 0;
 }
 
-export function extractActualProductPriceFromLineItem(lineItem: LineItem) {
-  return lineItem.price.discounted
-    ? lineItem.price.discounted.value.centAmount
-    : lineItem.price.value.centAmount;
+export function extractActualProductPriceFromLineItem(lineItem?: LineItem) {
+  if (lineItem) {
+    return lineItem.price.discounted
+      ? /*lineItem.price.discounted.value.centAmount*/ extractDiscountedPriceFromLineItem(lineItem)
+      : lineItem.price.value.centAmount;
+  }
+  return 0;
 }
 
-export function extractDiscountedPriceFromLineItem(lineItem: LineItem) {
-  return extractDiscountedProductPrice(lineItem.price);
+export function extractDiscountedPriceFromLineItem(lineItem?: LineItem) {
+  if (lineItem) {
+    return extractDiscountedProductPrice(lineItem.price);
+  }
+  return 0;
 }
 
 export function extractAllProductsFullPrice(lineItems: LineItem[]) {
   return lineItems.reduce((total, lineItem) => {
     total +=
       extractDiscountedPriceFromLineItem(lineItem) * lineItem.quantity ||
-      extractFullPriceFromLineItem(lineItem) * lineItem.quantity;
+      extractFullProductPriceFromLineItem(lineItem) * lineItem.quantity;
     return total;
   }, 0);
 }
