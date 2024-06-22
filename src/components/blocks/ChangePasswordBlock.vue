@@ -27,13 +27,14 @@
 </template>
 
 <script lang="ts">
-import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
-import useValidate from '@vuelidate/core'
-import InputConfirmPassword from '@/components/form-elements/text-inputs/InputConfirmPassword.vue'
-import { changePassword } from '@/services/apiMethods/user/changePassword'
-import { useUserStore } from '@/stores/User'
-import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants'
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue';
+import useValidate from '@vuelidate/core';
+import InputConfirmPassword from '@/components/form-elements/text-inputs/InputConfirmPassword.vue';
+import { changePassword } from '@/services/apiMethods/user/changePassword';
+import { useUserStore } from '@/stores/User';
+import { EVENT_NAMES, EVENT_TYPE_NAMES } from '@/constants/constants';
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
 
 export default {
   name: 'ChangePasswordBlock',
@@ -43,7 +44,7 @@ export default {
   setup() {
     return {
       v$: useValidate()
-    }
+    };
   },
 
   data() {
@@ -52,29 +53,31 @@ export default {
       newPassword: '',
       confirmNewPassword: '',
       userStore: useUserStore(),
-      apiRoot: useApiRootStore()
-    }
+      apiRoot: useApiRootStore(),
+      appStatus: useAppStatusStore()
+    };
   },
 
   methods: {
     async changePassword() {
-      const result = await this.v$.$validate()
+      const result = await this.v$.$validate();
       if (result) {
         if (this.currentPassword !== this.newPassword) {
           try {
+            this.appStatus.startLoading();
             const changeResult = await changePassword(
               this.version,
               this.currentPassword,
               this.newPassword
-            )
+            );
             if (changeResult.statusCode === 200) {
-              this.apiRoot.createAuthApiRoot(this.email, this.newPassword)
+              this.apiRoot.createAuthApiRoot(this.email, this.newPassword);
               this.$emit(
                 EVENT_NAMES.CHANGE_PASSWORD,
                 EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.SUCCESS
-              )
+              );
             } else {
-              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
+              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR);
             }
           } catch (e) {
             if (
@@ -86,32 +89,34 @@ export default {
               this.$emit(
                 EVENT_NAMES.CHANGE_PASSWORD,
                 EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.WRONG_PASSWORD
-              )
+              );
             } else {
-              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR)
+              this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.COMMON_ERROR);
             }
+          } finally {
+            this.appStatus.stopLoading();
           }
         } else {
           this.$emit(
             EVENT_NAMES.CHANGE_PASSWORD,
             EVENT_TYPE_NAMES.PROFILE_EVENTS.CHANGE_PASSWORD.THE_SAME_PASSWORDS
-          )
+          );
         }
       } else {
-        this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT)
+        this.$emit(EVENT_NAMES.CHANGE_PASSWORD, EVENT_TYPE_NAMES.COMMON_EVENTS.INVALID_INPUT);
       }
     }
   },
 
   computed: {
     version() {
-      return this.userStore.userVersion
+      return this.userStore.userVersion;
     },
     email() {
-      return this.userStore.email
+      return this.userStore.email;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

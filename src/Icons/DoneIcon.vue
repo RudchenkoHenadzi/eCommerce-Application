@@ -8,7 +8,7 @@
 <script lang="ts">
 export default {
   name: 'DoneIcon'
-}
+};
 </script>
 
 <style scoped lang="scss">

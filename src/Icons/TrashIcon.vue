@@ -29,7 +29,7 @@
 <script lang="ts">
 export default {
   name: 'TrashIcon'
-}
+};
 </script>
 
 <style scoped lang="scss"></style>

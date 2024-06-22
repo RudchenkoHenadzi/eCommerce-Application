@@ -5,9 +5,9 @@
 </template>
 
 <script lang="ts">
-import LoginForm from '@/components/forms/LoginForm.vue'
-import { MESSAGE_TEXTS } from '@/constants/texts'
-import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/constants'
+import LoginForm from '@/components/forms/LoginForm.vue';
+import { MESSAGE_TEXTS } from '@/constants/texts';
+import { TIMEOUT_ERROR_MESSAGE, TIMEOUT_SHORT_MESSAGE } from '@/constants/constants';
 export default {
   name: 'LoginView',
 
@@ -17,31 +17,31 @@ export default {
     return {
       isAlertShow: false,
       alertText: ''
-    }
+    };
   },
 
   methods: {
     loginEventsHandler(eventType: string) {
       switch (eventType) {
         case 'invalidPassword': {
-          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.invalidPassword, TIMEOUT_ERROR_MESSAGE)
-          break
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.invalidPassword, TIMEOUT_ERROR_MESSAGE);
+          break;
         }
         case 'userNotExist': {
-          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.userNotExist, TIMEOUT_ERROR_MESSAGE)
-          break
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.userNotExist, TIMEOUT_ERROR_MESSAGE);
+          break;
         }
         case 'successLogin': {
-          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.successLogin, TIMEOUT_SHORT_MESSAGE)
-          break
+          this.$emit('showAlert', MESSAGE_TEXTS.AUTH.successLogin, TIMEOUT_SHORT_MESSAGE);
+          break;
         }
         default: {
-          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE)
+          this.$emit('showAlert', MESSAGE_TEXTS.COMMON.commonError, TIMEOUT_ERROR_MESSAGE);
         }
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

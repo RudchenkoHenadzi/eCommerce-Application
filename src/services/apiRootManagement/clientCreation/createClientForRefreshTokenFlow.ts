@@ -2,7 +2,7 @@ import {
   ClientBuilder,
   type HttpMiddlewareOptions,
   type RefreshAuthMiddlewareOptions
-} from '@commercetools/sdk-client-v2'
+} from '@commercetools/sdk-client-v2';
 
 export default function createClientForRefreshTokenFlow(
   refreshTokenFlowOptions: RefreshAuthMiddlewareOptions,
@@ -11,5 +11,5 @@ export default function createClientForRefreshTokenFlow(
   return new ClientBuilder()
     .withRefreshTokenFlow(refreshTokenFlowOptions)
     .withHttpMiddleware(httpMiddlewareOptions)
-    .build()
+    .build();
 }

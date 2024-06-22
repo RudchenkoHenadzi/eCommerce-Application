@@ -22,8 +22,8 @@
 </template>
 
 <script lang="ts">
-import useValidate from '@vuelidate/core'
-import { required, helpers } from '@vuelidate/validators'
+import useValidate from '@vuelidate/core';
+import { required, helpers } from '@vuelidate/validators';
 
 export default {
   name: 'InputCountry',
@@ -38,7 +38,7 @@ export default {
   setup() {
     return {
       v$: useValidate()
-    }
+    };
   },
 
   validations: {
@@ -50,16 +50,16 @@ export default {
   methods: {
     updateModelValue(event: Event) {
       if (event.target && event.target instanceof HTMLInputElement) {
-        const value = event.target.value
-        this.$emit('update:modelValue', value)
+        const value = event.target.value;
+        this.$emit('update:modelValue', value);
       }
     }
   },
 
   computed: {
     idName() {
-      return `${this.blockName}-country`
+      return `${this.blockName}-country`;
     }
   }
-}
+};
 </script>

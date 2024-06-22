@@ -16,8 +16,8 @@
 </template>
 
 <script lang="ts">
-import AddressLinesHolder from '@/components/blocks/AddressLinesHolder.vue'
-import type { Address } from '@commercetools/platform-sdk'
+import AddressLinesHolder from '@/components/blocks/AddressLinesHolder.vue';
+import type { Address } from '@commercetools/platform-sdk';
 
 export default {
   name: 'ShippingAddressBlock',
@@ -26,7 +26,7 @@ export default {
     addresses: Array<Address>,
     defaultShippingAddressId: String
   }
-}
+};
 </script>
 
 <style lang="scss">

@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import { useUserStore } from '@/stores/User'
-import PencilIcon from '@/Icons/PencilIcon.vue'
+import { useUserStore } from '@/stores/User';
+import PencilIcon from '@/Icons/PencilIcon.vue';
 
 export default {
   name: 'ReadUserDataBlock',
@@ -20,30 +20,30 @@ export default {
   data() {
     return {
       userStore: useUserStore()
-    }
+    };
   },
 
   methods: {
     switchEditMode() {
-      this.$emit('editModeOn')
+      this.$emit('editModeOn');
     }
   },
 
   computed: {
     firstName() {
-      return this.userStore.firstName
+      return this.userStore.firstName;
     },
     lastName() {
-      return this.userStore.lastName
+      return this.userStore.lastName;
     },
     birthDate() {
-      return this.userStore.birthDate
+      return this.userStore.birthDate;
     },
     email() {
-      return this.userStore.email
+      return this.userStore.email;
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

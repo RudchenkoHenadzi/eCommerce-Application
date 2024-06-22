@@ -1,7 +1,7 @@
-import type { IBillingAddressModel, IShippingAddressModel } from '@/types/customer-types'
-import { useApiRootStore } from '@/stores/ApiRootStore'
-import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers'
-import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/dataCheck/registrationCheck'
+import type { IBillingAddressModel, IShippingAddressModel } from '@/types/customerTypes';
+import { useApiRootStore } from '@/stores/ApiRootStore';
+import { createAddressesConfiguration, createCustomerDraft } from '@/helpers/registrationHelpers';
+import { isRegistrationRequestSuccess, isUserExist } from '@/helpers/dataCheck/registrationCheck';
 
 export default async function userRegistration(
   email: string,
@@ -15,8 +15,8 @@ export default async function userRegistration(
   shippingAddress: IShippingAddressModel,
   billingAddress?: IBillingAddressModel
 ) {
-  const apiRootStore = useApiRootStore()
-  const apiRoot = apiRootStore.apiRoot
+  const apiRootStore = useApiRootStore();
+  const apiRoot = apiRootStore.apiRoot;
   try {
     const addressesConfiguration = createAddressesConfiguration(
       firstName,
@@ -27,7 +27,7 @@ export default async function userRegistration(
       areBothAddressesSame,
       shippingAddress,
       billingAddress
-    )
+    );
 
     const customerDraft = createCustomerDraft(
       email,
@@ -36,25 +36,26 @@ export default async function userRegistration(
       lastName,
       dateOfBirth,
       addressesConfiguration
-    )
+    );
 
     const registrationResult = await apiRoot
-      .customers()
+      .me()
+      .signup()
       .post({
         body: customerDraft
       })
-      .execute()
+      .execute();
 
     if (isRegistrationRequestSuccess(registrationResult)) {
-      const { email, password } = customerDraft
-      apiRootStore.createAuthApiRoot(email, password)
+      const { email, password } = customerDraft;
+      apiRootStore.createAuthApiRoot(email, password);
     }
-    return registrationResult
+    return registrationResult;
   } catch (error) {
     if (isUserExist(error)) {
-      throw new Error('userExists')
+      throw new Error('userExists');
     } else {
-      throw new Error('commonError')
+      throw new Error('commonError');
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <form id="registration-form" class="form purple-form" @submit.prevent="submitRegistrationForm()">
+  <form id="registration-form" class="form form-purple" @submit.prevent="submitRegistrationForm()">
     <div class="form__title">Регистрация</div>
     <div class="form__wrapper">
       <div class="form__block block base-info">
@@ -90,21 +90,25 @@
 </template>
 
 <script lang="ts">
-import useValidate from '@vuelidate/core'
-import InputName from '@/components/form-elements/text-inputs/InputName.vue'
-import InputLastName from '@/components/form-elements/text-inputs/InputLastName.vue'
-import InputDate from '@/components/form-elements/text-inputs/InputDate.vue'
-import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue'
-import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue'
-import InputStreet from '@/components/form-elements/text-inputs/InputStreet.vue'
-import InputCity from '@/components/form-elements/text-inputs/InputCity.vue'
-import InputPotscode from '@/components/form-elements/text-inputs/InputPotscode.vue'
-import InputCountry from '@/components/form-elements/text-inputs/InputCountry.vue'
-import InputBuilding from '@/components/form-elements/text-inputs/InputBuilding.vue'
-import InputApartment from '@/components/form-elements/text-inputs/InputApartment.vue'
-import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue'
-import userRegistration from '@/services/apiMethods/auth/userRegistration'
-import { useUserStore } from '@/stores/User'
+import useValidate from '@vuelidate/core';
+import InputName from '@/components/form-elements/text-inputs/InputName.vue';
+import InputLastName from '@/components/form-elements/text-inputs/InputLastName.vue';
+import InputDate from '@/components/form-elements/text-inputs/InputDate.vue';
+import InputEmail from '@/components/form-elements/text-inputs/InputEmail.vue';
+import InputPassword from '@/components/form-elements/text-inputs/InputPassword.vue';
+import InputStreet from '@/components/form-elements/text-inputs/InputStreet.vue';
+import InputCity from '@/components/form-elements/text-inputs/InputCity.vue';
+import InputPotscode from '@/components/form-elements/text-inputs/InputPotscode.vue';
+import InputCountry from '@/components/form-elements/text-inputs/InputCountry.vue';
+import InputBuilding from '@/components/form-elements/text-inputs/InputBuilding.vue';
+import InputApartment from '@/components/form-elements/text-inputs/InputApartment.vue';
+import MyCheckbox from '@/components/form-elements/checkboxes/MyCheckbox.vue';
+import userRegistration from '@/services/apiMethods/auth/userRegistration';
+import { useUserStore } from '@/stores/User';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
+import getUserCarts from '@/services/apiMethods/cart/getUserCarts';
+import { getUserCurrentCart } from '@/helpers/extractData/getCurrentUserCart';
+import { useCartsStore } from '@/stores/Carts';
 
 export default {
   name: 'RegistrationForm',
@@ -127,7 +131,7 @@ export default {
   setup() {
     return {
       v$: useValidate()
-    }
+    };
   },
 
   data() {
@@ -157,15 +161,19 @@ export default {
         isBillingAddressDefault: false,
         isShippingAddressDefault: false,
         areBothAddressesSame: false
-      }
-    }
+      },
+      appStatus: useAppStatusStore(),
+      user: useUserStore(),
+      cartsStore: useCartsStore()
+    };
   },
 
   methods: {
     async submitRegistrationForm() {
-      const result = await this.v$.$validate()
+      const result = await this.v$.$validate();
 
       if (result) {
+        this.appStatus.startLoading();
         try {
           const registrationResult = await userRegistration(
             this.registrationForm.email,
@@ -178,30 +186,49 @@ export default {
             this.registrationForm.areBothAddressesSame,
             this.registrationForm.shippingAddress,
             this.registrationForm.billingAddress
-          )
+          );
           if (registrationResult.statusCode === 201) {
-            const user = useUserStore()
-            user.login()
-            user.setUserMail(this.registrationForm.email)
-            this.$emit('registrationEvents', 'registrationSuccess')
+            await this.getUserCart();
+            this.user.login();
+            this.user.setUserMail(this.registrationForm.email);
+            this.$emit('registrationEvents', 'registrationSuccess');
           } else if (registrationResult.statusCode === 400) {
-            this.$emit('registrationEvents', 'userExists')
+            this.$emit('registrationEvents', 'userExists');
           } else {
-            this.$emit('registrationEvents', 'commonError')
+            this.$emit('registrationEvents', 'commonError');
           }
         } catch (error: unknown) {
           if (error instanceof Error) {
             if (error.message === 'commonError') {
-              this.$emit('registrationEvents', 'commonError')
+              this.$emit('registrationEvents', 'commonError');
             } else {
-              this.$emit('registrationEvents', 'userExists')
+              this.$emit('registrationEvents', 'userExists');
             }
           } else {
-            this.$emit('registrationEvents', 'commonError')
+            this.$emit('registrationEvents', 'commonError');
           }
+        } finally {
+          this.appStatus.stopLoading();
         }
       } else {
-        this.$emit('registrationEvents', 'errorInvalidInput')
+        this.$emit('registrationEvents', 'errorInvalidInput');
+      }
+    },
+    async getUserCart() {
+      try {
+        this.appStatus.startLoading();
+        const response = await getUserCarts();
+
+        if (response.statusCode === 200 || response.statusCode === 201) {
+          const userCart = getUserCurrentCart(response.body.results);
+          this.cartsStore.setCurrentCart(userCart);
+        } else {
+          this.$emit('commonError');
+        }
+      } catch (error) {
+        this.$emit('commonError');
+      } finally {
+        this.appStatus.stopLoading();
       }
     }
   },
@@ -211,14 +238,14 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingStreetName
-          : this.registrationForm.billingAddress.billingStreetName
+          : this.registrationForm.billingAddress.billingStreetName;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingStreetName =
-            this.registrationForm.shippingAddress.shippingStreetName
+            this.registrationForm.shippingAddress.shippingStreetName;
         } else {
-          this.registrationForm.billingAddress.billingStreetName = newValue
+          this.registrationForm.billingAddress.billingStreetName = newValue;
         }
       }
     },
@@ -226,14 +253,14 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingBuilding
-          : this.registrationForm.billingAddress.billingBuilding
+          : this.registrationForm.billingAddress.billingBuilding;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingBuilding =
-            this.registrationForm.shippingAddress.shippingBuilding
+            this.registrationForm.shippingAddress.shippingBuilding;
         } else {
-          this.registrationForm.billingAddress.billingBuilding = newValue
+          this.registrationForm.billingAddress.billingBuilding = newValue;
         }
       }
     },
@@ -241,14 +268,14 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingApartment
-          : this.registrationForm.billingAddress.billingApartment
+          : this.registrationForm.billingAddress.billingApartment;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingApartment =
-            this.registrationForm.shippingAddress.shippingApartment
+            this.registrationForm.shippingAddress.shippingApartment;
         } else {
-          this.registrationForm.billingAddress.billingApartment = newValue
+          this.registrationForm.billingAddress.billingApartment = newValue;
         }
       }
     },
@@ -256,14 +283,14 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingCity
-          : this.registrationForm.billingAddress.billingCity
+          : this.registrationForm.billingAddress.billingCity;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingCity =
-            this.registrationForm.shippingAddress.shippingCity
+            this.registrationForm.shippingAddress.shippingCity;
         } else {
-          this.registrationForm.billingAddress.billingCity = newValue
+          this.registrationForm.billingAddress.billingCity = newValue;
         }
       }
     },
@@ -271,14 +298,14 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingPostalCode
-          : this.registrationForm.billingAddress.billingPostalCode
+          : this.registrationForm.billingAddress.billingPostalCode;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingPostalCode =
-            this.registrationForm.shippingAddress.shippingPostalCode
+            this.registrationForm.shippingAddress.shippingPostalCode;
         } else {
-          this.registrationForm.billingAddress.billingPostalCode = newValue
+          this.registrationForm.billingAddress.billingPostalCode = newValue;
         }
       }
     },
@@ -286,19 +313,19 @@ export default {
       get(): string {
         return this.registrationForm.areBothAddressesSame
           ? this.registrationForm.shippingAddress.shippingCountry
-          : this.registrationForm.billingAddress.billingCountry
+          : this.registrationForm.billingAddress.billingCountry;
       },
       set(newValue: string) {
         if (this.registrationForm.areBothAddressesSame) {
           this.registrationForm.billingAddress.billingCountry =
-            this.registrationForm.shippingAddress.shippingCountry
+            this.registrationForm.shippingAddress.shippingCountry;
         } else {
-          this.registrationForm.billingAddress.billingCountry = newValue
+          this.registrationForm.billingAddress.billingCountry = newValue;
         }
       }
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">

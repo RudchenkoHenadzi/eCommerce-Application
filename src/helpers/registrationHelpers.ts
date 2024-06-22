@@ -4,7 +4,7 @@ import type {
   IBillingAddressModel,
   ICustomerDraft,
   IShippingAddressModel
-} from '@/types/customer-types'
+} from '@/types/customerTypes';
 
 export function createCustomerDraft(
   email: string,
@@ -23,26 +23,26 @@ export function createCustomerDraft(
     addresses: addressesConfiguration.addresses,
     shippingAddresses: [0],
     billingAddresses: [0]
-  }
+  };
 
   if (addressesConfiguration) {
     const { defaultShippingAddress, defaultBillingAddress, shippingAddresses, billingAddresses } =
-      addressesConfiguration
+      addressesConfiguration;
 
     if (defaultShippingAddress || defaultShippingAddress === 0) {
-      customerDraft.defaultShippingAddress = defaultShippingAddress
+      customerDraft.defaultShippingAddress = defaultShippingAddress;
     }
     if (shippingAddresses) {
-      customerDraft.shippingAddresses = shippingAddresses
+      customerDraft.shippingAddresses = shippingAddresses;
     }
     if (defaultBillingAddress || defaultBillingAddress === 0) {
-      customerDraft.defaultBillingAddress = defaultBillingAddress
+      customerDraft.defaultBillingAddress = defaultBillingAddress;
     }
     if (billingAddresses) {
-      customerDraft.billingAddresses = billingAddresses
+      customerDraft.billingAddresses = billingAddresses;
     }
   }
-  return customerDraft
+  return customerDraft;
 }
 
 export function createAddressDraft(
@@ -62,7 +62,7 @@ export function createAddressDraft(
       city: addressModel.shippingCity,
       country: 'RU',
       email: email
-    }
+    };
   } else {
     return {
       firstName: firstName,
@@ -74,7 +74,7 @@ export function createAddressDraft(
       city: addressModel.billingCity,
       country: 'RU',
       email: email
-    }
+    };
   }
 }
 
@@ -91,24 +91,24 @@ export function createAddressesConfiguration(
   const addressesConfiguration: IAddressesConfiguration = {
     addresses: [],
     shippingAddresses: [0]
-  }
-  const shippingAddressDraft = createAddressDraft(firstName, lastName, email, shippingAddress)
-  addressesConfiguration.addresses.push(shippingAddressDraft)
+  };
+  const shippingAddressDraft = createAddressDraft(firstName, lastName, email, shippingAddress);
+  addressesConfiguration.addresses.push(shippingAddressDraft);
   if (billingAddress) {
-    const billingAddressDraft = createAddressDraft(firstName, lastName, email, billingAddress)
-    addressesConfiguration.addresses.push(billingAddressDraft)
+    const billingAddressDraft = createAddressDraft(firstName, lastName, email, billingAddress);
+    addressesConfiguration.addresses.push(billingAddressDraft);
   }
   const { billingAddressIndex, defaultBillingAddressIndex } = checkBillingAddressIndexes(
     isBillingAddressDefault,
     areBothAddressesSame
-  )
+  );
   setAddressesIndexes(
     isShippingAddressDefault,
     billingAddressIndex,
     defaultBillingAddressIndex,
     addressesConfiguration
-  )
-  return addressesConfiguration
+  );
+  return addressesConfiguration;
 }
 
 function setAddressesIndexes(
@@ -118,15 +118,15 @@ function setAddressesIndexes(
   addressesConfiguration: IAddressesConfiguration
 ) {
   if (isShippingAddressDefault) {
-    addressesConfiguration.defaultShippingAddress = 0
+    addressesConfiguration.defaultShippingAddress = 0;
   }
   if (billingBaseIndex >= 0) {
-    addressesConfiguration.billingAddresses = [billingBaseIndex]
+    addressesConfiguration.billingAddresses = [billingBaseIndex];
   }
   if (billingDefaultIndex >= 0) {
-    addressesConfiguration.defaultBillingAddress = billingDefaultIndex
+    addressesConfiguration.defaultBillingAddress = billingDefaultIndex;
   }
-  return addressesConfiguration
+  return addressesConfiguration;
 }
 
 function checkBillingAddressIndexes(
@@ -136,18 +136,18 @@ function checkBillingAddressIndexes(
   const res = {
     billingAddressIndex: -1,
     defaultBillingAddressIndex: -1
-  }
+  };
 
   if (areBothAddressesSame) {
-    res.billingAddressIndex = 0
+    res.billingAddressIndex = 0;
     if (isBillingAddressDefault) {
-      res.defaultBillingAddressIndex = 0
+      res.defaultBillingAddressIndex = 0;
     }
   } else {
-    res.billingAddressIndex = 1
+    res.billingAddressIndex = 1;
     if (isBillingAddressDefault) {
-      res.defaultBillingAddressIndex = 1
+      res.defaultBillingAddressIndex = 1;
     }
   }
-  return res
+  return res;
 }

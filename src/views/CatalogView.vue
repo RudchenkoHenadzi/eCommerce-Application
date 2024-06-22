@@ -4,12 +4,10 @@
     <div class="products">
       <div class="product-card" v-for="product in products" :key="product.id">
         <ProductCard
-          :productName="product.masterData.current.name[lang]"
-          :description="getDescription(product)"
-          :src="getSrc(product)"
-          :attributes="getAttributes(product)"
-          :prices="getPrices(product)"
-          label-name=""
+          :product="product"
+          :quantity="getQuantity(product)"
+          :lineItemId="getLineItemId(product)"
+          labelName=""
         />
       </div>
     </div>
@@ -19,200 +17,113 @@
 </template>
 
 <script lang="ts">
-import getProducts from '@/services/apiMethods/products/getProducts'
+import getProducts from '@/services/apiMethods/products/getProducts';
 import type {
+  Cart,
   ClientResponse,
   Product,
   ProductPagedQueryResponse
-} from '@commercetools/platform-sdk'
-import ProductCard from '@/components/cards/ProductCard.vue'
-import { useAppSettingsStore } from '@/stores/AppSettingsStore'
-import { firstLetterUppercase } from '@/helpers/transformation/stringTransform'
-import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs'
+} from '@commercetools/platform-sdk';
+import ProductCard from '@/components/cards/ProductCard.vue';
+import { useAppSettingsStore } from '@/stores/AppSettingsStore';
+import { PRODUCTS_LIMIT_PER_LOAD } from '@/constants/projectConfigs';
+import filterProducts from '@/helpers/extractData/filterProducts';
+import type { ICatalogViewData } from '@/components/types/catalogViewTypes';
+import { useCartsStore } from '@/stores/Carts';
+import { useAppStatusStore } from '@/stores/AppStatusStore';
+import {
+  extractProductQuantityFromCart,
+  extractLineItemIdFromCart
+} from '@/helpers/extractData/extractProductDataFromCart';
 
 export default {
   name: 'CatalogView',
 
   components: { ProductCard },
 
-  data() {
+  data(): ICatalogViewData {
     return {
       products: new Array<Product>(),
       appSettings: useAppSettingsStore(),
+      cartsStore: useCartsStore(),
+      appStatus: useAppStatusStore(),
       pageNumber: 0,
       totalItems: 0,
       isProductsLoading: false
-    }
+    };
   },
 
   methods: {
     async getProducts() {
-      this.isProductsLoading = true
+      this.appStatus.startLoading();
       try {
         const products: ClientResponse<ProductPagedQueryResponse> = await getProducts(
           this.pageNumber
-        )
-        this.products = [...this.products, ...products.body.results]
-        this.totalItems = products.body.total || this.products.length
+        );
+
+        if (this.products.length < 1) {
+          this.products = filterProducts(products.body.results);
+        } else {
+          this.products = [...this.products, ...filterProducts(products.body.results)];
+        }
+
+        this.totalItems = products.body.total || this.products.length;
       } catch (error) {
-        this.$emit('commonError')
+        this.$emit('commonError');
       } finally {
-        this.isProductsLoading = false
+        this.appStatus.stopLoading();
       }
     },
-    getPrices(product: Product) {
-      const prices = product.masterData.current.masterVariant.prices
-      let selectedPrice = {}
-      if (prices) {
-        prices.forEach((priceData) => {
-          if (priceData.value.currencyCode === this.currency) {
-            selectedPrice = priceData
-          }
-        })
+    getQuantity(product: Product) {
+      if (this.userCurrentCart) {
+        return extractProductQuantityFromCart(product, this.userCurrentCart);
       }
-      return selectedPrice
+      return 0;
     },
-    getSrc(product: Product) {
-      return product.masterData.current.masterVariant.images
-        ? product.masterData.current.masterVariant.images[0]?.url
-        : ''
-    },
-    getDescription(product: Product) {
-      return product.masterData.current.description
-        ? product.masterData.current.description[this.lang]
-        : ''
-    },
-    getAttributes(product: Product) {
-      const rawAttributes = product.masterData.current.masterVariant.attributes
-      if (rawAttributes) {
-        return rawAttributes.reduce((acc: Record<string, string>[], attribute) => {
-          if (attribute.name === 'productspec') {
-            let label = []
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-                .split('-')
-                .filter((val: string) => val.trim() !== '')
-                .map((val: string) => val.trim())
-            } else {
-              label = attribute.value[this.lang]
-                .split('-')
-                .filter((val: string) => val.trim() !== '')
-                .map((val: string) => firstLetterUppercase(val.trim()))
-            }
-            label.forEach((labelItem: string) => {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}-${labelItem}` || '',
-                label: labelItem || ''
-              }
-              acc.push(formattedAttr)
-            })
-          } else if (attribute.name === 'color-filter') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'finish') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'finishlabel') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else if (attribute.name === 'color') {
-            let label = ''
-            if (attribute.value.label) {
-              label = attribute.value.label[this.lang]
-            } else {
-              label = attribute.value[this.lang]
-            }
-            if (label.charAt(0) !== '#') {
-              const formattedAttr = {
-                name: attribute.name,
-                key: `${attribute.value.key}` || '',
-                label: label || ''
-              }
-              acc.push(formattedAttr)
-            }
-          } else {
-            acc.push({})
-          }
-          return acc.filter((value) => Object.keys(value).length > 0)
-        }, [])
-      } else {
-        return []
+    getLineItemId(product: Product) {
+      if (this.userCurrentCart) {
+        return extractLineItemIdFromCart(product.id, this.userCurrentCart);
       }
+      return '';
     },
     loadProducts() {
-      this.pageNumber += 1
+      this.pageNumber += 1;
       if (this.pageNumber <= this.totalPages) {
-        this.getProducts()
+        this.getProducts();
       }
     },
     intersectionHandler(entries: IntersectionObserverEntry[]) {
-      console.log('intersectionHandler')
       if (entries[0].isIntersecting) {
-        console.log('work!')
-        this.loadProducts()
+        this.loadProducts();
       }
     }
   },
 
   mounted() {
-    this.getProducts()
+    this.getProducts();
     const options = {
-      rootMargin: '0px',
+      rootMargin: '0px 0px 200px 0px',
       threshold: 1.0
-    }
-    const observer = new IntersectionObserver(this.intersectionHandler, options)
-    observer.observe(this.$refs.observer as Element)
+    };
+    const observer = new IntersectionObserver(this.intersectionHandler, options);
+    observer.observe(this.$refs.observer as Element);
   },
 
   computed: {
     lang() {
-      return this.appSettings.lang
+      return this.appSettings.lang;
     },
     currency() {
-      return this.appSettings.currency
+      return this.appSettings.currency;
     },
     totalPages() {
-      return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD)
+      return Math.ceil(this.totalItems / PRODUCTS_LIMIT_PER_LOAD);
+    },
+    userCurrentCart(): Cart | undefined {
+      return this.cartsStore.currentCart;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

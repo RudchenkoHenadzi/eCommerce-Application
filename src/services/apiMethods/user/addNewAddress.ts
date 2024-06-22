@@ -1,4 +1,4 @@
-import { useApiRootStore } from '@/stores/ApiRootStore'
+import { useApiRootStore } from '@/stores/ApiRootStore';
 
 export function addNewAddress(
   version: number,
@@ -8,7 +8,7 @@ export function addNewAddress(
   building: string,
   apartment: string
 ) {
-  const apiRoot = useApiRootStore().apiRoot
+  const apiRoot = useApiRootStore().apiRoot;
   return apiRoot
     .me()
     .post({
@@ -29,5 +29,5 @@ export function addNewAddress(
         ]
       }
     })
-    .execute()
+    .execute();
 }

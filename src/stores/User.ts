@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -10,8 +10,7 @@ export const useUserStore = defineStore('user', {
     userVersion: 0,
     userToken: localStorage.getItem('userToken') || '',
     userRefreshToken: localStorage.getItem('userRefreshToken') || '',
-    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0,
-    userCartId: localStorage.getItem('userCartId') || ''
+    userTokenExpirationTime: Number(localStorage.getItem('tokenExpirationTime')) || 0
   }),
   getters: {
     isLoggedIn: (state) => state.isUserLoggedIn,
@@ -22,69 +21,60 @@ export const useUserStore = defineStore('user', {
     version: (state) => state.userVersion,
     refreshToken: (state) => state.userRefreshToken,
     accessToken: (state) => state.userToken,
-    tokenExpirationTime: (state) => state.userTokenExpirationTime,
-    cartId: (state) => state.userCartId
+    tokenExpirationTime: (state) => state.userTokenExpirationTime
   },
   actions: {
     login() {
-      this.isUserLoggedIn = true
-      localStorage.setItem('isLoggedIn', 'true')
+      this.isUserLoggedIn = true;
+      localStorage.setItem('isLoggedIn', 'true');
     },
     logout() {
-      this.isUserLoggedIn = false
-      localStorage.removeItem('isLoggedIn')
-      localStorage.removeItem('userMail')
-      localStorage.removeItem('tokenExpirationTime')
-      localStorage.removeItem('userToken')
-      localStorage.removeItem('userRefreshToken')
+      this.isUserLoggedIn = false;
+      localStorage.removeItem('isLoggedIn');
+      localStorage.removeItem('userMail');
+      localStorage.removeItem('tokenExpirationTime');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userRefreshToken');
     },
     setUserMail(email: string) {
-      this.userMail = email
-      localStorage.setItem('userMail', email)
+      this.userMail = email;
+      localStorage.setItem('userMail', email);
     },
     removeUserMail() {
-      this.userMail = ''
-      localStorage.removeItem('userMail')
+      this.userMail = '';
+      localStorage.removeItem('userMail');
     },
     setUserFirstName(firstName: string) {
-      this.userFirstName = firstName
+      this.userFirstName = firstName;
     },
     setUserLastName(lastName: string) {
-      this.userLastName = lastName
+      this.userLastName = lastName;
     },
     setUserBirthDate(birthDate: string) {
-      this.userBirthDate = birthDate
+      this.userBirthDate = birthDate;
     },
     setUserVersion(newUserVersion: number) {
-      this.userVersion = newUserVersion
+      this.userVersion = newUserVersion;
     },
     setUserToken(token: string) {
-      this.userToken = token
-      localStorage.setItem('userToken', token)
+      this.userToken = token;
+      localStorage.setItem('userToken', token);
     },
     setUserRefreshToken(token: string) {
-      this.userRefreshToken = token
-      localStorage.setItem('userRefreshToken', token)
+      this.userRefreshToken = token;
+      localStorage.setItem('userRefreshToken', token);
     },
     setExpirationTime(newTime: number) {
-      this.userTokenExpirationTime = newTime
-      localStorage.setItem('tokenExpirationTime', String(newTime))
+      this.userTokenExpirationTime = newTime;
+      localStorage.setItem('tokenExpirationTime', String(newTime));
     },
     clearTokenData() {
-      this.userToken = ''
-      this.userRefreshToken = ''
-      this.userTokenExpirationTime = 0
-      localStorage.removeItem('tokenExpirationTime')
-      localStorage.removeItem('userToken')
-      localStorage.removeItem('userRefreshToken')
-    },
-    setCardId(id: string) {
-      this.userCartId = id
-      localStorage.setItem('userCartId', id)
-    },
-    removeCartId() {
-      this.userCartId = ''
-      localStorage.removeItem('userCartId')
+      this.userToken = '';
+      this.userRefreshToken = '';
+      this.userTokenExpirationTime = 0;
+      localStorage.removeItem('tokenExpirationTime');
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('userRefreshToken');
     }
   }
-})
+});

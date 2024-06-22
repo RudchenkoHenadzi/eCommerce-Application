@@ -11,10 +11,10 @@ export default {
 
   methods: {
     goToMainPage() {
-      this.$router.push('/')
+      this.$router.push('/');
     }
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
